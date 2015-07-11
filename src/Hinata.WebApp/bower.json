@@ -1,0 +1,16 @@
+{
+    "name": "Hinata.WebApp",
+    "version": "0.0.0",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "marked": "~0.3.3",
+        "highlightjs": "~8.5.0",
+        "github-markdown-css": "~2.0.9"
+    }
+}

@@ -1,0 +1,40 @@
+﻿@if (ViewBag.LogonUser == null || ViewBag.LogonUser.Name == null)
+{
+    <a href="@Url.Action("Register", "User")">
+        <p class="nav navbar-text navbar-right" data-toggle="tooltip" data-placement="bottom" title="記事を投稿するにはユーザー登録が必要です">@User.Identity.Name</p>
+    </a>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right" role="menu">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="@Url.Content(ViewBag.LogonUser.IconUrl)" alt="@ViewBag.LogonUser.Name" class="icon-image" /> <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li>
+                    @Html.ActionLink("マイページ", "Index", "User", new { name = ViewBag.LogonUser.Name }, null)
+                </li>
+                <li class="divider"></li>
+                <li>
+                    @Html.ActionLink("登録内容の変更", "Update", "User", new { id = ViewBag.LogonUser.Id }, null)
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right" role="menu">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">新規作成 <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li>
+                    @Html.ActionLink("記事を投稿する", "New", "Draft", new { itemType = ItemType.Article }, null)
+                </li>
+                <li>
+                    @Html.ActionLink("質問を投稿する", "New", "Draft", new { itemType = ItemType.Ask }, null)
+                </li>
+                <li class="divider"></li>
+                <li>
+                    @Html.ActionLink("下書き一覧", "Index", "Draft")
+                </li>
+            </ul>
+        </li>
+    </ul>
+}

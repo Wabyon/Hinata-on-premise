@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FACFF378-1128-4CC6-B586-75E48853D54A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Hinata</RootNamespace>
+    <AssemblyName>Hinata.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AntiXssLibrary">
+      <HintPath>..\..\packages\AntiXSS.4.3.0\lib\net40\AntiXssLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper">
+      <HintPath>..\..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentMigrator">
+      <HintPath>..\..\packages\FluentMigrator.1.5.1.0\lib\40\FluentMigrator.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentMigrator.Runner">
+      <HintPath>..\..\packages\FluentMigrator.Runner.1.5.1.0\lib\40\FluentMigrator.Runner.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlSanitizationLibrary">
+      <HintPath>..\..\packages\AntiXSS.4.3.0\lib\net40\HtmlSanitizationLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="JavaScriptEngineSwitcher.Core">
+      <HintPath>..\..\packages\JavaScriptEngineSwitcher.Core.1.2.4\lib\net40\JavaScriptEngineSwitcher.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MiniProfiler">
+      <HintPath>..\..\packages\MiniProfiler.3.1.1.140\lib\net40\MiniProfiler.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Commands\CommentDbCommand.cs" />
+    <Compile Include="Data\Commands\UserDbCommand.cs" />
+    <Compile Include="Data\Migrations\0000000002_AddUserIconUrl.cs" />
+    <Compile Include="Data\Migrations\0000000001_CreateLogTables.cs" />
+    <Compile Include="Data\Models\CommentDataModels.cs" />
+    <Compile Include="Data\Models\DraftDataModels.cs" />
+    <Compile Include="Data\Models\ItemDataModels.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="Comment.cs" />
+    <Compile Include="Data\Commands\ItemDbCommand.cs" />
+    <Compile Include="Data\Commands\DbCommand.cs" />
+    <Compile Include="Data\Commands\DraftDbCommand.cs" />
+    <Compile Include="Data\Migrations\0000000000_CreateCoreTables.cs" />
+    <Compile Include="Data\DapperConfig.cs" />
+    <Compile Include="Data\Database.cs" />
+    <Compile Include="Draft.cs" />
+    <Compile Include="ItemType.cs" />
+    <Compile Include="Logging\Data\TraceDbProfiler.cs" />
+    <Compile Include="Logging\Data\AccessLoggerBase.cs" />
+    <Compile Include="Logging\DefaultTraceLogInitializer.cs" />
+    <Compile Include="Logging\Internals\EmptyAccessLogger.cs" />
+    <Compile Include="Logging\Internals\TraceLogConfigurationFactory.cs" />
+    <Compile Include="Logging\Internals\TraceLogger.cs" />
+    <Compile Include="Logging\Internals\TraceLogLevelExtensions.cs" />
+    <Compile Include="Logging\ITraceLogger.cs" />
+    <Compile Include="Logging\IAccessLogger.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Logging\TraceLogLevel.cs" />
+    <Compile Include="Logging\TraceLogMessage.cs" />
+    <Compile Include="Logging\AccessLog.cs" />
+    <Compile Include="Markdown\HtmlUtility.cs" />
+    <Compile Include="Markdown\MarkdownParser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tag.cs" />
+    <Compile Include="TagCollection.cs" />
+    <Compile Include="User.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="bower.json" />
+    <None Include="package.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="gruntfile.js" />
+    <EmbeddedResource Include="Scripts\highlightjs\highlight.pack.js" />
+    <EmbeddedResource Include="Scripts\marked\marked.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties package_1json__JSONSchema="http://json.schemastore.org/package" bower_1json__JSONSchema="http://json.schemastore.org/bower" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

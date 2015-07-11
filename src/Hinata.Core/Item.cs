@@ -1,0 +1,52 @@
+﻿using System;
+
+namespace Hinata
+{
+    public class Item
+    {
+        private readonly TagCollection _tags = new TagCollection();
+
+        public string Id { get; internal set; }
+
+        public bool IsPublic { get; internal set; }
+
+        public ItemType Type { get; internal set; }
+
+        public User Author { get; internal set; }
+
+        public string Title { get; internal set; }
+
+        public string Body { get; internal set; }
+
+        public int CommentCount { get; internal set; }
+
+        public TagCollection Tags { get { return _tags; } }
+
+        public DateTime CreatedDateTime { get; internal set; }
+
+        public DateTime LastModifiedDateTime { get; set; }
+
+        internal Item()
+        {
+        }
+
+        public Draft ToDraft()
+        {
+            return new Draft(this);
+        }
+
+        public Comment NewComment(User user)
+        {
+            if (user == null) throw new ArgumentNullException("user");
+
+            CommentCount++;
+
+            return new Comment(this)
+            {
+                User = user,
+                CreatedDateTime = DateTime.Now,
+                LastModifiedDateTime = DateTime.Now
+            };
+        }
+    }
+}

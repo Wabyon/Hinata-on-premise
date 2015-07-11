@@ -1,0 +1,16 @@
+﻿@model  DraftPreviewModel
+<div class="row">
+    <div>
+        @Html.ActionLink("編集", "Edit", "Draft",new { id = Model.Id }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("削除", "Delete","Draft", new { id = Model.Id }, new { @class = "btn btn-danger pull-right" })
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">@Model.Title</h2>
+            @Html.DisplayFor(m => Model.Tags)
+        </div>
+        <div class="panel-body item-view markdown-body">
+            @Html.Raw(@Model.Html)
+        </div>
+    </div>
+</div>

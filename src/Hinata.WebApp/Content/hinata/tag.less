@@ -1,0 +1,44 @@
+﻿.tag {
+    position: relative;
+    display: inline-block;
+    font-size: 10px;
+    padding: 0 4px;
+    background: #B0A9BC;
+    color: #FFFFFF;
+    -ms-border-radius: 2px;
+    border-radius: 2px;
+    height: 14px;
+    line-height: 14px;
+    vertical-align: middle;
+    margin-left: 7px;
+
+    &:before {
+        display: block;
+        position: absolute;
+        content: ' ';
+        text-indent: -10000;
+        width: 1px;
+        height: 1px;
+        border-style: solid;
+        border-color: transparent #B0A9BC transparent transparent;
+        border-width: 7px;
+        left: -13px;
+    }
+}
+
+ul.item-box-tag-list {
+    display: inline;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+
+    li {
+        display: inline-block;
+    }
+}
+
+div.list-group-item {
+    h1, h2, h3, h4, h5 {
+        display: inline;
+    }
+}

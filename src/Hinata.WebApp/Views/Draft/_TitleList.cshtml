@@ -1,0 +1,12 @@
+﻿@model  IEnumerable<DraftIndexModel>
+@foreach (var draft in Model)
+{
+<a href="#" class="list-group-item" data-url="@Url.Action("Preview","Draft", new {id = draft.Id})" data-toggle="tab">
+    <p class="list-group-item-heading">
+        @draft.Title
+    </p>
+    <small class="list-group-item-text">
+        @draft.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
+    </small>
+</a>
+}

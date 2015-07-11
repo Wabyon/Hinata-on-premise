@@ -1,0 +1,102 @@
+﻿@model DraftEditModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="x-ua-compatible" content="IE=Edge" />
+    <title>@ViewBag.Title - Hinata</title>
+    <link href="http://fonts.googleapis.com/css?family=Questrial" rel="stylesheet" type="text/css" />
+    @Styles.Render("~/Content/bootstrap.less")
+    @Styles.Render("~/Content/hinata.less")
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/vs.min.css">
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Hinata", "Index", "Item", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                @Html.Partial("_LogonUser")
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid body-content">
+        @using (Html.BeginForm("Save", "Draft", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.ItemType)
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control input-lg", @placeholder = @Html.PlacceHolderFor(m => m.Title) })
+                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.TagInlineString, new { @class = "form-control", @placeholder = @Html.PlacceHolderFor(m => m.TagInlineString) })
+                @Html.ValidationMessageFor(m => m.TagInlineString, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6 editor-panel-area">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Markdown</div>
+                        <div class="panel-body markdown-editor" style="max-height: 500px; min-height: 500px; padding: 0;">
+                            @Html.TextAreaFor(m => m.Body, new { @id = "item-editor", @class = "form-control item-editor", data_url = Url.Action("AutoSave", "Draft") })
+                            <div class="text-center">
+                                <div class="file">
+                                    画像を選択してアップロード
+                                    <input type="file" id="update-file" data-url="@Url.Action("Upload","Image",new {itemid = Model.Id})" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 hidden-xs" style="padding-left: 0;">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Preview</div>
+                        <div class="panel-body" style="max-height: 500px; min-height: 500px; overflow-y: auto; overflow-x: hidden; padding: 0;">
+                            <div id="item-view" class="item-viewer" style="padding: 10px;">
+                                @Html.Raw(Model.Html)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="btn-group dropup pull-right">
+                    <input id="btnSubmit" type="submit" class="btn btn-primary" value="下書き保存" />
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul id="edit-type-menu" class="dropdown-menu" role="menu">
+                        <li><a href="#" data-mode="Draft">下書き保存</a></li>
+                        <li><a href="#" data-mode="Private">限定共有</a></li>
+                        <li><a href="#" data-mode="Public">投稿</a></li>
+                    </ul>
+                </div>
+                @Html.HiddenFor(m => m.EntryMode)
+            </div>
+        }
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Wabyon</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/hinata")
+    @Scripts.Render("~/scripts/view/draft/edit")
+</body>
+</html>

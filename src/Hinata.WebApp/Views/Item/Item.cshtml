@@ -1,0 +1,88 @@
+﻿@model ItemViewModel
+
+<div class="item-viewer-header">
+    <div class="container">
+        @if (!Model.IsPublic)
+        {
+            <div class="item-private-message">
+                <p>この投稿は限定共有に設定されています。 投稿者本人及びURLを知っているユーザーのみアクセスすることができます。</p>
+            </div>
+        }
+        <div class="item-title">
+            <h2>@Model.Title</h2>
+            <ul class="item-box-tag-list">
+                @foreach (var tag in Model.Tags)
+                {
+                    var tagversion = string.IsNullOrWhiteSpace(tag.Version) ? tag.Name : string.Format("{0}[{1}]", tag.Name, tag.Version);
+                    <li class="tag">@tagversion</li>
+                }
+            </ul>
+        </div>
+        @if (Model.CanEdit)
+        {
+            <div class="item-edit-select">
+                <div class="btn-group">
+                    @Html.ActionLink("投稿を編集", "Edit", "Draft", new { id = Model.Id }, new { @class = "btn btn-sm btn-default" })
+                    <div class="btn-group">
+                        <a class="dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#deleteModel" role="button" data-toggle="modal">削除</a>
+                            </li>
+                            <li>
+                                @Html.ActionLink("RAW", "Raw", "Item", new { id = Model.Id, title = Model.Title }, null)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="item-author">
+            <a href="@Url.Action("Index", "User", new { name = @Model.AuthorName })"><img src="@Url.Content(Model.AuthorIconUrl)" alt="@Model.AuthorName" class="icon-image" /></a>
+            @Html.ActionLink(Model.AuthorDisplayName, "Index", "User", new { name = @Model.AuthorName }, null)&nbsp;さんが&nbsp;@Model.CreatedDateTime.ToString("yyyy/MM/dd HH:mm:ss")&nbsp;に作成
+            @if (Model.HasModified)
+            {
+                <span>&nbsp;&nbsp;</span>@Model.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
+                <span>に編集</span>
+            }
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="item-viewer">
+        @Html.Raw(Model.HtmlBody)
+    </div>
+    <div class="comment-area">
+        @Html.Partial("_CommentList", Model.Comments)
+        <div class="comment-editor-area">
+            @if (ViewBag.LogonUser != null && ViewBag.LogonUser.Name != null)
+            {
+                <hr />
+                @Html.Partial("_CommentEdit", Model.NewComment)
+            }
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModel" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Delete", "Item", new { id = Model.Id }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="modal-body">
+                    <p>記事を削除します。よろしいですか？</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                    <button class="btn btn-danger">削除する</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/scripts/view/item/item")
+}

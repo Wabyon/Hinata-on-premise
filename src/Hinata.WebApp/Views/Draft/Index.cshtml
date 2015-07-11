@@ -1,0 +1,32 @@
+﻿@model  IEnumerable<DraftIndexModel>
+
+@{
+    ViewBag.Title = "下書き一覧";
+}
+<div class="container">
+    <div class="col-md-3">
+        <div>
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#unpublished" data-toggle="tab">未投稿</a></li>
+                <li><a href="#published" data-toggle="tab">投稿済</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="unpublished" class="list-group tab-pane active">
+                    @Html.Partial("_TitleList", Model.Where(x => x.IsContributed == false))
+                </div>
+                <div id="published" class="list-group tab-pane">
+                    @Html.Partial("_TitleList", Model.Where(x => x.IsContributed))
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div>
+            <div id="draft-preview"></div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    @Scripts.Render("~/scripts/view/draft/index")
+}

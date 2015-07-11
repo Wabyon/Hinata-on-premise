@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ItemIndexModel>
+           
+@foreach (var item in Model)
+{
+    <div class="list-group-item">
+        <p class="list-group-item-text">
+            @item.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss") に編集
+        </p>
+        <h4 class="list-group-item-heading">
+            @Html.ActionLink(@item.Title, "Item", "Item", new {id = @item.Id}, null)
+        </h4>
+        <ul class="item-box-tag-list">
+            @foreach (var tag in item.Tags)
+            {
+                <li class="tag">@tag.Name</li>
+            }
+        </ul>
+    </div>
+}

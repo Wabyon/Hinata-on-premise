@@ -1,0 +1,7 @@
+﻿@model IEnumerable<ItemIndexModel>
+<div class="container">
+    @Html.Partial("_List", Model)
+</div>
+@section scripts {
+    @Scripts.Render("~/scripts/view/item/index")
+}
