@@ -28,4 +28,39 @@ $(function() {
             hljs.highlightBlock(block);
         });
     });
+
+    $("#update-file").on("change", function (e) {
+        var $self = $(this);
+        var files = e.target.files;
+        if (files.length > 0) {
+            if (window.FormData !== undefined) {
+                var data = new FormData();
+                for (var x = 0; x < files.length; x++) {
+                    data.append("file" + x, files[x]);
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: $self.data("url"),
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+                        hinata.insertAtCaret("comment-editor", "![" + result.OriginalFileName + "](" + result.Url + ")");
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        if (xhr.responseText && xhr.responseText[0] === "{") {
+                            var err = JSON.parse(xhr.responseText).Message;
+                            alert(err);
+                        }
+                    },
+                    complete: function () {
+                        $self.val("");
+                    }
+                });
+            } else {
+                alert("This browser doesn't support HTML5 file uploads!");
+            }
+        }
+    });
 });

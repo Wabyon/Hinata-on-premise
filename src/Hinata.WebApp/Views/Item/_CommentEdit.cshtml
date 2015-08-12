@@ -14,12 +14,20 @@
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.CommentId)
             @Html.HiddenFor(model => model.ItemId)
-            @Html.TextAreaFor(model => model.CommentBody, new { @id = "comment-editor", @class = "form-control comment-editor", @placeholder = Html.PlacceHolderFor(model => model.CommentBody) })
+            @Html.TextAreaFor(model => model.CommentBody, new {@id = "comment-editor", @class = "form-control comment-editor", @placeholder = Html.PlacceHolderFor(model => model.CommentBody)})
         </div>
         <div id="preview-area" class="tab-pane">
             <div id="comment-preview" class="item-viewer">
             </div>
         </div>
     </div>
-    <input type="submit" value="投稿する" class="btn btn-primary" />
+    <div>
+        <div class="pull-right">
+            <input type="submit" value="投稿する" class="btn btn-primary"/>
+        </div>
+        <div class="file">
+            <span class="glyphicon glyphicon-picture"></span>&nbsp;画像を選択
+            <input type="file" id="update-file" data-url="@Url.Action("Upload","Image")" />
+        </div>
+    </div>
 }
