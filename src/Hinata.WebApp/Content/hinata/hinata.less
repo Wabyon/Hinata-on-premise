@@ -2,6 +2,8 @@
 @import "markdown-editor.less";
 @import "item-viewer.less";
 @import "item-list.less";
+@import "../bootstrap/variables.custom";
+
 
 .navbar-nav {
     img.icon-image {
@@ -99,5 +101,28 @@ textarea.comment-editor {
         max-height: 200px;
         min-height: 200px;
         overflow: auto;
+    }
+
+    div.file {
+        display: inline-block;
+        overflow: hidden;
+        position: relative;
+        padding: .5em;
+        border: 1px solid #999;
+        background-color: #eee;
+        font-weight: @btn-font-weight;
+        touch-action: manipulation;
+                border-radius: 3px;
+
+        input[type="file"] {
+            opacity: 0;
+            filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+            position: absolute;
+            right: 0;
+            top: 0;
+            margin: 0;
+            font-size: 100px;
+            cursor: pointer;
+        }
     }
 }
