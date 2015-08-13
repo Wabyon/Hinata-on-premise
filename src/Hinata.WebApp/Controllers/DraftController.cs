@@ -67,6 +67,9 @@ namespace Hinata.Controllers
         [HttpPost]
         public async Task<ActionResult> Save(DraftEditModel model)
         {
+            model.EntryMode = EntryMode.SaveDraft;
+            TryValidateModel(model);
+
             if (!ModelState.IsValid)
             {
                 using (var parser = new MarkdownParser())
@@ -79,17 +82,33 @@ namespace Hinata.Controllers
             var draft = await _draftDbCommand.FindAsync(model.Id) ?? Draft.NewDraft(LogonUser, model.ItemType);
             Mapper.Map(model, draft);
 
-            if (model.EntryMode == EntryMode.Draft)
+            draft.LastModifiedDateTime = DateTime.Now;
+            await _draftDbCommand.SaveAsync(draft);
+            return RedirectToAction("Index", "Draft");
+        }
+
+        [Route("draft/publish")]
+        [HttpPost]
+        public async Task<ActionResult> Publish(DraftEditModel model)
+        {
+            model.EntryMode = EntryMode.PublishItem;
+            TryValidateModel(model);
+
+            if (!ModelState.IsValid)
             {
-                draft.LastModifiedDateTime = DateTime.Now;
-                await _draftDbCommand.SaveAsync(draft);
-                return RedirectToAction("Index", "Draft");
+                using (var parser = new MarkdownParser())
+                {
+                    model.Html = parser.Transform(model.Body);
+                    return View("Edit", model);
+                }
             }
 
-            var isPublic = model.EntryMode == EntryMode.Public;
-            var item = draft.ToItem(isPublic);
+            var draft = await _draftDbCommand.FindAsync(model.Id) ?? Draft.NewDraft(LogonUser, model.ItemType);
+            Mapper.Map(model, draft);
+            var item = draft.ToItem();
 
             await _itemDbCommand.SaveAsync(item);
+            await _draftDbCommand.DeleteAsync(draft.Id);
 
             return RedirectToAction("Index", "Item");
         }

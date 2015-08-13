@@ -43,13 +43,16 @@ namespace Hinata.Models
         [PlaceHolder("タグをスペース区切りで入力　例）T-SQL SQLServer[2012]")]
         public string TagInlineString { get; set; }
 
+        [Display(Name = "限定共有")]
+        public bool ItemIsPrivate { get; set; }
+
         public EntryMode EntryMode { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var validationResults = new List<ValidationResult>();
 
-            if (EntryMode == EntryMode.Draft && string.IsNullOrWhiteSpace(TagInlineString)) return validationResults;
+            if (EntryMode == EntryMode.SaveDraft && string.IsNullOrWhiteSpace(TagInlineString)) return validationResults;
 
             if (string.IsNullOrWhiteSpace(Title))
             {
@@ -98,9 +101,8 @@ namespace Hinata.Models
 
     public enum EntryMode
     {
-        Draft = 0,
-        Public = 1,
-        Private = 2,
+        SaveDraft,
+        PublishItem
     }
 
     public class DraftPreviewModel

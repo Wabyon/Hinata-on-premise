@@ -48,6 +48,15 @@ namespace Hinata
                 .ForMember(d => d.ItemType, o => o.MapFrom(s => s.Type))
                 .AfterMap((s, d) =>
                 {
+                    if (s.IsContributed)
+                    {
+                        d.ItemIsPrivate = !s.ItemIsPublic;
+                    }
+                    else
+                    {
+                        d.ItemIsPrivate = false;
+                    }
+
                     using (var parser = new MarkdownParser())
                     {
                         d.Html = parser.Transform(s.Body);
@@ -65,6 +74,7 @@ namespace Hinata
                 });
             Mapper.CreateMap<DraftEditModel, Draft>()
                 .ForMember(d => d.Type, o => o.MapFrom(s => s.ItemType))
+                .ForMember(d => d.ItemIsPublic, o => o.MapFrom(s => !s.ItemIsPrivate))
                 .AfterMap((s, d) =>
                 {
                     d.Tags.Clear();

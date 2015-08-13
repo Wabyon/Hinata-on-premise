@@ -30,12 +30,10 @@ $(function () {
         });
     });
 
-    $("#edit-type-menu a").click(function () {
-        var self = this;
-        var mode = $(self).data("mode");
-
-        $("#EntryMode").val(mode);
-        $("#btnSubmit").val($(self).text());
+    $("#mainForm button[type='button']").on("click", function () {
+        var $self = $(this);
+        $("#mainForm").attr("action", $self.data("action"));
+        $("#mainForm").submit();
     });
 
     $("#update-file").on("change", function (e) {
