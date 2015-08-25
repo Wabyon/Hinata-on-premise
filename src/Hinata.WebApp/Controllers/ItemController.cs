@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.EnterpriseServices;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -167,6 +169,32 @@ namespace Hinata.Controllers
             await _commentDbCommand.SaveAsync(comment);
 
             return RedirectToAction("Item", new {id = model.ItemId});
+        }
+
+        [Route("item/{id}/revisions")]
+        [HttpGet]
+        public async Task<ActionResult> Revisions(string id)
+        {
+            var itemRevisions = await _itemDbCommand.GetRevisionsAsync(id);
+
+            if (!itemRevisions.Any()) return HttpNotFound();
+
+            var model = Mapper.Map<IEnumerable<ItemRevisionDetailModel>>(itemRevisions);
+
+            return View(model);
+        }
+
+        [Route("item/{id}/revisions/{revisionNo}")]
+        [HttpGet]
+        public async Task<ActionResult> Revision(string id, int revisionNo)
+        {
+            var itemRevision = await _itemDbCommand.FindRevisionAsync(id, revisionNo);
+
+            if (itemRevision == null) return HttpNotFound();
+
+            var model = Mapper.Map<ItemRevisionDetailModel>(itemRevision);
+
+            return PartialView("_RevisionDetail", model);
         }
     }
 }

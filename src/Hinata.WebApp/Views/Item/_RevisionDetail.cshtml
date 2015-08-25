@@ -1,0 +1,52 @@
+﻿@model ItemRevisionDetailModel
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        @Model.Comment
+    </div>
+</div>
+<div>
+    <h3>タイトル</h3>
+    @Model.Title
+</div>
+<div>
+    <h3>タグ・バージョン</h3>
+    @{
+        var isFirst = true;
+        foreach (var tag in Model.Tags)
+        {
+            if (isFirst)
+            {
+                isFirst = false;
+            }
+            else
+            {
+                <span>,&nbsp;</span>
+            }
+
+            <span>@tag.Name</span>
+            if (!string.IsNullOrWhiteSpace(tag.Version))
+            {
+                <span>[@tag.Version]</span>
+            }
+        }
+    }
+</div>
+<div>
+    <h3>本文</h3>
+    @{
+        var lines = Model.Body.Replace("\r\n", "\n").Split('\n');
+        foreach (var line in lines)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                <br/>
+            }
+            else
+            {
+                <p>@Html.Raw(Html.Encode(line))</p>
+            }
+        }
+    }
+
+</div>

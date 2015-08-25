@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ItemRevisionDetailModel>
+@{
+    var current = Model.First(x => x.IsCurrent);
+}
+
+
+<div class="container">
+    <div>
+        <h3><a href="@Url.Action("Item", "Item", new {id = current.ItemId})">@current.Title</a> の 編集履歴
+        </h3>
+    </div>
+
+    <hr/>
+
+    <div class="col-md-3">
+        <div class="list-group">
+            @{
+                var isFirst = true;
+                foreach (var itemRevision in Model)
+                {
+                    if (isFirst)
+                    {
+                        <a href="#" class="list-group-item active" data-url="@Url.Action("Revision", "Item", new {id = itemRevision.ItemId, revisionNo = itemRevision.RevisionNo})" data-toggle="tab">@itemRevision.ModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")</a>
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        <a href="#" class="list-group-item" data-url="@Url.Action("Revision", "Item", new {id = itemRevision.ItemId, revisionNo = itemRevision.RevisionNo})" data-toggle="tab">@itemRevision.ModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")</a>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="col-md-9" id="detail-area">
+        @Html.Partial("_RevisionDetail", Model.First())
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function() {
+            $("a.list-group-item").click(function() {
+                var $self = $(this);
+                $("a.list-group-item").removeClass("active");
+                $self.addClass("active");
+
+                $.ajax({
+                    url: $self.data("url"),
+                    type: "GET",
+                    dataType: "html",
+                    success: function (html) {
+                        $("#detail-area").html(html);
+                    }
+                });
+            });
+        });
+    </script>
+}

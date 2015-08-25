@@ -112,10 +112,14 @@ namespace Hinata.Data.Commands
             await DraftDbCommand.SaveAsync(draft);
 
             var savedDraft = await DraftDbCommand.FindAsync(draft.Id);
+
+            savedDraft.CurrentRevisionNo.Is(-1);
+
             savedDraft.Title = "title 正常系_作成と修正 公開";
             savedDraft.Body = "body 正常系_作成と修正 公開";
 
             var item = savedDraft.ToItem(true);
+            item.RevisionNo.Is(0);
 
             await ItemDbCommand.SaveAsync(item);
 
@@ -125,16 +129,28 @@ namespace Hinata.Data.Commands
             Assert.AreEqual(savedDraft.Title, savedItem.Title);
             Assert.AreEqual(savedDraft.Body, savedItem.Body);
             savedItem.Author.IsStructuralEqual(savedDraft.Author);
+            savedItem.RevisionNo.Is(0);
+            savedItem.RevisionCount.Is(1);
 
             var updateDraft = item.ToDraft();
+            updateDraft.CurrentRevisionNo.Is(0);
+
             updateDraft.Title = "title 正常系_作成と修正 公開 修正";
             updateDraft.Body = "body 正常系_作成と修正 公開 修正";
+            updateDraft.Comment = "変更";
 
             await DraftDbCommand.SaveAsync(updateDraft);
             var updatedDraft = await DraftDbCommand.FindAsync(updateDraft.Id);
             updatedDraft.IsStructuralEqual(updateDraft);
+            updatedDraft.CurrentRevisionNo.Is(0);
+            updatedDraft.Title.Is(updateDraft.Title);
+            updatedDraft.Tags.IsStructuralEqual(updateDraft.Tags);
+            updatedDraft.Body.Is(updateDraft.Body);
+            updatedDraft.Comment.Is(updateDraft.Comment);
+            updatedDraft.Author.IsStructuralEqual(updateDraft.Author);
 
             var updateItem = updatedDraft.ToItem();
+            updateItem.RevisionNo.Is(1);
 
             await ItemDbCommand.SaveAsync(updateItem);
 
@@ -144,6 +160,9 @@ namespace Hinata.Data.Commands
             Assert.AreEqual(updatedDraft.Title, updatedItem.Title);
             Assert.AreEqual(updatedDraft.Body, updatedItem.Body);
             updatedItem.Author.IsStructuralEqual(updatedDraft.Author);
+            updatedItem.RevisionNo.Is(1);
+            updatedItem.RevisionCount.Is(2);
         }
+
     }
 }

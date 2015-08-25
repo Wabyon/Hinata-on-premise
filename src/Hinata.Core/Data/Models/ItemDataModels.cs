@@ -11,6 +11,8 @@ namespace Hinata.Data.Models
     {
         public string Id { get; set; }
 
+        public int RevisionNo { get; set; }
+
         public bool IsPublic { get; set; }
 
         public ItemType Type { get; set; }
@@ -21,6 +23,8 @@ namespace Hinata.Data.Models
 
         public string Body { get; set; }
 
+        public string Comment { get; set; }
+
         public DateTime CreatedDateTime { get; set; }
 
         public DateTime LastModifiedDateTime { get; set; }
@@ -28,15 +32,18 @@ namespace Hinata.Data.Models
         public ItemRegisterDataModel(Item item)
         {
             Id = item.Id;
+            RevisionNo = item.RevisionNo;
             Type = item.Type;
             IsPublic = item.IsPublic;
             UserId = item.Author.Id;
             Title = item.Title;
             Body = item.Body;
+            Comment = item.Comment;
             CreatedDateTime = item.CreatedDateTime;
             LastModifiedDateTime = item.LastModifiedDateTime;
         }
     }
+
     internal class ItemSelectDataModel
     {
         public string Id { get; set; }
@@ -59,6 +66,10 @@ namespace Hinata.Data.Models
 
         public int CommentCount { get; set; }
 
+        public int RevisionCount { get; set; }
+
+        public int RevisionNo { get; set; }
+
         public Item ToEntity()
         {
             var item = new Item
@@ -70,7 +81,9 @@ namespace Hinata.Data.Models
                 IsPublic = IsPublic,
                 CreatedDateTime = CreatedDateTime,
                 LastModifiedDateTime = LastModifiedDateTime,
-                CommentCount = CommentCount
+                CommentCount = CommentCount,
+                RevisionCount = RevisionCount,
+                RevisionNo = RevisionNo,
             };
 
             if (!string.IsNullOrWhiteSpace(Author))
@@ -109,6 +122,62 @@ namespace Hinata.Data.Models
             }
 
             return item;
+        }
+    }
+
+    internal class ItemRevisionSelectDataModel
+    {
+        public string ItemId { get; set; }
+
+        public int RevisionNo { get; set; }
+
+        public DateTime ModifiedDateTime { get; set; }
+
+        public string Comment { get; set; }
+
+        public string Title { get; set; }
+
+        public string Tags { get; set; }
+
+        public string Body { get; set; }
+
+        public bool IsFirst { get; set; }
+
+        public bool IsCurrent { get; set; }
+
+        public ItemRevision ToEntity()
+        {
+            var itemRevision = new ItemRevision
+            {
+                ItemId = ItemId,
+                RevisionNo = RevisionNo,
+                ModifiedDateTime = ModifiedDateTime,
+                Comment = Comment,
+                Title = Title,
+                Body = Body,
+                IsFirst = IsFirst,
+                IsCurrent = IsCurrent,
+            };
+
+            var xmlTags = new XmlDocument();
+            xmlTags.LoadXml(Tags);
+            var jsonTags = Regex.Replace(JsonConvert.SerializeXmlNode(xmlTags), "(?<=\")(@)(?!.*\":\\s )", "", RegexOptions.IgnoreCase);
+            var jObjectTags = JObject.Parse(jsonTags)["Tags"]["Tag"];
+            if (jObjectTags.Type == JTokenType.Array)
+            {
+                var tags = JsonConvert.DeserializeObject<IEnumerable<Tag>>(jObjectTags.ToString());
+                foreach (var tag in tags)
+                {
+                    itemRevision.Tags.Add(tag);
+                }
+            }
+            else
+            {
+                var tag = JsonConvert.DeserializeObject<Tag>(jObjectTags.ToString());
+                itemRevision.Tags.Add(tag);
+            }
+
+            return itemRevision;
         }
     }
 }

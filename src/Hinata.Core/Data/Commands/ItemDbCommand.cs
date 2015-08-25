@@ -262,6 +262,31 @@ BEGIN
         @LastModifiedDateTime
     )
 END
+
+INSERT INTO [dbo].[ItemRevisions] (
+    [ItemId],
+    [RevisionNo],
+    [UserId],
+    [Type],
+    [IsPublic],
+    [Title],
+    [Body],
+    [Comment],
+    [CreatedDateTime],
+    [ModifiedDateTime]
+) VALUES (
+    @Id,
+    @RevisionNo,
+    @UserId,
+    @Type,
+    @IsPublic,
+    @Title,
+    @Body,
+    @Comment,
+    @CreatedDateTime,
+    @LastModifiedDateTime
+)
+
 ";
             const string sqlTags = @"
 INSERT INTO [dbo].[ItemTags] (
@@ -274,7 +299,21 @@ INSERT INTO [dbo].[ItemTags] (
     @Name,
     @Version,
     @OrderNo
-)
+);
+
+INSERT INTO [dbo].[ItemTagRevisions] (
+    [ItemId],
+    [RevisionNo],
+    [Name],
+    [Version],
+    [OrderNo]
+) VALUES (
+    @ItemId,
+    @RevisionNo,
+    @Name,
+    @Version,
+    @OrderNo
+);
 ";
 
             using (var cn = CreateConnection())
@@ -289,7 +328,7 @@ INSERT INTO [dbo].[ItemTags] (
                         var orderNo = 1;
                         foreach (var tag in item.Tags)
                         {
-                            await cn.ExecuteAsync(sqlTags, new { ItemId = item.Id, tag.Name, tag.Version, OrderNo = orderNo }, tr).ConfigureAwait(false);
+                            await cn.ExecuteAsync(sqlTags, new { ItemId = item.Id, item.RevisionNo ,tag.Name, tag.Version, OrderNo = orderNo }, tr).ConfigureAwait(false);
                             orderNo++;
                         }
 
@@ -302,6 +341,8 @@ INSERT INTO [dbo].[ItemTags] (
                     }
                 }
             }
+
+            item.RevisionCount++;
         }
 
         public Task DeleteAsync(string id)
@@ -332,6 +373,136 @@ WHERE
             }
         }
 
+        public Task<ItemRevision> FindRevisionAsync(string itemId, int revisionNo)
+        {
+            return FindRevisionAsync(itemId, revisionNo, CancellationToken.None);
+        }
+
+        public async Task<ItemRevision> FindRevisionAsync(string itemId, int revisionNo, CancellationToken cancellationToken)
+        {
+            const string sql = @"
+WITH Main
+AS (
+    SELECT
+         ItemId
+        ,RevisionNo
+        ,Comment
+        ,ModifiedDateTime
+        ,ItemRevisions.Title
+        ,Tags = Tags.Tags
+        ,ItemRevisions.Body
+        ,FirstRevisionNo = MIN(RevisionNo) OVER (PARTITION BY ItemId)
+        ,CurrentRevisionNo = MAX(RevisionNo) OVER (PARTITION BY ItemId)
+    FROM [dbo].[ItemRevisions] ItemRevisions
+    OUTER APPLY (
+        SELECT (
+            SELECT * FROM (
+                SELECT
+                    [Name],
+                    [Version],
+                    [OrderNo]
+                FROM [dbo].[ItemTagRevisions] Tags
+                WHERE
+                    Tags.ItemId = ItemRevisions.ItemId
+                AND Tags.RevisionNo = ItemRevisions.RevisionNo
+            ) Tag
+            ORDER BY
+                Tag.OrderNo
+             FOR XML AUTO, ROOT('Tags')
+        ) Tags
+    ) Tags
+)
+SELECT
+     ItemId
+    ,RevisionNo
+    ,Comment
+    ,ModifiedDateTime
+    ,Title
+    ,Tags
+    ,Body
+    ,IsFirst = CONVERT(BIT, CASE WHEN RevisionNo = FirstRevisionNo THEN 1 ELSE 0 END)
+    ,IsCurrent = CONVERT(BIT, CASE WHEN RevisionNo = CurrentRevisionNo THEN 1 ELSE 0 END)
+FROM Main
+WHERE
+    ItemId = @ItemId
+AND RevisionNo = @RevisionNo
+";
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+
+                var resultSet = (await cn.QueryAsync<ItemRevisionSelectDataModel>(sql, new { ItemId = itemId, RevisionNo = revisionNo }).ConfigureAwait(false)).FirstOrDefault();
+
+                return resultSet == null ? null : resultSet.ToEntity();
+            }
+        }
+
+        public Task<ItemRevision[]> GetRevisionsAsync(string itemId)
+        {
+            return GetRevisionsAsync(itemId, CancellationToken.None);
+        }
+
+        public async Task<ItemRevision[]> GetRevisionsAsync(string itemId, CancellationToken cancellationToken)
+        {
+            const string sql = @"
+WITH Main
+AS (
+    SELECT
+         ItemId
+        ,RevisionNo
+        ,Comment
+        ,ModifiedDateTime
+        ,ItemRevisions.Title
+        ,Tags = Tags.Tags
+        ,ItemRevisions.Body
+        ,FirstRevisionNo = MIN(RevisionNo) OVER (PARTITION BY ItemId)
+        ,CurrentRevisionNo = MAX(RevisionNo) OVER (PARTITION BY ItemId)
+    FROM [dbo].[ItemRevisions] ItemRevisions
+    OUTER APPLY (
+        SELECT (
+            SELECT * FROM (
+                SELECT
+                    [Name],
+                    [Version],
+                    [OrderNo]
+                FROM [dbo].[ItemTagRevisions] Tags
+                WHERE
+                    Tags.ItemId = ItemRevisions.ItemId
+                AND Tags.RevisionNo = ItemRevisions.RevisionNo
+            ) Tag
+            ORDER BY
+                Tag.OrderNo
+             FOR XML AUTO, ROOT('Tags')
+        ) Tags
+    ) Tags
+)
+SELECT
+     ItemId
+    ,RevisionNo
+    ,Comment
+    ,ModifiedDateTime
+    ,Title
+    ,Tags
+    ,Body
+    ,IsFirst = CONVERT(BIT, CASE WHEN RevisionNo = FirstRevisionNo THEN 1 ELSE 0 END)
+    ,IsCurrent = CONVERT(BIT, CASE WHEN RevisionNo = CurrentRevisionNo THEN 1 ELSE 0 END)
+FROM Main
+WHERE
+    ItemId = @ItemId
+ORDER BY
+     RevisionNo DESC
+";
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+
+                var results = await cn.QueryAsync<ItemRevisionSelectDataModel>(sql, new {ItemId = itemId}).ConfigureAwait(false);
+
+                return results.Select(x => x.ToEntity()).ToArray();
+            }
+        }
+
+        #region SqlSelectStatement
         private const string SqlSelectStatement = @"
 SELECT
     Items.[Id],
@@ -346,7 +517,9 @@ SELECT
     [ItemType] = ISNULL(Items.Type, 0),
     [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
     [ItemCreatedDateTime] = Items.CreatedDateTime,
-    _CommentAttributes.[CommentCount]
+    _CommentAttributes.[CommentCount],
+    _Revisions.[RevisionCount],
+    _Revisions.[RevisionNo]
 FROM [dbo].[Items] Items
 OUTER APPLY (
     SELECT (
@@ -400,6 +573,15 @@ CROSS APPLY (
                          END
                  END
 ) _LastModifiedDateTime
+OUTER APPLY (
+    SELECT
+        RevisionCount = COUNT(*),
+        RevisionNo = MAX(RevisionNo)
+    FROM [dbo].[ItemRevisions] ItemRevisions
+    WHERE
+        ItemRevisions.ItemId = Items.Id
+) _Revisions
 ";
+        #endregion
     }
 }

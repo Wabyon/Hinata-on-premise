@@ -75,6 +75,7 @@ namespace Hinata
             Mapper.CreateMap<DraftEditModel, Draft>()
                 .ForMember(d => d.Type, o => o.MapFrom(s => s.ItemType))
                 .ForMember(d => d.ItemIsPublic, o => o.MapFrom(s => !s.ItemIsPrivate))
+                .ForMember(d => d.CurrentRevisionNo, o => o.Ignore())
                 .AfterMap((s, d) =>
                 {
                     d.Tags.Clear();

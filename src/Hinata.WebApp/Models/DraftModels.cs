@@ -26,6 +26,10 @@ namespace Hinata.Models
     {
         public string Id { get; set; }
 
+        public int CurrentRevisionNo { get; set; }
+
+        public bool IsNewDraft { get { return (CurrentRevisionNo < 0); } }
+
         public ItemType ItemType { get; set; }
 
         [AllowHtml]
@@ -36,6 +40,11 @@ namespace Hinata.Models
         [AllowHtml]
         [Display(Name = "本文")]
         public string Body { get; set; }
+
+        [MaxLength(256)]
+        [AllowHtml]
+        [PlaceHolder("編集履歴コメント（任意）")]
+        public string Comment { get; set; }
 
         [ReadOnly(true)]
         public string Html { get; set; }

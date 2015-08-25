@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="Data\Commands\CommentDbCommand.cs" />
     <Compile Include="Data\Commands\UserDbCommand.cs" />
+    <Compile Include="Data\Migrations\2015082501_ItemRevision.cs" />
     <Compile Include="Data\Migrations\0000000002_AddUserIconUrl.cs" />
     <Compile Include="Data\Migrations\0000000001_CreateLogTables.cs" />
     <Compile Include="Data\Models\CommentDataModels.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Data\DapperConfig.cs" />
     <Compile Include="Data\Database.cs" />
     <Compile Include="Draft.cs" />
+    <Compile Include="ItemRevision.cs" />
     <Compile Include="ItemType.cs" />
     <Compile Include="Logging\Data\TraceDbProfiler.cs" />
     <Compile Include="Logging\Data\AccessLoggerBase.cs" />
@@ -122,7 +124,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties package_1json__JSONSchema="http://json.schemastore.org/package" bower_1json__JSONSchema="http://json.schemastore.org/bower" />
+      <UserProperties bower_1json__JSONSchema="http://json.schemastore.org/bower" package_1json__JSONSchema="http://json.schemastore.org/package" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
