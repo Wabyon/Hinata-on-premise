@@ -26,13 +26,22 @@ namespace Hinata
 
         public DateTime LastModifiedDateTime { get; set; }
 
+        public int RevisionNo { get; internal set; }
+
+        public int RevisionCount { get; internal set; }
+
+        internal string Comment { get; set; }
+
         internal Item()
         {
         }
 
         public Draft ToDraft()
         {
-            return new Draft(this);
+            return new Draft(this)
+            {
+                CurrentRevisionNo = RevisionNo,
+            };
         }
 
         public Comment NewComment(User user)

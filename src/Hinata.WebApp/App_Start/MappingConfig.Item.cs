@@ -32,6 +32,19 @@ namespace Hinata
                         d.HtmlBody = parser.Transform(s.Body);
                     }
                 });
+
+            Mapper.CreateMap<ItemRevision, ItemRevisionDetailModel>()
+                .ForMember(d => d.Comment, o => o.Ignore())
+                .AfterMap((s, d) =>
+                {
+                    if (s.IsFirst && string.IsNullOrWhiteSpace(s.Comment))
+                    {
+                        d.Comment = "投稿";
+                        return;
+                    }
+
+                    d.Comment = string.IsNullOrWhiteSpace(s.Comment) ? "(コメントなし)" : s.Comment;
+                });
         }
     }
 }

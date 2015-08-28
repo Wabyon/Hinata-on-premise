@@ -22,54 +22,11 @@ namespace Hinata.Data.Commands
         {
             if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id is null or empty", "id");
 
-            const string sql = @"
-SELECT
-    Drafts.[Id],
-    [Author].Author,
-    Drafts.[Type],
-    Drafts.[Title],
-    Drafts.[Body],
-    Drafts.[LastModifiedDateTime],
-    Tags.Tags,
-    [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
-    [ItemCreatedDateTime] = Items.CreatedDateTime
-FROM [dbo].[Drafts] Drafts
-LEFT OUTER JOIN [dbo].[Items] Items
-ON  Drafts.Id = Items.Id
-OUTER APPLY (
-    SELECT (
-        SELECT * FROM (
-            SELECT
-                Users.[Id],
-                Users.[LogonName],
-                [Name] = Users.UserName,
-                Users.[DisplayName]
-            FROM [dbo].[Users] Users
-            WHERE
-                Users.Id = Drafts.UserId
-        ) [Author]
-        FOR XML AUTO
-    ) [Author]
-) [Author]
-OUTER APPLY (
-    SELECT (
-        SELECT * FROM (
-            SELECT
-                [Name],
-                [Version],
-                [OrderNo]
-            FROM [dbo].[DraftTags] Tags
-            WHERE
-                Tags.DraftId = Drafts.Id
-        ) Tag
-        ORDER BY
-            Tag.OrderNo
-         FOR XML AUTO, ROOT('Tags')
-    ) Tags
-) Tags
+            var sql = string.Format(@"
+{0}
 WHERE
     Drafts.[Id] = @Id
-";
+", SqlSelectStatement);
             using (var cn = CreateConnection())
             {
                 await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -90,56 +47,13 @@ WHERE
         {
             if (author == null) throw new ArgumentNullException("author");
 
-            const string sql = @"
-SELECT
-    Drafts.[Id],
-    [Author].Author,
-    Drafts.[Type],
-    Drafts.[Title],
-    Drafts.[Body],
-    Drafts.[LastModifiedDateTime],
-    Tags.Tags,
-    [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
-    [ItemCreatedDateTime] = Items.CreatedDateTime
-FROM [dbo].[Drafts] Drafts
-LEFT OUTER JOIN [dbo].[Items] Items
-ON  Drafts.Id = Items.Id
-OUTER APPLY (
-    SELECT (
-        SELECT * FROM (
-            SELECT
-                Users.[Id],
-                Users.[LogonName],
-                [Name] = Users.UserName,
-                Users.[DisplayName]
-            FROM [dbo].[Users] Users
-            WHERE
-                Users.Id = Drafts.UserId
-        ) [Author]
-        FOR XML AUTO
-    ) [Author]
-) [Author]
-OUTER APPLY (
-    SELECT (
-        SELECT * FROM (
-            SELECT
-                [Name],
-                [Version],
-                [OrderNo]
-            FROM [dbo].[DraftTags] Tags
-            WHERE
-                Tags.DraftId = Drafts.Id
-        ) Tag
-        ORDER BY
-            Tag.OrderNo
-         FOR XML AUTO, ROOT('Tags')
-    ) Tags
-) Tags
+            var sql = string.Format(@"
+{0}
 WHERE
     Drafts.[UserId] = @UserId
 ORDER BY
     Drafts.[LastModifiedDateTime] DESC
-";
+", SqlSelectStatement);
             using (var cn = CreateConnection())
             {
                 await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -173,6 +87,7 @@ BEGIN
         [Type] = @Type,
         [Title] = @Title,
         [Body] = @Body,
+        [Comment] = @Comment,
         [LastModifiedDateTime] = @LastModifiedDateTime
     WHERE
         [Id] = @Id
@@ -185,6 +100,7 @@ BEGIN
         [Type],
         [Title],
         [Body],
+        [Comment],
         [LastModifiedDateTime]
     ) VALUES (
         @Id,
@@ -192,6 +108,7 @@ BEGIN
         @Type,
         @Title,
         @Body,
+        @Comment,
         @LastModifiedDateTime
     )
 END
@@ -294,5 +211,63 @@ WHERE
                 await cn.ExecuteAsync(sql, new {UserId = author.Id}).ConfigureAwait(false);
             }
         }
+
+        private const string SqlSelectStatement = @"
+SELECT
+    Drafts.[Id],
+    [Author].Author,
+    Drafts.[Type],
+    Drafts.[Title],
+    Drafts.[Body],
+    Drafts.[Comment],
+    Drafts.[LastModifiedDateTime],
+    CurrentRevisionNo = CASE WHEN _Revisions.RevisionNo IS NULL THEN -1 ELSE _Revisions.RevisionNo END,
+    Tags.Tags,
+    [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
+    [ItemCreatedDateTime] = Items.CreatedDateTime,
+    [ItemRevisionCount] = _Revisions.RevisionCount
+FROM [dbo].[Drafts] Drafts
+LEFT OUTER JOIN [dbo].[Items] Items
+ON  Drafts.Id = Items.Id
+OUTER APPLY (
+    SELECT (
+        SELECT * FROM (
+            SELECT
+                Users.[Id],
+                Users.[LogonName],
+                [Name] = Users.UserName,
+                Users.[DisplayName]
+            FROM [dbo].[Users] Users
+            WHERE
+                Users.Id = Drafts.UserId
+        ) [Author]
+        FOR XML AUTO
+    ) [Author]
+) [Author]
+OUTER APPLY (
+    SELECT (
+        SELECT * FROM (
+            SELECT
+                [Name],
+                [Version],
+                [OrderNo]
+            FROM [dbo].[DraftTags] Tags
+            WHERE
+                Tags.DraftId = Drafts.Id
+        ) Tag
+        ORDER BY
+            Tag.OrderNo
+         FOR XML AUTO, ROOT('Tags')
+    ) Tags
+) Tags
+OUTER APPLY (
+    SELECT
+        RevisionCount = COUNT(*),
+        RevisionNo = MAX(RevisionNo)
+    FROM [dbo].[ItemRevisions] ItemRevisions
+    WHERE
+        ItemRevisions.ItemId = Items.Id
+) _Revisions
+";
     }
 }

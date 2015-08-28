@@ -17,6 +17,10 @@ namespace Hinata
             internal set { _item.Id = value; }
         }
 
+        public int CurrentRevisionNo { get; internal set; }
+
+        public string Comment { get; set; }
+
         public ItemType Type
         {
             get { return _item.Type; }
@@ -61,9 +65,16 @@ namespace Hinata
             get { return _item.LastModifiedDateTime; }
             set { _item.LastModifiedDateTime = value; }
         }
+
         public TagCollection Tags
         {
             get { return _item.Tags; }
+        }
+
+        internal int ItemRevisionCount
+        {
+            get { return _item.RevisionCount; }
+            set { _item.RevisionCount = value; }
         }
 
         internal Draft() : this(new Item())
@@ -73,6 +84,7 @@ namespace Hinata
         internal Draft(Item item)
         {
             _item = item;
+            CurrentRevisionNo = -1;
         }
 
         public static Draft NewDraft(User author, ItemType type)
@@ -101,6 +113,8 @@ namespace Hinata
             }
             _item.IsPublic = isPublic;
             _item.LastModifiedDateTime = DateTime.Now;
+            _item.Comment = Comment;
+            _item.RevisionNo = CurrentRevisionNo + 1;
 
             return _item;
         }
