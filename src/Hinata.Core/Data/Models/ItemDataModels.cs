@@ -159,6 +159,8 @@ namespace Hinata.Data.Models
                 IsCurrent = IsCurrent,
             };
 
+            if (string.IsNullOrWhiteSpace(Tags)) return itemRevision;
+
             var xmlTags = new XmlDocument();
             xmlTags.LoadXml(Tags);
             var jsonTags = Regex.Replace(JsonConvert.SerializeXmlNode(xmlTags), "(?<=\")(@)(?!.*\":\\s )", "", RegexOptions.IgnoreCase);
