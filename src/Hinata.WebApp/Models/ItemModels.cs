@@ -25,13 +25,13 @@ namespace Hinata.Models
 
         public int CommentCount { get; set; }
 
-        public TagCollection Tags { get; set; }
+        public ItemTagCollection ItemTags { get; set; }
 
         public bool HasModified { get { return LastModifiedDateTime > CreatedDateTime; } }
 
         public ItemIndexModel()
         {
-            Tags = new TagCollection();
+            ItemTags = new ItemTagCollection();
         }
     }
 
@@ -53,7 +53,7 @@ namespace Hinata.Models
 
         public bool IsPublic { get; set; }
 
-        public TagCollection Tags { get; set; }
+        public ItemTagCollection ItemTags { get; set; }
 
         public DateTime CreatedDateTime { get; set; }
 
@@ -81,7 +81,7 @@ namespace Hinata.Models
 
         public ItemViewModel()
         {
-            Tags = new TagCollection();
+            ItemTags = new ItemTagCollection();
         }
     }
 
@@ -97,7 +97,7 @@ namespace Hinata.Models
 
         public string Title { get; set; }
 
-        public TagCollection Tags { get; set; }
+        public ItemTagCollection ItemTags { get; set; }
 
         public string Body { get; set; }
 

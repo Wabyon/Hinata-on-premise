@@ -1,15 +1,25 @@
-﻿namespace Hinata
+﻿using System;
+
+namespace Hinata
 {
-    public sealed class Tag
+    public class Tag
     {
-        public string Name { get; private set; }
+        public string Name { get; internal set; }
 
-        public string Version { get; private set; }
+        public int AllItemCount { get; internal set; }
 
-        public Tag(string name, string version)
+        public int PublicItemCount { get; internal set; }
+
+        public int PrivateItemCount { get; internal set; }
+
+        internal Tag()
         {
+        }
+
+        public Tag(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) throw new InvalidOperationException("name is null or whitespace");
             Name = name;
-            Version = version;
         }
     }
 }

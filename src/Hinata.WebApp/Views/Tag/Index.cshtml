@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Tag>
+
+<div class="container">
+    @foreach (var tag in Model)
+    {
+        <div class="list-group-item item-list">
+            <div class="pull-right">
+                <p class="list-group-item-text item-meta-info">
+                    @tag.AllItemCount 件の投稿&nbsp;
+                    @if (@tag.PrivateItemCount > 0)
+                    {
+                        <span>(うち限定投稿 @tag.PrivateItemCount 件)</span>
+                    }
+                </p>
+            </div>
+            <h4 class="list-group-item-heading">
+                <a href="@Url.Action("ItemList", new {name = tag.Name})">@tag.Name</a>
+            </h4>
+        </div>
+    }
+</div>

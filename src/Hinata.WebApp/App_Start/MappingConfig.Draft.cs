@@ -63,7 +63,7 @@ namespace Hinata
                     }
 
                     var isFirst = true;
-                    foreach (var tag in s.Tags)
+                    foreach (var tag in s.ItemTags)
                     {
                         if (!isFirst) d.TagInlineString += " ";
                         d.TagInlineString += tag.Name;
@@ -78,10 +78,10 @@ namespace Hinata
                 .ForMember(d => d.CurrentRevisionNo, o => o.Ignore())
                 .AfterMap((s, d) =>
                 {
-                    d.Tags.Clear();
+                    d.ItemTags.Clear();
                     foreach (var tag in s.CreateTagCollectionFromInlineText())
                     {
-                        d.Tags.Add(tag);
+                        d.ItemTags.Add(tag);
                     }
                 });
         }

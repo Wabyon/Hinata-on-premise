@@ -12,8 +12,8 @@ namespace Hinata.Data.Commands
             var draft = Draft.NewDraft(LogonUser, ItemType.Article);
             draft.Title = "title 正常系_作成とIDでの抽出_公開記事";
             draft.Body = "body 正常系_作成とIDでの抽出_公開記事";
-            draft.Tags.Add(new Tag("tag1", "1.0.0"));
-            draft.Tags.Add(new Tag("tag2", null));
+            draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag2", null));
 
             var item = draft.ToItem(true);
 
@@ -34,8 +34,8 @@ namespace Hinata.Data.Commands
             var draft = Draft.NewDraft(LogonUser, ItemType.Article);
             draft.Title = "title 正常系_作成とIDでの抽出_非公開記事";
             draft.Body = "body 正常系_作成とIDでの抽出_非公開記事";
-            draft.Tags.Add(new Tag("tag1", "1.0.0"));
-            draft.Tags.Add(new Tag("tag2", null));
+            draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag2", null));
 
             var item = draft.ToItem(false);
 
@@ -58,8 +58,8 @@ namespace Hinata.Data.Commands
             var draft = Draft.NewDraft(LogonUser, ItemType.Ask);
             draft.Title = "title 正常系_作成とIDでの抽出_公開質問";
             draft.Body = "body 正常系_作成とIDでの抽出_公開質問";
-            draft.Tags.Add(new Tag("tag1", "1.0.0"));
-            draft.Tags.Add(new Tag("tag2", null));
+            draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag2", null));
 
             var item = draft.ToItem(true);
 
@@ -82,8 +82,8 @@ namespace Hinata.Data.Commands
             var draft = Draft.NewDraft(LogonUser, ItemType.Ask);
             draft.Title = "title 正常系_作成とIDでの抽出_非公開質問";
             draft.Body = "body 正常系_作成とIDでの抽出_非公開質問";
-            draft.Tags.Add(new Tag("tag1", "1.0.0"));
-            draft.Tags.Add(new Tag("tag2", null));
+            draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag2", null));
 
             var item = draft.ToItem(false);
 
@@ -106,8 +106,8 @@ namespace Hinata.Data.Commands
             var draft = Draft.NewDraft(LogonUser, ItemType.Article);
             draft.Title = "title 正常系_作成と修正";
             draft.Body = "body 正常系_作成と修正";
-            draft.Tags.Add(new Tag("tag1","1.0.0"));
-            draft.Tags.Add(new Tag("tag2", null));
+            draft.ItemTags.Add(new ItemTag("tag1","1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag2", null));
 
             await DraftDbCommand.SaveAsync(draft);
 
@@ -144,7 +144,7 @@ namespace Hinata.Data.Commands
             updatedDraft.IsStructuralEqual(updateDraft);
             updatedDraft.CurrentRevisionNo.Is(0);
             updatedDraft.Title.Is(updateDraft.Title);
-            updatedDraft.Tags.IsStructuralEqual(updateDraft.Tags);
+            updatedDraft.ItemTags.IsStructuralEqual(updateDraft.ItemTags);
             updatedDraft.Body.Is(updateDraft.Body);
             updatedDraft.Comment.Is(updateDraft.Comment);
             updatedDraft.Author.IsStructuralEqual(updateDraft.Author);

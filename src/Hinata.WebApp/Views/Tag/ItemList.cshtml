@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ItemIndexModel>
+
+<div class="container">
+    <h3>@ViewBag.TagName</h3>
+    <hr/>
+
+    @foreach (var item in Model)
+    {
+        <div class="list-group-item item-list">
+            <div class="pull-right">
+                <span class="badge">@item.CommentCount</span>
+            </div>
+            <div class="icon">
+                <a href="@Url.Action("Index", "User", new {name = @item.AuthorName})"><img src="@Url.Content(item.AuthorIconUrl)" alt="@item.AuthorName" class="icon-image" /></a>
+            </div>
+            <div>
+                <p class="list-group-item-text item-meta-info">
+                    @Html.ActionLink(@item.AuthorDisplayName, "Index", "User", new { name = @item.AuthorName }, null)&nbsp;さんが&nbsp;@item.CreatedDateTime.ToString("yyyy/MM/dd HH:mm:ss")&nbsp;に作成
+                    @if (item.HasModified)
+                    {
+                        <span>&nbsp;&nbsp;</span>@item.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
+                        <span>に編集</span>
+                    }
+                </p>
+                <h4 class="list-group-item-heading">
+                    <a href="@Url.Action("Item","Item", new {id = item.Id})">@item.Title</a>
+                </h4>
+                <ul class="item-box-tag-list">
+                    @foreach (var tag in item.ItemTags)
+                    {
+                        <li class="tag"><a href="@Url.Action("ItemList","Tag", new {name=tag.Name})">@tag.Name</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+    @if (ViewBag.HasNextPage)
+    {
+        <a href="@Url.Action("ItemList", new {p=ViewBag.CurrentPage + 1})">>More</a>
+    }
+</div>

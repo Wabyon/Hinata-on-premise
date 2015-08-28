@@ -14,10 +14,10 @@ namespace Hinata.Data.Commands
             draft.Title = @"正常系_記事_作成とIDでの取得_複数タグ";
             draft.Body = "body";
 
-            draft.Tags.Add(new Tag("tag1", "1.0.0"));
-            draft.Tags.Add(new Tag("tag2", null));
-            draft.Tags.Add(new Tag("tag5", null));
-            draft.Tags.Add(new Tag("tag4", "2012"));
+            draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag2", null));
+            draft.ItemTags.Add(new ItemTag("tag5", null));
+            draft.ItemTags.Add(new ItemTag("tag4", "2012"));
 
             await DraftDbCommand.SaveAsync(draft);
 
@@ -33,7 +33,7 @@ namespace Hinata.Data.Commands
             draft.Title = @"正常系_記事_作成とIDでの取得_タグ一つ";
             draft.Body = "body";
 
-            draft.Tags.Add(new Tag("tag1", "1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
 
             await DraftDbCommand.SaveAsync(draft);
 
@@ -96,8 +96,8 @@ namespace Hinata.Data.Commands
             var draft = Draft.NewDraft(LogonUser, ItemType.Article);
             draft.Title = "title 正常系_記事_作成と更新";
             draft.Body = "body 正常系_記事_作成と更新";
-            draft.Tags.Add(new Tag("tag1", "1.0.0"));
-            draft.Tags.Add(new Tag("tag2", "1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
+            draft.ItemTags.Add(new ItemTag("tag2", "1.0.0"));
 
             await DraftDbCommand.SaveAsync(draft);
 
@@ -107,9 +107,9 @@ namespace Hinata.Data.Commands
             created.Title = "title 正常系_記事_作成と更新 変更";
             created.Body = "body 正常系_記事_作成と更新 変更";
             created.LastModifiedDateTime = DateTime.Now;
-            created.Tags.Clear();
-            created.Tags.Add(new Tag("tag2", null));
-            created.Tags.Add(new Tag("tag3", "3.0.0"));
+            created.ItemTags.Clear();
+            created.ItemTags.Add(new ItemTag("tag2", null));
+            created.ItemTags.Add(new ItemTag("tag3", "3.0.0"));
 
             await DraftDbCommand.SaveAsync(created);
 
@@ -124,14 +124,14 @@ namespace Hinata.Data.Commands
             var draft1 = Draft.NewDraft(LogonUser, ItemType.Article);
             draft1.Title = "title 正常系_記事_作成と削除 削除対象";
             draft1.Body = "body 正常系_記事_作成と削除 削除対象";
-            draft1.Tags.Add(new Tag("tag1", "1.0.0"));
-            draft1.Tags.Add(new Tag("tag2", null));
+            draft1.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
+            draft1.ItemTags.Add(new ItemTag("tag2", null));
 
             var draft2 = Draft.NewDraft(LogonUser, ItemType.Article);
             draft2.Title = "title 正常系_記事_作成と削除 削除しない";
             draft2.Body = "title 正常系_記事_作成と削除 削除しない";
-            draft2.Tags.Add(new Tag("tag3", "1.0.0"));
-            draft2.Tags.Add(new Tag("tag4", null));
+            draft2.ItemTags.Add(new ItemTag("tag3", "1.0.0"));
+            draft2.ItemTags.Add(new ItemTag("tag4", null));
 
             await DraftDbCommand.SaveAsync(draft1);
             await DraftDbCommand.SaveAsync(draft2);

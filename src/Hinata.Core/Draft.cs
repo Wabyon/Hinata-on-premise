@@ -66,9 +66,9 @@ namespace Hinata
             set { _item.LastModifiedDateTime = value; }
         }
 
-        public TagCollection Tags
+        public ItemTagCollection ItemTags
         {
-            get { return _item.Tags; }
+            get { return _item.ItemTags; }
         }
 
         internal int ItemRevisionCount

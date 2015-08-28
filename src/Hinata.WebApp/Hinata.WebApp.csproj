@@ -154,6 +154,7 @@
     <Compile Include="Controllers\DraftController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\TagController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\AccessLogFilter.cs" />
     <Compile Include="Filters\GlobalHandleErrorAttribute.cs" />
@@ -333,6 +334,8 @@
     <Content Include="Views\Item\_CommentEdit.cshtml" />
     <Content Include="Views\Item\Revisions.cshtml" />
     <Content Include="Views\Item\_RevisionDetail.cshtml" />
+    <Content Include="Views\Tag\Index.cshtml" />
+    <Content Include="Views\Tag\ItemList.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
