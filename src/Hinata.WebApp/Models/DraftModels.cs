@@ -68,11 +68,7 @@ namespace Hinata.Models
                 validationResults.Add(new ValidationResult("タイトルは必須です。", new[] { "Title" }));
             }
 
-            if (string.IsNullOrWhiteSpace(TagInlineString))
-            {
-                validationResults.Add(new ValidationResult("タグは必須です。", new[] {"TagInlineString"}));
-            }
-            else
+            if (!string.IsNullOrWhiteSpace(TagInlineString))
             {
                 var tagNames = CreateTagCollectionFromInlineText().Select(x => x.Name).ToArray();
                 var cnt = tagNames.Count();
