@@ -109,16 +109,16 @@ namespace Hinata.Data.Models
             var jObjectTags = JObject.Parse(jsonTags)["Tags"]["Tag"];
             if (jObjectTags.Type == JTokenType.Array)
             {
-                var tags = JsonConvert.DeserializeObject<IEnumerable<Tag>>(jObjectTags.ToString());
+                var tags = JsonConvert.DeserializeObject<IEnumerable<ItemTag>>(jObjectTags.ToString());
                 foreach (var tag in tags)
                 {
-                    item.Tags.Add(tag);
+                    item.ItemTags.Add(tag);
                 }
             }
             else
             {
-                var tag = JsonConvert.DeserializeObject<Tag>(jObjectTags.ToString());
-                item.Tags.Add(tag);
+                var tag = JsonConvert.DeserializeObject<ItemTag>(jObjectTags.ToString());
+                item.ItemTags.Add(tag);
             }
 
             return item;
@@ -167,16 +167,16 @@ namespace Hinata.Data.Models
             var jObjectTags = JObject.Parse(jsonTags)["Tags"]["Tag"];
             if (jObjectTags.Type == JTokenType.Array)
             {
-                var tags = JsonConvert.DeserializeObject<IEnumerable<Tag>>(jObjectTags.ToString());
+                var tags = JsonConvert.DeserializeObject<IEnumerable<ItemTag>>(jObjectTags.ToString());
                 foreach (var tag in tags)
                 {
-                    itemRevision.Tags.Add(tag);
+                    itemRevision.ItemTags.Add(tag);
                 }
             }
             else
             {
-                var tag = JsonConvert.DeserializeObject<Tag>(jObjectTags.ToString());
-                itemRevision.Tags.Add(tag);
+                var tag = JsonConvert.DeserializeObject<ItemTag>(jObjectTags.ToString());
+                itemRevision.ItemTags.Add(tag);
             }
 
             return itemRevision;

@@ -4,7 +4,7 @@ namespace Hinata
 {
     public class Item
     {
-        private readonly TagCollection _tags = new TagCollection();
+        private readonly ItemTagCollection _itemTags = new ItemTagCollection();
 
         public string Id { get; internal set; }
 
@@ -20,7 +20,7 @@ namespace Hinata
 
         public int CommentCount { get; internal set; }
 
-        public TagCollection Tags { get { return _tags; } }
+        public ItemTagCollection ItemTags { get { return _itemTags; } }
 
         public DateTime CreatedDateTime { get; internal set; }
 

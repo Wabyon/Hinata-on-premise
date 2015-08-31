@@ -4,7 +4,7 @@ namespace Hinata
 {
     public class ItemRevision
     {
-        private readonly TagCollection _tags = new TagCollection();
+        private readonly ItemTagCollection _itemTags = new ItemTagCollection();
 
         public string ItemId { get; internal set; }
 
@@ -16,7 +16,7 @@ namespace Hinata
 
         public string Title { get; internal set; }
 
-        public TagCollection Tags { get { return _tags; } }
+        public ItemTagCollection ItemTags { get { return _itemTags; } }
 
         public string Body { get; internal set; }
 

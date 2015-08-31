@@ -100,16 +100,16 @@ namespace Hinata.Data.Models
             var jObjectTags = JObject.Parse(jsonTags)["Tags"]["Tag"];
             if (jObjectTags.Type == JTokenType.Array)
             {
-                var tags = JsonConvert.DeserializeObject<IEnumerable<Tag>>(jObjectTags.ToString());
+                var tags = JsonConvert.DeserializeObject<IEnumerable<ItemTag>>(jObjectTags.ToString());
                 foreach (var tag in tags)
                 {
-                    draft.Tags.Add(tag);
+                    draft.ItemTags.Add(tag);
                 }
             }
             else
             {
-                var tag = JsonConvert.DeserializeObject<Tag>(jObjectTags.ToString());
-                draft.Tags.Add(tag);
+                var tag = JsonConvert.DeserializeObject<ItemTag>(jObjectTags.ToString());
+                draft.ItemTags.Add(tag);
             }
 
             return draft;

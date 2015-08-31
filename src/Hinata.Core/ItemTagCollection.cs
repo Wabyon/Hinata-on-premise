@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 
 namespace Hinata
 {
-    public class TagCollection : Collection<Tag>
+    public class ItemTagCollection : Collection<ItemTag>
     {
-        internal void AddRange(IEnumerable<Tag> tags)
+        internal void AddRange(IEnumerable<ItemTag> tags)
         {
             foreach (var tag in tags)
             {

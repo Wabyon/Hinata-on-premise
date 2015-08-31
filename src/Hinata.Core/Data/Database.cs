@@ -43,7 +43,7 @@ WHERE
                         if (reader.HasRows) return;
                     }
 
-                    command.CommandText = string.Format("CREATE DATABASE [{0}]", databaseName);
+                    command.CommandText = string.Format("CREATE DATABASE [{0}] Japanese_CI_AS", databaseName);
                     command.ExecuteNonQuery();
                 }
 

@@ -88,6 +88,41 @@ FETCH NEXT @Take ROWS ONLY
             }
         }
 
+        public Task<Item[]> GetPublicByTagAsync(Tag tag, int skip, int take)
+        {
+            return GetPublicByTagAsync(tag, skip, take, CancellationToken.None);
+        }
+
+        public async Task<Item[]> GetPublicByTagAsync(Tag tag, int skip, int take, CancellationToken cancellationToken)
+        {
+            if (tag == null) throw new ArgumentNullException("tag");
+
+            var sql = string.Format(@"
+{0}
+WHERE
+    Items.[IsPublic] = 1
+AND EXISTS (
+    SELECT *
+    FROM [dbo].[ItemTags] _Tags
+    WHERE
+        _Tags.ItemId = Items.Id
+    AND _Tags.Name = @TagName
+)
+ORDER BY
+    _LastModifiedDateTime.[LastModifiedDateTime] DESC
+OFFSET @Skip ROWS
+FETCH NEXT @Take ROWS ONLY
+", SqlSelectStatement);
+
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+                return (await cn.QueryAsync<ItemSelectDataModel>(sql, new { TagName = tag.Name, Skip = skip, Take = take }).ConfigureAwait(false))
+                    .Select(x => x.ToEntity())
+                    .ToArray();
+            }
+        }
+
         public Task<Item[]> GetPublicNewerAsync(int skip, int take)
         {
             return GetPublicNewerAsync(skip, take, CancellationToken.None);
@@ -212,6 +247,37 @@ AND [Type] = @ItemType
             }
         }
 
+        public Task<int> CountPublicByTagAsync(Tag tag)
+        {
+            return CountPublicByTagAsync(tag, CancellationToken.None);
+        }
+
+        public async Task<int> CountPublicByTagAsync(Tag tag, CancellationToken cancellationToken)
+        {
+            if (tag == null) throw new ArgumentNullException("tag");
+
+            const string sql = @"
+SELECT
+    Count = Count(*)
+FROM [dbo].[Items]
+WHERE
+    [IsPublic] = 1
+AND EXISTS (
+    SELECT *
+    FROM [dbo].[ItemTags] _Tags
+    WHERE
+        _Tags.ItemId = Items.Id
+    AND _Tags.Name = @TagName
+)
+";
+
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+                return (await cn.QueryAsync<int>(sql, new { TagName = tag.Name }).ConfigureAwait(false)).ToArray().FirstOrDefault();
+            }
+        }
+
         public Task SaveAsync(Item item)
         {
             return SaveAsync(item, CancellationToken.None);
@@ -326,7 +392,7 @@ INSERT INTO [dbo].[ItemTagRevisions] (
                     {
                         await cn.ExecuteAsync(sqlDraft, new ItemRegisterDataModel(item), tr).ConfigureAwait(false);
                         var orderNo = 1;
-                        foreach (var tag in item.Tags)
+                        foreach (var tag in item.ItemTags)
                         {
                             await cn.ExecuteAsync(sqlTags, new { ItemId = item.Id, item.RevisionNo ,tag.Name, tag.Version, OrderNo = orderNo }, tr).ConfigureAwait(false);
                             orderNo++;

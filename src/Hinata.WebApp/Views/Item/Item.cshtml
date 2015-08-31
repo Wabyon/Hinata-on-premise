@@ -11,10 +11,10 @@
         <div class="item-title">
             <h2>@Model.Title</h2>
             <ul class="item-box-tag-list">
-                @foreach (var tag in Model.Tags)
+                @foreach (var tag in Model.ItemTags)
                 {
                     var tagversion = string.IsNullOrWhiteSpace(tag.Version) ? tag.Name : string.Format("{0}[{1}]", tag.Name, tag.Version);
-                    <li class="tag">@tagversion</li>
+                    <li class="tag"><a href="@Url.Action("ItemList","Tag", new {name = tag.Name})">@tagversion</a></li>
                 }
             </ul>
         </div>
