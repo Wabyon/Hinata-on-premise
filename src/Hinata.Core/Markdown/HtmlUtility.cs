@@ -54,7 +54,11 @@ namespace Hinata.Markdown
             {"abbr", new[] {"style", "class"}},
             {"acronym", new[] {"style", "class"}},
             {"del", new[] {"style", "class"}},
-            {"ins", new[] {"style", "class"}}
+            {"ins", new[] {"style", "class"}},
+            {"dl", new[] {"style", "class"}},
+            {"dt", new[] {"style", "class"}},
+            {"dd", new[] {"style", "class"}},
+            {"dfn", new[] {"style", "class"}},
         };
 
         private static readonly string[] NotUrlEncodeAttributes = { "style", "class" };
