@@ -87,6 +87,11 @@ namespace Hinata.Models
                     validationResults.Add(new ValidationResult("使用できない文字を使ったタグが存在します。", new[] { "TagInlineString" }));
                 }
 
+                if (tagNames.Any(name => name.EndsWith(".")))
+                {
+                    validationResults.Add(new ValidationResult("「.」で終わるタグ名をつけることはできません。", new[] { "TagInlineString" }));
+                }
+
                 if (tags.Any(x => x.Name.Length > 32))
                 {
                     validationResults.Add(new ValidationResult("一つのタグの長さはは最大32文字までです。", new[] { "TagInlineString" }));
