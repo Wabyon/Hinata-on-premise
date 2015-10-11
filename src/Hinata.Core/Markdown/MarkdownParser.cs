@@ -73,6 +73,16 @@ marked.setOptions({
             return (sanitize) ? HtmlUtility.SanitizeHtml(result) : result;
         }
 
+        public string Strip(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return text;
+
+            var html = Transform(text);
+
+            return HtmlUtility.StripHtml(html);
+        }
+
+
         public void Dispose()
         {
             if (_disposed) return;

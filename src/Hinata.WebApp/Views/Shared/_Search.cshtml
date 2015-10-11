@@ -1,0 +1,13 @@
+﻿<div>
+    <form class="form-inline" role="search" method="GET" action="@Url.Action("Index", "Search")">
+        @if (ViewBag.Query == null)
+        {
+            <input name="q" class="form-control input-sm" type="text" placeholder="キーワードを入力"/>
+        }
+        else
+        {
+            <input name="q" class="form-control input-sm" type="text" placeholder="キーワードを入力" value="@ViewBag.Query" />
+        }
+        <button type="submit" class="btn btn-sm">検索</button>
+    </form>
+</div>

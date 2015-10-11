@@ -1,0 +1,22 @@
+﻿@model SearchResultModel
+
+<div class="container">
+    @if (Model.HasSearchServiceError)
+    {
+        <p>検索サービスでエラーが発生しました</p>
+        return;
+    }
+
+    @if (string.IsNullOrWhiteSpace(Model.Query))
+    {
+        <p>検索条件を指定して下さい。</p>
+    }
+    else if (!Model.Items.Any())
+    {
+        <p>条件に合致する検索結果はありません。</p>
+    }
+    else
+    {
+        @Html.Partial("_List", Model.Items)
+    }
+</div>

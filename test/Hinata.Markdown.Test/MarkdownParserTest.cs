@@ -1,4 +1,5 @@
-﻿using JavaScriptEngineSwitcher.V8;
+﻿using System.Net;
+using JavaScriptEngineSwitcher.V8;
 using NUnit.Framework;
 
 namespace Hinata.Markdown
@@ -42,6 +43,19 @@ namespace Hinata.Markdown
             {
                 var html = parser.Transform("H1\n==");
             }            
+        }
+
+        [TestCase("#H1", "H1\n")]
+        [TestCase("line", "line\n")]
+        [TestCase(@"<a href=""http://lonk"">tag</a>", "tag\n")]
+
+        public void StripTest(string markdown, string expected)
+        {
+            using (var parser = new MarkdownParser())
+            {
+                var stripText = parser.Strip(markdown);
+                Assert.AreEqual(expected, stripText);
+            }
         }
     }
 }
