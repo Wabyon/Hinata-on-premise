@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{523AC900-F961-4C9A-82BF-02BCDC25DC6A}"
 EndProject
@@ -14,6 +14,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinata.WebApp", "src\Hinata.WebApp\Hinata.WebApp.csproj", "{29F74534-FB17-4BF8-BD3A-0F69532D759E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinata.Markdown.Test", "test\Hinata.Markdown.Test\Hinata.Markdown.Test.csproj", "{9C7E416F-9BF4-477B-9869-F50DAB9D8546}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinata.Search.Test", "test\Hinata.Search.Test\Hinata.Search.Test.csproj", "{7C3C0846-9C6B-4323-85BA-5DCD0F5B2F4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinata.WebJobs", "src\Hinata.WebJobs\Hinata.WebJobs.csproj", "{800CD950-5073-463A-B2BE-089C13848C55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,14 @@ Global
 		{9C7E416F-9BF4-477B-9869-F50DAB9D8546}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C7E416F-9BF4-477B-9869-F50DAB9D8546}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C7E416F-9BF4-477B-9869-F50DAB9D8546}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C3C0846-9C6B-4323-85BA-5DCD0F5B2F4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C3C0846-9C6B-4323-85BA-5DCD0F5B2F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C3C0846-9C6B-4323-85BA-5DCD0F5B2F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C3C0846-9C6B-4323-85BA-5DCD0F5B2F4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{800CD950-5073-463A-B2BE-089C13848C55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{800CD950-5073-463A-B2BE-089C13848C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{800CD950-5073-463A-B2BE-089C13848C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{800CD950-5073-463A-B2BE-089C13848C55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,5 +58,7 @@ Global
 		{CC8F5242-91C1-4869-8CD7-AE6C0C811956} = {68A4DBBC-E799-4066-8BDF-238E6296888A}
 		{29F74534-FB17-4BF8-BD3A-0F69532D759E} = {523AC900-F961-4C9A-82BF-02BCDC25DC6A}
 		{9C7E416F-9BF4-477B-9869-F50DAB9D8546} = {68A4DBBC-E799-4066-8BDF-238E6296888A}
+		{7C3C0846-9C6B-4323-85BA-5DCD0F5B2F4B} = {68A4DBBC-E799-4066-8BDF-238E6296888A}
+		{800CD950-5073-463A-B2BE-089C13848C55} = {523AC900-F961-4C9A-82BF-02BCDC25DC6A}
 	EndGlobalSection
 EndGlobal

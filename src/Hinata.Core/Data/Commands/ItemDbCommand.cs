@@ -35,6 +35,78 @@ WHERE
             }
         }
 
+        public Task<Item[]> GetAllAsync()
+        {
+            return GetAllAsync(CancellationToken.None);
+        }
+
+        public async Task<Item[]> GetAllAsync(CancellationToken cancellationToken)
+        {
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+                return (await cn.QueryAsync<ItemSelectDataModel>(SqlSelectStatement).ConfigureAwait(false))
+                    .Select(x => x.ToEntity())
+                    .ToArray();
+            }
+        }
+
+        public Task<Item[]> GetByIdsAsync(string[] ids, int skip, int take)
+        {
+            return GetByIdsAsync(ids, skip, take, CancellationToken.None);
+        }
+
+        public async Task<Item[]> GetByIdsAsync(string[] ids, int skip, int take, CancellationToken cancellationToken)
+        {
+            if (ids == null) throw new ArgumentNullException("ids");
+            if (!ids.Any()) return new Item[0];
+
+            var idsParam = string.Join(@",", ids);
+
+            var sql = string.Format(@"
+WITH SplitPositions
+AS (
+    SELECT
+        StartPosition =  CONVERT(INT, 0),
+        EndPosition = CHARINDEX(',', @Ids)
+
+    UNION ALL
+
+    SELECT
+        CONVERT(INT,EndPosition + 1),
+        CHARINDEX(',',@Ids,EndPosition + 1)
+    FROM SplitPositions
+    WHERE
+        EndPosition > 0
+)
+,Split
+AS (
+    SELECT
+        Id = SUBSTRING(@Ids, StartPosition, COALESCE(NULLIF(EndPosition, 0), LEN(@Ids) + 1) - StartPosition)
+    FROM SplitPositions
+)
+{0}
+WHERE EXISTS (
+    SELECT *
+    FROM Split
+    WHERE
+        Split.Id = Items.Id
+)
+ORDER BY
+    _LastModifiedDateTime.[LastModifiedDateTime] DESC
+OFFSET @Skip ROWS
+FETCH NEXT @Take ROWS ONLY
+", SqlSelectStatement);
+
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+                return (await cn.QueryAsync<ItemSelectDataModel>(sql, new { Ids = idsParam, Skip = skip, Take = take }).ConfigureAwait(false))
+                    .Select(x => x.ToEntity())
+                    .ToArray();
+            }
+        }
+
         public Task<Item[]> GetPublicAsync(int skip, int take)
         {
             return GetPublicAsync(skip, take, CancellationToken.None);
@@ -566,6 +638,34 @@ ORDER BY
 
                 return results.Select(x => x.ToEntity()).ToArray();
             }
+        }
+
+        public Task<Item[]> GetNotIndexedItemsAsync()
+        {
+            return GetNotIndexedItemsAsync(CancellationToken.None);
+        }
+
+        public async Task<Item[]> GetNotIndexedItemsAsync(CancellationToken cancellationToken)
+        {
+            var sql = string.Format(@"
+{0}
+WHERE NOT EXISTS (
+    SELECT *
+    FROM [dbo].[ItemIndexCreatedLogs]
+    WHERE
+        ItemIndexCreatedLogs.ItemId = Items.Id
+    AND ItemIndexCreatedLogs.IndexCreatedDateTime >= Items.LastModifiedDateTime
+)
+", SqlSelectStatement);
+
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+                return (await cn.QueryAsync<ItemSelectDataModel>(sql).ConfigureAwait(false))
+                    .Select(x => x.ToEntity())
+                    .ToArray();
+            }
+
         }
 
         #region SqlSelectStatement

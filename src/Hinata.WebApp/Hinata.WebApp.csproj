@@ -154,6 +154,7 @@
     <Compile Include="Controllers\DraftController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\TagController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\AccessLogFilter.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Models\CommentModels.cs" />
     <Compile Include="Models\DraftModels.cs" />
     <Compile Include="Models\ItemModels.cs" />
+    <Compile Include="Models\SearchModels.cs" />
     <Compile Include="Models\UserModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web.Mvc\DataAnnotations\PlaceHolderAttribute.cs" />
@@ -336,6 +338,9 @@
     <Content Include="Views\Item\_RevisionDetail.cshtml" />
     <Content Include="Views\Tag\Index.cshtml" />
     <Content Include="Views\Tag\ItemList.cshtml" />
+    <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Shared\_Search.cshtml" />
+    <Content Include="Views\Search\_List.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
