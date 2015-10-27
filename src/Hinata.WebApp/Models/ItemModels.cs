@@ -15,6 +15,12 @@ namespace Hinata.Models
 
         public string AuthorIconUrl { get; set; }
 
+        public string EditorName { get; set; }
+
+        public string EditorDisplayName { get; set; }
+
+        public string EditorIconUrl { get; set; }
+
         public bool IsPublic { get; set; }
 
         public ItemType Type { get; set; }
@@ -51,6 +57,12 @@ namespace Hinata.Models
 
         public string AuthorIconUrl { get; set; }
 
+        public string EditorName { get; set; }
+
+        public string EditorDisplayName { get; set; }
+
+        public string EditorIconUrl { get; set; }
+
         public bool IsPublic { get; set; }
 
         public ItemTagCollection ItemTags { get; set; }
@@ -60,6 +72,12 @@ namespace Hinata.Models
         public DateTime LastModifiedDateTime { get; set; }
 
         public bool CanEdit { get; set; }
+
+        public bool CanDelete { get; set; }
+
+        public bool CanEditCollarborators { get; set; }
+
+        public bool CanWriteComments { get; set; }
 
         public bool HasModified
         {
@@ -91,6 +109,18 @@ namespace Hinata.Models
 
         public int RevisionNo { get; set; }
 
+        public string AuthorName { get; set; }
+
+        public string AuthorDisplayName { get; set; }
+
+        public string AuthorIconUrl { get; set; }
+
+        public string EditorName { get; set; }
+
+        public string EditorDisplayName { get; set; }
+
+        public string EditorIconUrl { get; set; }
+
         public DateTime ModifiedDateTime { get; set; }
 
         public string Comment { get; set; }
@@ -105,5 +135,20 @@ namespace Hinata.Models
 
         public bool IsCurrent { get; set; }
 
+    }
+
+    public class ItemEditCollaboratorsModel
+    {
+        public string Id { get; set; }
+
+        public string Title { get; set; }
+
+        public string AuthorName { get; set; }
+
+        public string AuthorDisplayName { get; set; }
+
+        public string AuthorIconUrl { get; set; }
+
+        public IEnumerable<CollaboratorEditModel> Collaborators { get; set; } 
     }
 }

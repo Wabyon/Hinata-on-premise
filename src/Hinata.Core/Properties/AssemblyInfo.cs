@@ -37,6 +37,7 @@ using System.Runtime.InteropServices;
 
 
 #if DEBUG
+[assembly: InternalsVisibleTo("Hinata.Core.Test")]
 [assembly: InternalsVisibleTo("Hinata.Data.Test")]
 [assembly: InternalsVisibleTo("Hinata.Markdown.Test")]
 #endif

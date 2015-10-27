@@ -20,7 +20,7 @@ namespace Hinata.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var drafts = await _draftDbCommand.GetByAuthorAsync(LogonUser);
+            var drafts = await _draftDbCommand.GetByUserAsync(LogonUser);
             var model = Mapper.Map<IEnumerable<DraftIndexModel>>(drafts);
             return View(model);
         }
@@ -41,12 +41,12 @@ namespace Hinata.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(string id)
         {
-            var draft = await _draftDbCommand.FindAsync(id);
+            var draft = await _draftDbCommand.FindAsync(id, LogonUser);
             if (draft == null)
             {
                 var item = await _itemDbCommand.FindAsync(id);
                 if (item == null) return HttpNotFound();
-                draft = item.ToDraft();
+                draft = item.ToDraft(LogonUser);
                 await _draftDbCommand.SaveAsync(draft);
             }
 
@@ -79,7 +79,7 @@ namespace Hinata.Controllers
                 }
             }
 
-            var draft = await _draftDbCommand.FindAsync(model.Id) ?? Draft.NewDraft(LogonUser, model.ItemType);
+            var draft = await _draftDbCommand.FindAsync(model.Id, LogonUser) ?? Draft.NewDraft(LogonUser, model.ItemType);
             Mapper.Map(model, draft);
 
             draft.LastModifiedDateTime = DateTime.Now;
@@ -103,12 +103,13 @@ namespace Hinata.Controllers
                 }
             }
 
-            var draft = await _draftDbCommand.FindAsync(model.Id) ?? Draft.NewDraft(LogonUser, model.ItemType);
+            var draft = await _draftDbCommand.FindAsync(model.Id, LogonUser) ?? Draft.NewDraft(LogonUser, model.ItemType);
             Mapper.Map(model, draft);
+
             var item = draft.ToItem();
 
             await _itemDbCommand.SaveAsync(item);
-            await _draftDbCommand.DeleteAsync(draft.Id);
+            await _draftDbCommand.DeleteAsync(draft.Id, LogonUser);
 
             return RedirectToAction("Index", "Item");
         }
@@ -144,7 +145,7 @@ namespace Hinata.Controllers
         [HttpGet]
         public async Task<ActionResult> Preview(string id)
         {
-            var draft = await _draftDbCommand.FindAsync(id);
+            var draft = await _draftDbCommand.FindAsync(id, LogonUser);
             if (draft == null) return HttpNotFound();
 
             var model = Mapper.Map<DraftPreviewModel>(draft);
@@ -156,10 +157,10 @@ namespace Hinata.Controllers
         [Route("draft/{id}/delete")]
         public async Task<ActionResult> Delete(string id)
         {
-            var draft = await _draftDbCommand.FindAsync(id);
-            if (draft == null || draft.Author != LogonUser) return HttpNotFound();
+            var draft = await _draftDbCommand.FindAsync(id, LogonUser);
+            if (draft == null) return HttpNotFound();
 
-            await _draftDbCommand.DeleteAsync(id);
+            await _draftDbCommand.DeleteAsync(id, LogonUser);
 
             return RedirectToAction("Index");
         }

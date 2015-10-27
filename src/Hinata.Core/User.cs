@@ -76,6 +76,7 @@ namespace Hinata
             return ReservedNames.Contains(name.ToLower());
         }
 
+        /// <summary>記事の著者などが不明な場合の代替ユーザー</summary>
         public static readonly User Unknown = new User
         {
             Id = "00000000000000000000000000000000",
@@ -83,5 +84,70 @@ namespace Hinata
             DisplayName = "unknown",
             LogonName = "unknown"
         };
+
+        /// <summary>ユーザー登録していないアクセスユーザー</summary>
+        public static readonly User Anonymous = new User
+        {
+            Id = "00000000000000000000000000000001",
+            Name = "anonymous",
+            DisplayName = "anonymous",
+            LogonName = "anonymous"
+        };
+
+        /// <summary>指定された記事に対して編集する権利を所持しているか判断します。</summary>
+        /// <param name="target">記事</param>
+        /// <returns></returns>
+        public bool IsEntitledToEditItem(Item target)
+        {
+            if (target == null) throw new ArgumentNullException("target");
+
+            if (target.Author == this) return true;
+
+            if (target.Collaborators.Contains(this)) return true;
+
+            return false;
+        }
+
+        /// <summary>指定された記事に対して削除する権利を所持しているか判断します。</summary>
+        /// <param name="target">記事</param>
+        /// <returns></returns>
+        public bool IsEntitledToDeleteItem(Item target)
+        {
+            if (target == null) throw new ArgumentNullException("target");
+
+            if (target.Author == this) return true;
+
+            if (target.Collaborators.Where(x => x.Role == RoleType.Owner).Contains(this)) return true;
+
+            return false;
+        }
+
+        /// <summary>指定された記事の共同編集者を設定・変更・削除する権利を所持しているか判断します。</summary>
+        /// <param name="target">記事</param>
+        /// <returns></returns>
+        public bool IsEntitledToEditItemCollaborators(Item target)
+        {
+            if (target == null) throw new ArgumentNullException("target");
+
+            if (target.Author == this) return true;
+
+            if (target.Collaborators.Where(x => x.Role == RoleType.Owner).Contains(this)) return true;
+
+            return false;
+        }
+
+        /// <summary>指定された記事に対してコメントを書き込む権利を所持しているか判断します。</summary>
+        /// <param name="target">記事</param>
+        /// <returns></returns>
+        public bool IsEntitledToWriteComments(Item target)
+        {
+            if (target == null) throw new ArgumentNullException("target");
+
+            if (this == Anonymous) return false;
+
+            if (this == Unknown) return false;
+
+            return true;
+        }
     }
 }

@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using Hinata.Collections;
+using Hinata.Exceptions;
 
 namespace Hinata
 {
     public class Item
     {
         private readonly ItemTagCollection _itemTags = new ItemTagCollection();
+        private readonly CollaboratorCollection _collaborators = new CollaboratorCollection(); 
 
         public string Id { get; internal set; }
 
@@ -13,6 +17,9 @@ namespace Hinata
         public ItemType Type { get; internal set; }
 
         public User Author { get; internal set; }
+
+        /// <summary>編集者</summary>
+        public User Editor { get; internal set; }
 
         public string Title { get; internal set; }
 
@@ -32,15 +39,24 @@ namespace Hinata
 
         internal string Comment { get; set; }
 
+        /// <summary>共同編集者</summary>
+        public IReadOnlyCollection<Collaborator> Collaborators
+        {
+            get { return _collaborators; }
+        }
+
         internal Item()
         {
         }
 
-        public Draft ToDraft()
+        public Draft ToDraft(User editor)
         {
+            if (!editor.IsEntitledToEditItem(this)) throw new NotEntitledToEditItemException();
+
             return new Draft(this)
             {
                 CurrentRevisionNo = RevisionNo,
+                Editor = editor,
             };
         }
 
@@ -56,6 +72,30 @@ namespace Hinata
                 CreatedDateTime = DateTime.Now,
                 LastModifiedDateTime = DateTime.Now
             };
+        }
+
+        /// <summary>記事に共同編集者を追加します</summary>
+        /// <param name="collaborator"></param>
+        internal void AddCollaborator(Collaborator collaborator)
+        {
+            if (collaborator == null) throw new ArgumentNullException("collaborator");
+            if (_collaborators.Contains(collaborator)) throw new InvalidOperationException("target user is already included in collaborators.");
+
+            _collaborators.Add(collaborator);
+        }
+
+        internal void RemoveCollaborator(Collaborator collaborator)
+        {
+            if (collaborator == null) throw new ArgumentNullException("collaborator");
+            if (!_collaborators.Contains(collaborator)) throw new InvalidOperationException("target user is not included in collaborators.");
+
+            _collaborators.Remove(collaborator);
+        }
+
+        /// <summary>記事の共同編集者を全てクリアします</summary>
+        internal void ClearAllCollaborators()
+        {
+            _collaborators.Clear();
         }
     }
 }

@@ -1,5 +1,9 @@
 ﻿@model ItemRevisionDetailModel
 
+<div>
+    <h3>編集者</h3>
+    @Html.ActionLink(Model.EditorDisplayName, "Index", "User", new { name = @Model.EditorName }, null)&nbsp;さん
+</div>
 <div class="panel panel-default">
     <div class="panel-body">
         @Model.Comment

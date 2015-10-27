@@ -10,6 +10,12 @@ namespace Hinata
 
         public int RevisionNo { get; internal set; }
 
+        /// <summary>著者</summary>
+        public User Author { get; internal set; }
+
+        /// <summary>編集者</summary>
+        public User Editor { get; internal set; }
+
         public DateTime ModifiedDateTime { get; internal set; }
 
         public string Comment { get; internal set; }

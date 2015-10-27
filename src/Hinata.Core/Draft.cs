@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Hinata
 {
@@ -51,6 +52,18 @@ namespace Hinata
             set { _item.Author = value; }
         }
 
+        /// <summary>編集者</summary>
+        public User Editor
+        {
+            get { return _item.Editor; }
+            set { _item.Editor = value; }
+        }
+
+        public IReadOnlyCollection<Collaborator> Collaborators
+        {
+            get { return _item.Collaborators; }
+        }
+
         internal DateTime? ItemCreatedDateTime
         {
             get { return IsContributed ? _item.CreatedDateTime : (DateTime?)null; }
@@ -93,6 +106,7 @@ namespace Hinata
             {
                 Id = CreateNewId(),
                 Author = author,
+                Editor = author,
                 Type = type,
                 LastModifiedDateTime = DateTime.Now,
             };
@@ -122,6 +136,13 @@ namespace Hinata
         private static string CreateNewId()
         {
             return Guid.NewGuid().ToString("N");
+        }
+
+        internal void AddCollaborator(Collaborator collaborator)
+        {
+            if (collaborator == null) throw new ArgumentNullException("collaborator");
+
+            _item.AddCollaborator(collaborator);
         }
     }
 }

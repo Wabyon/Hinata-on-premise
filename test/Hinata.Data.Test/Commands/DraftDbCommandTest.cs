@@ -21,7 +21,7 @@ namespace Hinata.Data.Commands
 
             await DraftDbCommand.SaveAsync(draft);
 
-            var created = await DraftDbCommand.FindAsync(draft.Id);
+            var created = await DraftDbCommand.FindAsync(draft.Id, LogonUser);
 
             created.IsStructuralEqual(draft);
         }
@@ -37,7 +37,7 @@ namespace Hinata.Data.Commands
 
             await DraftDbCommand.SaveAsync(draft);
 
-            var created = await DraftDbCommand.FindAsync(draft.Id);
+            var created = await DraftDbCommand.FindAsync(draft.Id, LogonUser);
 
             created.IsStructuralEqual(draft);
         }
@@ -51,7 +51,7 @@ namespace Hinata.Data.Commands
 
             await DraftDbCommand.SaveAsync(draft);
 
-            var created = await DraftDbCommand.FindAsync(draft.Id);
+            var created = await DraftDbCommand.FindAsync(draft.Id, LogonUser);
 
             created.IsStructuralEqual(draft);
         }
@@ -62,7 +62,7 @@ namespace Hinata.Data.Commands
             var author = new User(@"TestDomain\GetByAuthorTest") { Name = "GetByAuthorTest", DisplayName = "GetByAuthorTest" };
             await UserDbCommand.SaveAsync(author);
 
-            await DraftDbCommand.DeleteByAuthorAsync(author);
+            await DraftDbCommand.DeleteByUserAsync(author);
 
             var draft1 = Draft.NewDraft(author, ItemType.Article);
             draft1.Title = "title1";
@@ -85,7 +85,7 @@ namespace Hinata.Data.Commands
             await DraftDbCommand.SaveAsync(draft3);
             await DraftDbCommand.SaveAsync(draft4);
 
-            var registered = await DraftDbCommand.GetByAuthorAsync(author);
+            var registered = await DraftDbCommand.GetByUserAsync(author);
 
             registered.IsStructuralEqual(new[] { draft4, draft3, draft2, draft1 });
         }
@@ -101,7 +101,7 @@ namespace Hinata.Data.Commands
 
             await DraftDbCommand.SaveAsync(draft);
 
-            var created = await DraftDbCommand.FindAsync(draft.Id);
+            var created = await DraftDbCommand.FindAsync(draft.Id, LogonUser);
             created.IsStructuralEqual(draft);
 
             created.Title = "title 正常系_記事_作成と更新 変更";
@@ -113,7 +113,7 @@ namespace Hinata.Data.Commands
 
             await DraftDbCommand.SaveAsync(created);
 
-            var updated = await DraftDbCommand.FindAsync(created.Id);
+            var updated = await DraftDbCommand.FindAsync(created.Id, LogonUser);
             updated.IsStructuralEqual(created);
             updated.IsNotStructuralEqual(draft);
         }
@@ -136,17 +136,17 @@ namespace Hinata.Data.Commands
             await DraftDbCommand.SaveAsync(draft1);
             await DraftDbCommand.SaveAsync(draft2);
 
-            var created1 = await DraftDbCommand.FindAsync(draft1.Id);
+            var created1 = await DraftDbCommand.FindAsync(draft1.Id, LogonUser);
             created1.IsStructuralEqual(draft1);
-            var created2 = await DraftDbCommand.FindAsync(draft2.Id);
+            var created2 = await DraftDbCommand.FindAsync(draft2.Id, LogonUser);
             created2.IsStructuralEqual(draft2);
 
-            await DraftDbCommand.DeleteAsync(created1.Id);
+            await DraftDbCommand.DeleteAsync(created1.Id, LogonUser);
 
-            var deleted = await DraftDbCommand.FindAsync(draft1.Id);
+            var deleted = await DraftDbCommand.FindAsync(draft1.Id, LogonUser);
             deleted.IsNull();
 
-            var undeleted = await DraftDbCommand.FindAsync(draft2.Id);
+            var undeleted = await DraftDbCommand.FindAsync(draft2.Id, LogonUser);
             undeleted.IsNotNull();
             undeleted.IsStructuralEqual(draft2);
         }

@@ -11,6 +11,9 @@ namespace Hinata
 
             Mapper.CreateMap<UserCreateModel, User>();
             Mapper.CreateMap<UserUpdateModel, User>();
+
+            Mapper.CreateMap<User, CollaboratorSearchResultModel>()
+                .ForMember(d => d.IconUrl, o => o.MapFrom(s => s.IconUrl ?? GlobalSettings.NoImageUserIconUrl));
         }
     }
 }

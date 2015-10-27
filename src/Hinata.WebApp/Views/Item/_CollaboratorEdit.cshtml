@@ -1,0 +1,37 @@
+﻿@model CollaboratorEditModel
+
+<tr data-id="@Model.Id">
+    <td class="col-xs-3 col-sm-3 col-md-3"><img src="@Url.Content(Model.IconUrl)" style="width: 20px; height: 20px" />&nbsp;@Model.DisplayName</td>
+    @if (Model.Id == ViewBag.LogonUser.Id)
+    {
+        <td class="col-xs-3 col-sm-3 col-md-3">@Model.Role.ToString()</td>
+        <td class="text-right"></td>
+    }
+    else
+    {
+        <td class="col-xs-3 col-sm-3 col-md-3">
+            <div class="btn-group">
+                @{
+                    var ownerItemClass = Model.Role == RoleType.Owner ? "list-group-item active" : "list-group-item";
+                    var memberItemClass = Model.Role == RoleType.Member ? "list-group-item active" : "list-group-item";
+                    <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@Model.Role.ToString()</button>
+                    <ul class="dropdown-menu list-group">
+                        <li class="list-group-item">
+                            <a href="#" class="@ownerItemClass" data-url="@Url.Action("UpdateCollaboratorRole", "Item", new {userId = Model.Id, type = RoleType.Owner})" data-roletype="@RoleType.Owner.ToString()">
+                                <h4 class="list-group-item-heading">Owner</h4>
+                                <p class="list-group-item-text">記事の編集・削除権限、及び共同編集者の変更権限を有します</p>
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="@memberItemClass" data-url="@Url.Action("UpdateCollaboratorRole", "Item", new {userId = Model.Id, type = RoleType.Member})" data-roletype="@RoleType.Member.ToString()">
+                                <h4 class="list-group-item-heading">Member</h4>
+                                <p class="list-group-item-text">記事の編集権限を有します</p>
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </div>
+        </td>
+        <td class="text-right"><button class="btn btn-xs" data-url="@Url.Action("RemoveCollaborator", "Item", new {userId = Model.Id})"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></td>
+    }
+</tr>

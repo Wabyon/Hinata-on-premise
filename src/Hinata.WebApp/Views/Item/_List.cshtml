@@ -14,7 +14,12 @@
                 @Html.ActionLink(@item.AuthorDisplayName, "Index", "User", new {name = @item.AuthorName}, null)&nbsp;さんが&nbsp;@item.CreatedDateTime.ToString("yyyy/MM/dd HH:mm:ss")&nbsp;に作成
                 @if (item.HasModified)
                 {
-                    <span>&nbsp;&nbsp;</span>@item.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
+                    if (item.AuthorName != item.EditorName)
+                    {
+                        <span>&nbsp;&nbsp;</span>
+                        @Html.ActionLink(@item.EditorDisplayName, "Index", "User", new {name = @item.EditorName}, null)<span>&nbsp;さんが</span>
+                    }
+                    <span>&nbsp;</span>@item.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
                     <span>に編集</span>
                 }
             </p>

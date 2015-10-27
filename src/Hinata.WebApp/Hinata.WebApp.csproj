@@ -149,6 +149,7 @@
     <Compile Include="App_Start\MappingConfig.Comment.cs" />
     <Compile Include="App_Start\MappingConfig.Item.cs" />
     <Compile Include="App_Start\MappingConfig.Draft.cs" />
+    <Compile Include="App_Start\MappingConfig.Collaborator.cs" />
     <Compile Include="App_Start\MappingConfig.User.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DraftController.cs" />
@@ -166,6 +167,7 @@
     </Compile>
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="Logging\AccessLogger.cs" />
+    <Compile Include="Models\CollaboratorModels.cs" />
     <Compile Include="Models\CommentModels.cs" />
     <Compile Include="Models\DraftModels.cs" />
     <Compile Include="Models\ItemModels.cs" />
@@ -291,6 +293,7 @@
     <Content Include="Content\hinata\item-list.less" />
     <Content Include="Content\bootstrap\list-group.custom.less" />
     <None Include="Properties\PublishProfiles\dist.pubxml" />
+    <Content Include="Scripts\item.editcollaborators.js" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\item.index.js" />
     <Content Include="Scripts\item.item.js" />
@@ -341,6 +344,10 @@
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Shared\_Search.cshtml" />
     <Content Include="Views\Search\_List.cshtml" />
+    <Content Include="Views\Item\EditCollaborators.cshtml" />
+    <Content Include="Views\Item\_CollaboratorSearchResult.cshtml" />
+    <Content Include="Views\Item\_CollaboratorsEditList.cshtml" />
+    <Content Include="Views\Item\_CollaboratorEdit.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

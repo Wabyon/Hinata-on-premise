@@ -1,0 +1,10 @@
+﻿@model IEnumerable<CollaboratorEditModel>
+<div class="panel panel-default">
+    <div class="panel-heading">Collaborators</div>
+    <table class="table">
+        @foreach (var collaborator in Model)
+        {
+            @Html.Partial("_CollaboratorEdit", collaborator)
+        }
+    </table>
+</div>
