@@ -13,39 +13,41 @@ namespace Hinata.Data.Commands
         {
         }
 
-        public Task<Draft> FindAsync(string id)
+        public Task<Draft> FindAsync(string id, User user)
         {
-            return FindAsync(id, CancellationToken.None);
+            return FindAsync(id, user, CancellationToken.None);
         }
 
-        public async Task<Draft> FindAsync(string id, CancellationToken cancellationToken)
+        public async Task<Draft> FindAsync(string id, User user, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id is null or empty", "id");
+            if (user == null) throw new ArgumentNullException("user");
 
             var sql = string.Format(@"
 {0}
 WHERE
     Drafts.[Id] = @Id
+AND Drafts.[UserId] = @UserId
 ", SqlSelectStatement);
             using (var cn = CreateConnection())
             {
                 await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
 
                 var results =
-                    (await cn.QueryAsync<DraftSelectDataModel>(sql, new {Id = id}).ConfigureAwait(false)).ToArray();
+                    (await cn.QueryAsync<DraftSelectDataModel>(sql, new {Id = id, UserId = user.Id}).ConfigureAwait(false)).ToArray();
 
                 return results.Any() ? results.First().ToEntity() : null;
             }
         }
 
-        public Task<Draft[]> GetByAuthorAsync(User author)
+        public Task<Draft[]> GetByUserAsync(User user)
         {
-            return GetByAuthorAsync(author, CancellationToken.None);
+            return GetByUserAsync(user, CancellationToken.None);
         }
 
-        public async Task<Draft[]> GetByAuthorAsync(User author, CancellationToken cancellationToken)
+        public async Task<Draft[]> GetByUserAsync(User user, CancellationToken cancellationToken)
         {
-            if (author == null) throw new ArgumentNullException("author");
+            if (user == null) throw new ArgumentNullException("user");
 
             var sql = string.Format(@"
 {0}
@@ -59,7 +61,7 @@ ORDER BY
                 await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
 
                 var results =
-                    (await cn.QueryAsync<DraftSelectDataModel>(sql, new { UserId = author.Id }).ConfigureAwait(false));
+                    (await cn.QueryAsync<DraftSelectDataModel>(sql, new { UserId = user.Id }).ConfigureAwait(false));
 
                 return results.Select(x => x.ToEntity()).ToArray();
             }
@@ -78,19 +80,20 @@ ORDER BY
 DELETE FROM [dbo].[DraftTags]
 WHERE
     [DraftId] = @Id
+AND [UserId] = @UserId
 ;
 
-IF EXISTS (SELECT * FROM [dbo].[Drafts] WHERE [Id] = @Id)
+IF EXISTS (SELECT * FROM [dbo].[Drafts] WHERE [Id] = @Id AND [UserId] = @UserId)
 BEGIN
     UPDATE [dbo].[Drafts]
-    SET [UserId] = @UserId,
-        [Type] = @Type,
+    SET [Type] = @Type,
         [Title] = @Title,
         [Body] = @Body,
         [Comment] = @Comment,
         [LastModifiedDateTime] = @LastModifiedDateTime
     WHERE
         [Id] = @Id
+    AND [UserId] = @UserId
 END
 ELSE
 BEGIN
@@ -116,11 +119,13 @@ END
             const string sqlTags = @"
 INSERT INTO [dbo].[DraftTags] (
     [DraftId],
+    [UserId],
     [Name],
     [Version],
     [OrderNo]
 ) VALUES (
     @DraftId,
+    @UserId,
     @Name,
     @Version,
     @OrderNo
@@ -139,7 +144,7 @@ INSERT INTO [dbo].[DraftTags] (
                         var orderNo = 1;
                         foreach (var tag in draft.ItemTags)
                         {
-                            await cn.ExecuteAsync(sqlTags, new {DraftId = draft.Id, tag.Name, tag.Version, OrderNo = orderNo}, tr).ConfigureAwait(false);
+                            await cn.ExecuteAsync(sqlTags, new {DraftId = draft.Id, UserId = draft.Editor.Id, tag.Name, tag.Version, OrderNo = orderNo}, tr).ConfigureAwait(false);
                             orderNo++;
                         }
 
@@ -154,51 +159,49 @@ INSERT INTO [dbo].[DraftTags] (
             }
         }
 
-        public Task DeleteAsync(string id)
+        public Task DeleteAsync(string id, User user)
         {
-            return DeleteAsync(id, CancellationToken.None);
+            return DeleteAsync(id, user, CancellationToken.None);
         }
 
-        public async Task DeleteAsync(string id, CancellationToken cancellationToken)
+        public async Task DeleteAsync(string id, User user, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id is null or empty.", "id");
+            if (user == null) throw new ArgumentNullException("user");
 
             const string sql = @"
 DELETE FROM [dbo].[DraftTags]
 WHERE
     [DraftId] = @Id
+AND [UserId] = @UserId
 
 
 DELETE FROM [dbo].[Drafts]
 WHERE
     [Id] = @Id
+AND [UserId] = @UserId
 ";
 
             using (var cn = CreateConnection())
             {
                 await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
-                await cn.ExecuteAsync(sql, new { Id = id }).ConfigureAwait(false);
+                await cn.ExecuteAsync(sql, new { Id = id, UserId = user.Id }).ConfigureAwait(false);
             }
         }
 
-        public Task DeleteByAuthorAsync(User author)
+        public Task DeleteByUserAsync(User user)
         {
-            return DeleteByAuthorAsync(author, CancellationToken.None);
+            return DeleteByUserAsync(user, CancellationToken.None);
         }
 
-        public async Task DeleteByAuthorAsync(User author, CancellationToken cancellationToken)
+        public async Task DeleteByUserAsync(User user, CancellationToken cancellationToken)
         {
-            if (author == null) throw new ArgumentNullException("author");
+            if (user == null) throw new ArgumentNullException("user");
 
             const string sql = @"
-DELETE DraftTags FROM [dbo].[DraftTags] DraftTags
-WHERE EXISTS (
-    SELECT *
-    FROM [dbo].[Drafts] Drafts
-    WHERE
-        DraftTags.DraftId = Drafts.Id
-    AnD Drafts.[UserId] = @UserId
-)
+DELETE FROM [dbo].[DraftTags]
+WHERE
+    [UserId] = @UserId
 
 DELETE FROM [dbo].[Drafts]
 WHERE
@@ -208,14 +211,15 @@ WHERE
             using (var cn = CreateConnection())
             {
                 await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
-                await cn.ExecuteAsync(sql, new {UserId = author.Id}).ConfigureAwait(false);
+                await cn.ExecuteAsync(sql, new {UserId = user.Id}).ConfigureAwait(false);
             }
         }
 
         private const string SqlSelectStatement = @"
 SELECT
     Drafts.[Id],
-    [Author].Author,
+    Author = ISNULL([Author].Author, [NewAuthor].Author),
+    [Editor].Editor,
     Drafts.[Type],
     Drafts.[Title],
     Drafts.[Body],
@@ -225,7 +229,8 @@ SELECT
     Tags.Tags,
     [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
     [ItemCreatedDateTime] = Items.CreatedDateTime,
-    [ItemRevisionCount] = _Revisions.RevisionCount
+    [ItemRevisionCount] = _Revisions.RevisionCount,
+    Collaborators.Collaborators
 FROM [dbo].[Drafts] Drafts
 LEFT OUTER JOIN [dbo].[Items] Items
 ON  Drafts.Id = Items.Id
@@ -240,10 +245,40 @@ OUTER APPLY (
             FROM [dbo].[Users] Users
             WHERE
                 Users.Id = Drafts.UserId
+        ) [Editor]
+        FOR XML AUTO
+    ) [Editor]
+) [Editor]
+OUTER APPLY (
+    SELECT (
+        SELECT * FROM (
+            SELECT
+                Users.[Id],
+                Users.[LogonName],
+                [Name] = Users.UserName,
+                Users.[DisplayName]
+            FROM [dbo].[Users] Users
+            WHERE
+                Users.Id = Items.CreateUserId
         ) [Author]
         FOR XML AUTO
     ) [Author]
 ) [Author]
+OUTER APPLY (
+    SELECT (
+        SELECT * FROM (
+            SELECT
+                Users.[Id],
+                Users.[LogonName],
+                [Name] = Users.UserName,
+                Users.[DisplayName]
+            FROM [dbo].[Users] Users
+            WHERE
+                Users.Id = Drafts.UserId
+        ) [Author]
+        FOR XML AUTO
+    ) [Author]
+) [NewAuthor]
 OUTER APPLY (
     SELECT (
         SELECT * FROM (
@@ -254,6 +289,7 @@ OUTER APPLY (
             FROM [dbo].[DraftTags] Tags
             WHERE
                 Tags.DraftId = Drafts.Id
+            AND Tags.UserId = Drafts.UserId
         ) Tag
         ORDER BY
             Tag.OrderNo
@@ -268,6 +304,27 @@ OUTER APPLY (
     WHERE
         ItemRevisions.ItemId = Items.Id
 ) _Revisions
+OUTER APPLY (
+    SELECT (
+        SELECT * FROM (
+            SELECT
+                Users.[Id],
+                Users.[LogonName],
+                [Name] = Users.UserName,
+                Users.[DisplayName],
+                Users.[IconUrl],
+                [Role] = Collaborators.[RoleType]
+            FROM [dbo].[Collaborators] Collaborators
+            INNER JOIN [dbo].[Users] Users
+            ON  Collaborators.UserId = Users.Id
+            WHERE
+                Collaborators.ItemId = Items.Id
+        ) Collaborator
+        ORDER BY
+            Collaborator.[Name]
+         FOR XML AUTO, ROOT('Collaborators')
+    ) Collaborators
+) [Collaborators]
 ";
     }
 }

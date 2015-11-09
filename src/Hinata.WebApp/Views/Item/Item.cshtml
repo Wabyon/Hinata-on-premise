@@ -23,17 +23,26 @@
             <div class="item-edit-select">
                 <div class="btn-group">
                     @Html.ActionLink("投稿を編集", "Edit", "Draft", new { id = Model.Id }, new { @class = "btn btn-sm btn-default" })
-                    <div class="btn-group">
-                        <a class="dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#deleteModel" role="button" data-toggle="modal">削除</a>
-                            </li>
-                            <li>
-                                @Html.ActionLink("RAW", "Raw", "Item", new { id = Model.Id, title = Model.Title }, null)
-                            </li>
-                        </ul>
-                    </div>
+                    @if (Model.CanDelete || Model.CanEditCollarborators)
+                    {
+                        <div class="btn-group">
+                            <a class="dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>
+                            <ul class="dropdown-menu">
+                                @if (Model.CanDelete)
+                                {
+                                    <li>
+                                        <a href="#deleteModel" role="button" data-toggle="modal">削除</a>
+                                    </li>
+                                }
+                                @if (Model.CanEditCollarborators)
+                                {
+                                    <li>
+                                        @Html.ActionLink("共同編集者を設定する", "EditCollaborators", "Item")
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
                 </div>
             </div>
         }
@@ -42,13 +51,21 @@
             @Html.ActionLink(Model.AuthorDisplayName, "Index", "User", new { name = @Model.AuthorName }, null)&nbsp;さんが&nbsp;@Model.CreatedDateTime.ToString("yyyy/MM/dd HH:mm:ss")&nbsp;に作成
             @if (Model.HasModified)
             {
-                <span>&nbsp;(</span>@Model.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
-                <span>に編集)</span>
+                <span>&nbsp;(</span>
+                if (Model.AuthorName != Model.EditorName)
+                {
+                    <a href="@Url.Action("Index", "User", new { name = @Model.EditorName })"><img src="@Url.Content(Model.EditorIconUrl)" alt="@Model.EditorName" class="icon-image" /></a>
+                    @Html.ActionLink(@Model.EditorDisplayName, "Index", "User", new { name = @Model.EditorName }, null)<span>&nbsp;さんが</span>
+                }
+                @Model.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
+                <span>に編集</span>
+                <span>)</span>
             }
             @if (Model.HasRevision)
             {
                 <span>&nbsp;・&nbsp;</span><a href="@Url.Action("Revisions","Item",new {id = Model.Id})">編集履歴(@Model.RevisionCount)</a>
             }
+            <span>&nbsp;・&nbsp;</span>@Html.ActionLink("RAW", "Raw", "Item", new { id = Model.Id, title = Model.Title }, null)
         </div>
     </div>
 </div>
@@ -59,7 +76,7 @@
     <div class="comment-area">
         @Html.Partial("_CommentList", Model.Comments)
         <div class="comment-editor-area">
-            @if (ViewBag.LogonUser != null && ViewBag.LogonUser.Name != null)
+            @if (Model.CanWriteComments)
             {
                 <hr />
                 @Html.Partial("_CommentEdit", Model.NewComment)

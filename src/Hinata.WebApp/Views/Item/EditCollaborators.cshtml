@@ -1,0 +1,26 @@
+﻿@model ItemEditCollaboratorsModel
+
+<div class="container">
+    <div>
+        <h3>
+            <a href="@Url.Action("Item", "Item", new {id = Model.Id})">@Model.Title</a> の 共同編集者
+        </h3>
+    </div>
+    <hr/>
+    <div class="col-md-4">
+        <input class="form-control" id="search-collaborator" data-url="@Url.Action("SearchCollaborator", "Item")"/>
+        <div id="collarborator-searchresult-area" data-url="@Url.Action("AddCollaborator","Item")">
+            
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div id="collarborator-edit-area" data-url="@Url.Action("AddCollaborator", "Item")">
+            @Html.Partial("_CollaboratorsEditList", Model.Collaborators)
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/scripts/view/item/editcollaborators")
+}

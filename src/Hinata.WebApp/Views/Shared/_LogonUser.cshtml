@@ -1,4 +1,4 @@
-﻿@if (ViewBag.LogonUser == null || ViewBag.LogonUser.Name == null)
+﻿@if (ViewBag.LogonUser == Hinata.User.Anonymous)
 {
     <a href="@Url.Action("Register", "User")">
         <p class="nav navbar-text navbar-right" data-toggle="tooltip" data-placement="bottom" title="記事を投稿するにはユーザー登録が必要です">@User.Identity.Name</p>

@@ -26,7 +26,7 @@ namespace Hinata.Data.Models
         public DraftRegisterDataModel(Draft draft)
         {
             Id = draft.Id;
-            UserId = draft.Author.Id;
+            UserId = draft.Editor.Id;
             Type = draft.Type;
             Title = draft.Title;
             Body = draft.Body;
@@ -45,6 +45,8 @@ namespace Hinata.Data.Models
 
         public string Author { get; set; }
 
+        public string Editor { get; set; }
+
         public string Title { get; set; }
 
         public string Body { get; set; }
@@ -56,6 +58,8 @@ namespace Hinata.Data.Models
         public DateTime LastModifiedDateTime { get; set; }
 
         public string Tags { get; set; }
+
+        public string Collaborators { get; set; }
 
         public string Comment { get; set; }
 
@@ -92,24 +96,65 @@ namespace Hinata.Data.Models
                 draft.Author = User.Unknown;
             }
 
-            if (string.IsNullOrWhiteSpace(Tags)) return draft;
-
-            var xmlTags = new XmlDocument();
-            xmlTags.LoadXml(Tags);
-            var jsonTags = Regex.Replace(JsonConvert.SerializeXmlNode(xmlTags), "(?<=\")(@)(?!.*\":\\s )", "", RegexOptions.IgnoreCase);
-            var jObjectTags = JObject.Parse(jsonTags)["Tags"]["Tag"];
-            if (jObjectTags.Type == JTokenType.Array)
+            if (!string.IsNullOrWhiteSpace(Editor))
             {
-                var tags = JsonConvert.DeserializeObject<IEnumerable<ItemTag>>(jObjectTags.ToString());
-                foreach (var tag in tags)
-                {
-                    draft.ItemTags.Add(tag);
-                }
+                var xmlEditor = new XmlDocument();
+                xmlEditor.LoadXml(Editor);
+                var jsonEditor = Regex.Replace(JsonConvert.SerializeXmlNode(xmlEditor), "(?<=\")(@)(?!.*\":\\s )", "",
+                    RegexOptions.IgnoreCase);
+                var jObjectEditor = JObject.Parse(jsonEditor)["Editor"];
+                var editor = JsonConvert.DeserializeObject<User>(jObjectEditor.ToString());
+                draft.Editor = editor;
             }
             else
             {
-                var tag = JsonConvert.DeserializeObject<ItemTag>(jObjectTags.ToString());
-                draft.ItemTags.Add(tag);
+                draft.Editor = User.Unknown;
+            }
+
+            if (!string.IsNullOrWhiteSpace(Tags))
+            {
+
+                var xmlTags = new XmlDocument();
+                xmlTags.LoadXml(Tags);
+                var jsonTags = Regex.Replace(JsonConvert.SerializeXmlNode(xmlTags), "(?<=\")(@)(?!.*\":\\s )", "",
+                    RegexOptions.IgnoreCase);
+                var jObjectTags = JObject.Parse(jsonTags)["Tags"]["Tag"];
+                if (jObjectTags.Type == JTokenType.Array)
+                {
+                    var tags = JsonConvert.DeserializeObject<IEnumerable<ItemTag>>(jObjectTags.ToString());
+                    foreach (var tag in tags)
+                    {
+                        draft.ItemTags.Add(tag);
+                    }
+                }
+                else
+                {
+                    var tag = JsonConvert.DeserializeObject<ItemTag>(jObjectTags.ToString());
+                    draft.ItemTags.Add(tag);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(Collaborators))
+            {
+
+                var xmlCollaborators = new XmlDocument();
+                xmlCollaborators.LoadXml(Collaborators);
+                var jsonCollaborators = Regex.Replace(JsonConvert.SerializeXmlNode(xmlCollaborators),
+                    "(?<=\")(@)(?!.*\":\\s )", "", RegexOptions.IgnoreCase);
+                var jObjectCollaborators = JObject.Parse(jsonCollaborators)["Collaborators"]["Collaborator"];
+                if (jObjectCollaborators.Type == JTokenType.Array)
+                {
+                    var collaborators = JsonConvert.DeserializeObject<IEnumerable<Collaborator>>(jObjectCollaborators.ToString());
+                    foreach (var collaborator in collaborators)
+                    {
+                        draft.AddCollaborator(collaborator);
+                    }
+                }
+                else
+                {
+                    var collaborator = JsonConvert.DeserializeObject<Collaborator>(jObjectCollaborators.ToString());
+                    draft.AddCollaborator(collaborator);
+                }
             }
 
             return draft;

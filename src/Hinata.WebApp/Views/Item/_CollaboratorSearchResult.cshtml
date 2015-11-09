@@ -1,0 +1,14 @@
+﻿@model IEnumerable<CollaboratorSearchResultModel>
+
+<div class="list-group" style="overflow-y: auto; height: 320px;">
+    @foreach (var collaborator in Model)
+    {
+        <button type="button" class="list-group-item" data-id="@collaborator.Id" data-url="@Url.Action("AddCollaborator","Item", new{userId = collaborator.Id})">
+            <img src="@Url.Content(collaborator.IconUrl)" style="width: 30px; height: 30px"/>
+            &nbsp;
+            <span>@collaborator.DisplayName</span>
+            &nbsp;
+            <span>@collaborator.Name</span>
+        </button>
+    }
+</div>

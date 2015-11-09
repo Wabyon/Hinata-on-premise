@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.EnterpriseServices;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -16,6 +16,7 @@ namespace Hinata.Controllers
     {
         private readonly ItemDbCommand _itemDbCommand = new ItemDbCommand(GlobalSettings.DefaultConnectionString);
         private readonly CommentDbCommand _commentDbCommand = new CommentDbCommand(GlobalSettings.DefaultConnectionString);
+        private readonly UserDbCommand _userDbCommand = new UserDbCommand(GlobalSettings.DefaultConnectionString);
         private const int MaxItemsOnPage = 15;
 
         [Route]
@@ -93,7 +94,10 @@ namespace Hinata.Controllers
             if (item == null) return HttpNotFound();
 
             var model = Mapper.Map<ItemViewModel>(item);
-            model.CanEdit = (item.Author == LogonUser);
+            model.CanEdit = LogonUser.IsEntitledToEditItem(item);
+            model.CanDelete = LogonUser.IsEntitledToDeleteItem(item);
+            model.CanEditCollarborators = LogonUser.IsEntitledToEditItemCollaborators(item);
+            model.CanWriteComments = LogonUser.IsEntitledToWriteComments(item);
 
             ViewBag.Title = model.DisplayTitle;
 
@@ -195,6 +199,99 @@ namespace Hinata.Controllers
             var model = Mapper.Map<ItemRevisionDetailModel>(itemRevision);
 
             return PartialView("_RevisionDetail", model);
+        }
+
+        [Route("item/{id}/collaborators/edit")]
+        [HttpGet]
+        public async Task<ActionResult> EditCollaborators(string id)
+        {
+            var item = await _itemDbCommand.FindAsync(id);
+            if (item == null) return HttpNotFound();
+            if (!LogonUser.IsEntitledToEditItemCollaborators(item)) return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+
+            var model = Mapper.Map<ItemEditCollaboratorsModel>(item);
+
+            return View(model);
+        }
+
+        [Route("item/{id}/collaborators/add")]
+        [HttpPost]
+        public async Task<ActionResult> AddCollaborator(string id, string userId)
+        {
+            var item = await _itemDbCommand.FindAsync(id);
+            if (item == null) return HttpNotFound();
+            if (!LogonUser.IsEntitledToEditItemCollaborators(item)) return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+
+            var targetUser = await _userDbCommand.FindAsync(userId);
+            if (targetUser == null) return HttpNotFound();
+
+            if (item.Collaborators.Contains(targetUser)) throw new InvalidOperationException();
+
+            var newCollaborator = new Collaborator(targetUser) { Role = RoleType.Member };
+
+            await _itemDbCommand.AddCollaboratorAsync(item, newCollaborator);
+
+            var model = Mapper.Map<CollaboratorEditModel>(newCollaborator);
+
+            return PartialView("_CollaboratorEdit", model);
+        }
+
+        [Route("item/{id}/collaborators/remove")]
+        [HttpPost]
+        public async Task<ActionResult> RemoveCollaborator(string id, string userId)
+        {
+            var item = await _itemDbCommand.FindAsync(id);
+            if (item == null) return HttpNotFound();
+            if (!LogonUser.IsEntitledToEditItemCollaborators(item)) return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+
+            var deleteCollaborator = item.Collaborators.FirstOrDefault(x => x.Id == userId);
+
+            if (deleteCollaborator == null) throw new InvalidOperationException();
+
+            await _itemDbCommand.RemoveCollaboratorAsync(item, deleteCollaborator);
+
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        [Route("item/{id}/collaborators/add/suggestions")]
+        [HttpPost]
+        public async Task<ActionResult> SearchCollaborator(string id, string query)
+        {
+            var item = await _itemDbCommand.FindAsync(id);
+            if (item == null) return HttpNotFound();
+
+            var searchText = query.Replace("　", "").Split(' ');
+
+            var users = (await _userDbCommand.SearchAsync(searchText)).ToList();
+
+            users.Remove(item.Author);
+            foreach (var collaborator in item.Collaborators)
+            {
+                users.Remove(collaborator);
+            }
+
+            var model = Mapper.Map<IEnumerable<CollaboratorSearchResultModel>>(users);
+
+            return PartialView("_CollaboratorSearchResult", model);
+        }
+
+
+        [Route("item/{id}/collaborators/update/role")]
+        [HttpPost]
+        public async Task<ActionResult> UpdateCollaboratorRole(string id, string userId, RoleType type)
+        {
+            var item = await _itemDbCommand.FindAsync(id);
+            if (item == null) return HttpNotFound();
+            if (!LogonUser.IsEntitledToEditItemCollaborators(item)) return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+
+            var targetCollaborator = item.Collaborators.FirstOrDefault(x => x.Id == userId);
+            if (targetCollaborator == null) throw new InvalidOperationException();
+
+            targetCollaborator.Role = type;
+
+            await _itemDbCommand.SaveCollaboratorsAsync(item);
+
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
     }
 }

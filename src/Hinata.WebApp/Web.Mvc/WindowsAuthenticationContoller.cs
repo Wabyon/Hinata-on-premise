@@ -17,7 +17,7 @@ namespace Hinata.Web.Mvc
         protected override void Initialize(RequestContext requestContext)
         {
             base.Initialize(requestContext);
-            LogonUser = _userDbCommand.FindByLogonNameAsync(User.Identity.Name).Result;
+            LogonUser = _userDbCommand.FindByLogonNameAsync(User.Identity.Name).Result ?? Hinata.User.Anonymous;
             if (LogonUser != null && string.IsNullOrWhiteSpace(LogonUser.IconUrl)) LogonUser.IconUrl = GlobalSettings.NoImageUserIconUrl;
         }
 

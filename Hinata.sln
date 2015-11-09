@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinata.Search.Test", "test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinata.WebJobs", "src\Hinata.WebJobs\Hinata.WebJobs.csproj", "{800CD950-5073-463A-B2BE-089C13848C55}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinata.Core.Test", "test\Hinata.Core.Test\Hinata.Core.Test.csproj", "{1DD6A7B1-C6DA-4B1D-9D68-9C102C396869}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{800CD950-5073-463A-B2BE-089C13848C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{800CD950-5073-463A-B2BE-089C13848C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{800CD950-5073-463A-B2BE-089C13848C55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DD6A7B1-C6DA-4B1D-9D68-9C102C396869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DD6A7B1-C6DA-4B1D-9D68-9C102C396869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DD6A7B1-C6DA-4B1D-9D68-9C102C396869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DD6A7B1-C6DA-4B1D-9D68-9C102C396869}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,5 +66,6 @@ Global
 		{9C7E416F-9BF4-477B-9869-F50DAB9D8546} = {68A4DBBC-E799-4066-8BDF-238E6296888A}
 		{7C3C0846-9C6B-4323-85BA-5DCD0F5B2F4B} = {68A4DBBC-E799-4066-8BDF-238E6296888A}
 		{800CD950-5073-463A-B2BE-089C13848C55} = {523AC900-F961-4C9A-82BF-02BCDC25DC6A}
+		{1DD6A7B1-C6DA-4B1D-9D68-9C102C396869} = {68A4DBBC-E799-4066-8BDF-238E6296888A}
 	EndGlobalSection
 EndGlobal

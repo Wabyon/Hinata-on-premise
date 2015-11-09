@@ -260,7 +260,7 @@ FETCH NEXT @Take ROWS ONLY
             var sql = string.Format(@"
 {0}
 WHERE
-    Items.[UserId] = @UserId
+    Items.[CreateUserId] = @UserId
 ORDER BY
     Items.[CreatedDateTime] DESC
 ", SqlSelectStatement);
@@ -368,7 +368,8 @@ WHERE
 IF EXISTS (SELECT * FROM [dbo].[Items] WHERE [Id] = @Id)
 BEGIN
     UPDATE [dbo].[Items]
-    SET [UserId] = @UserId,
+    SET [CreateUserId] = @CreateUserId,
+        [LastModifyUserId] = @LastModifyUserId,
         [Type] = @Type,
         [IsPublic] = @IsPublic,
         [Title] = @Title,
@@ -382,7 +383,8 @@ ELSE
 BEGIN
     INSERT INTO [dbo].[Items] (
         [Id],
-        [UserId],
+        [CreateUserId],
+        [LastModifyUserId],
         [Type],
         [IsPublic],
         [Title],
@@ -391,7 +393,8 @@ BEGIN
         [LastModifiedDateTime]
     ) VALUES (
         @Id,
-        @UserId,
+        @CreateUserId,
+        @LastModifyUserId,
         @Type,
         @IsPublic,
         @Title,
@@ -404,7 +407,8 @@ END
 INSERT INTO [dbo].[ItemRevisions] (
     [ItemId],
     [RevisionNo],
-    [UserId],
+    [CreateUserId],
+    [ModifyUserId],
     [Type],
     [IsPublic],
     [Title],
@@ -415,7 +419,8 @@ INSERT INTO [dbo].[ItemRevisions] (
 ) VALUES (
     @Id,
     @RevisionNo,
-    @UserId,
+    @CreateUserId,
+    @LastModifyUserId,
     @Type,
     @IsPublic,
     @Title,
@@ -531,6 +536,8 @@ AS (
         ,ItemRevisions.Body
         ,FirstRevisionNo = MIN(RevisionNo) OVER (PARTITION BY ItemId)
         ,CurrentRevisionNo = MAX(RevisionNo) OVER (PARTITION BY ItemId)
+        ,Author
+        ,Editor
     FROM [dbo].[ItemRevisions] ItemRevisions
     OUTER APPLY (
         SELECT (
@@ -549,6 +556,38 @@ AS (
              FOR XML AUTO, ROOT('Tags')
         ) Tags
     ) Tags
+    OUTER APPLY (
+        SELECT (
+            SELECT * FROM (
+                SELECT
+                    Users.[Id],
+                    Users.[LogonName],
+                    [Name] = Users.UserName,
+                    Users.[DisplayName],
+                    Users.[IconUrl]
+                FROM [dbo].[Users] Users
+                WHERE
+                    Users.Id = ItemRevisions.CreateUserId
+            ) [Author]
+            FOR XML AUTO
+        ) [Author]
+    ) [Author]
+    OUTER APPLY (
+        SELECT (
+            SELECT * FROM (
+                SELECT
+                    Users.[Id],
+                    Users.[LogonName],
+                    [Name] = Users.UserName,
+                    Users.[DisplayName],
+                    Users.[IconUrl]
+                FROM [dbo].[Users] Users
+                WHERE
+                    Users.Id = ItemRevisions.ModifyUserId
+            ) [Editor]
+            FOR XML AUTO
+        ) [Editor]
+    ) [Editor]
 )
 SELECT
      ItemId
@@ -560,6 +599,8 @@ SELECT
     ,Body
     ,IsFirst = CONVERT(BIT, CASE WHEN RevisionNo = FirstRevisionNo THEN 1 ELSE 0 END)
     ,IsCurrent = CONVERT(BIT, CASE WHEN RevisionNo = CurrentRevisionNo THEN 1 ELSE 0 END)
+    ,Author
+    ,Editor
 FROM Main
 WHERE
     ItemId = @ItemId
@@ -595,6 +636,8 @@ AS (
         ,ItemRevisions.Body
         ,FirstRevisionNo = MIN(RevisionNo) OVER (PARTITION BY ItemId)
         ,CurrentRevisionNo = MAX(RevisionNo) OVER (PARTITION BY ItemId)
+        ,Author
+        ,Editor
     FROM [dbo].[ItemRevisions] ItemRevisions
     OUTER APPLY (
         SELECT (
@@ -613,6 +656,38 @@ AS (
              FOR XML AUTO, ROOT('Tags')
         ) Tags
     ) Tags
+    OUTER APPLY (
+        SELECT (
+            SELECT * FROM (
+                SELECT
+                    Users.[Id],
+                    Users.[LogonName],
+                    [Name] = Users.UserName,
+                    Users.[DisplayName],
+                    Users.[IconUrl]
+                FROM [dbo].[Users] Users
+                WHERE
+                    Users.Id = ItemRevisions.CreateUserId
+            ) [Author]
+            FOR XML AUTO
+        ) [Author]
+    ) [Author]
+    OUTER APPLY (
+        SELECT (
+            SELECT * FROM (
+                SELECT
+                    Users.[Id],
+                    Users.[LogonName],
+                    [Name] = Users.UserName,
+                    Users.[DisplayName],
+                    Users.[IconUrl]
+                FROM [dbo].[Users] Users
+                WHERE
+                    Users.Id = ItemRevisions.ModifyUserId
+            ) [Editor]
+            FOR XML AUTO
+        ) [Editor]
+    ) [Editor]
 )
 SELECT
      ItemId
@@ -624,6 +699,8 @@ SELECT
     ,Body
     ,IsFirst = CONVERT(BIT, CASE WHEN RevisionNo = FirstRevisionNo THEN 1 ELSE 0 END)
     ,IsCurrent = CONVERT(BIT, CASE WHEN RevisionNo = CurrentRevisionNo THEN 1 ELSE 0 END)
+    ,Author
+    ,Editor
 FROM Main
 WHERE
     ItemId = @ItemId
@@ -668,6 +745,173 @@ WHERE NOT EXISTS (
 
         }
 
+        /// <summary></summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public Task SaveCollaboratorsAsync(Item item)
+        {
+            return SaveCollaboratorsAsync(item, CancellationToken.None);
+        }
+
+        /// <summary></summary>
+        /// <param name="item"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task SaveCollaboratorsAsync(Item item, CancellationToken cancellationToken)
+        {
+            return SaveCollaboratorsAsync(item, item.Collaborators.ToArray(), cancellationToken);
+        }
+
+        /// <summary>記事の共同編集者を更新します。</summary>
+        /// <param name="item">共同編集者を更新する記事</param>
+        /// <param name="collaborators">共同編集者</param>
+        /// <returns></returns>
+        public Task SaveCollaboratorsAsync(Item item, Collaborator[] collaborators)
+        {
+            return SaveCollaboratorsAsync(item, collaborators, CancellationToken.None);
+        }
+
+        /// <summary>記事の共同編集者を更新します。</summary>
+        /// <param name="item">共同編集者を更新する記事</param>
+        /// <param name="collaborators">共同編集者</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>        
+        public async Task SaveCollaboratorsAsync(Item item, Collaborator[] collaborators, CancellationToken cancellationToken)
+        {
+            if (item == null) throw new ArgumentNullException("item");
+            if (collaborators == null) throw new ArgumentNullException("collaborators");
+
+            const string delete = @"
+DELETE FROM [dbo].[Collaborators]
+WHERE [ItemId] = @ItemId
+";
+
+            const string insert = @"
+INSERT INTO [dbo].[Collaborators] (
+    [ItemId],
+    [UserId],
+    [RoleType]
+) VALUES (
+    @ItemId,
+    @UserId,
+    @RoleType
+)
+";
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+
+                using (var tr = cn.BeginTransaction())
+                {
+                    try
+                    {
+                        await cn.ExecuteAsync(delete, new {ItemId = item.Id}, tr).ConfigureAwait(false);
+
+                        foreach (var collaborator in collaborators)
+                        {
+                            await
+                                cn.ExecuteAsync(insert, new { ItemId = item.Id, UserId = collaborator.Id, RoleType = collaborator.Role }, tr)
+                                    .ConfigureAwait(false);
+                        }
+
+                        tr.Commit();
+
+                        item.ClearAllCollaborators();
+                        foreach (var collaborator in collaborators)
+                        {
+                            item.AddCollaborator(collaborator);
+                        }
+                    }
+                    catch
+                    {
+                        tr.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        /// <summary></summary>
+        /// <param name="item"></param>
+        /// <param name="collaborator"></param>
+        /// <returns></returns>
+        public Task AddCollaboratorAsync(Item item, Collaborator collaborator)
+        {
+            return AddCollaboratorAsync(item, collaborator, CancellationToken.None);
+        }
+
+        /// <summary></summary>
+        /// <param name="item"></param>
+        /// <param name="collaborator"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task AddCollaboratorAsync(Item item, Collaborator collaborator, CancellationToken cancellationToken)
+        {
+            if (item == null) throw new ArgumentNullException("item");
+            if (collaborator == null) throw new ArgumentNullException("collaborator");
+            if (item.Collaborators.Contains(collaborator)) throw new InvalidOperationException("target user is already included in collaborators.");
+
+            const string insert = @"
+INSERT INTO [dbo].[Collaborators] (
+    [ItemId],
+    [UserId],
+    [RoleType]
+) VALUES (
+    @ItemId,
+    @UserId,
+    @RoleType
+)
+";
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+
+                await
+                    cn.ExecuteAsync(insert, new { ItemId = item.Id, UserId = collaborator.Id, RoleType = collaborator.Role })
+                        .ConfigureAwait(false);
+            }
+
+            item.AddCollaborator(collaborator);
+        }
+
+        /// <summary></summary>
+        /// <param name="item"></param>
+        /// <param name="collaborator"></param>
+        /// <returns></returns>
+        public Task RemoveCollaboratorAsync(Item item, Collaborator collaborator)
+        {
+            return RemoveCollaboratorAsync(item, collaborator, CancellationToken.None);
+        }
+
+        /// <summary></summary>
+        /// <param name="item"></param>
+        /// <param name="collaborator"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task RemoveCollaboratorAsync(Item item, Collaborator collaborator, CancellationToken cancellationToken)
+        {
+            if (item == null) throw new ArgumentNullException("item");
+            if (collaborator == null) throw new ArgumentNullException("collaborator");
+            if (!item.Collaborators.Contains(collaborator)) throw new InvalidOperationException("target user is not included in collaborators.");
+
+            const string delete = @"
+DELETE FROM [dbo].[Collaborators]
+WHERE
+    [ItemId] = @ItemId
+AND [UserId] = @UserId
+";
+            using (var cn = CreateConnection())
+            {
+                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
+
+                await
+                    cn.ExecuteAsync(delete, new { ItemId = item.Id, UserId = collaborator.Id })
+                        .ConfigureAwait(false);
+            }
+
+            item.RemoveCollaborator(collaborator);
+        }
+
         #region SqlSelectStatement
         private const string SqlSelectStatement = @"
 SELECT
@@ -675,6 +919,7 @@ SELECT
     Items.[Type],
     Items.[IsPublic],
     [Author].Author,
+    [Editor].Editor,
     Items.[Title],
     Items.[Body],
     Items.[CreatedDateTime],
@@ -685,7 +930,8 @@ SELECT
     [ItemCreatedDateTime] = Items.CreatedDateTime,
     _CommentAttributes.[CommentCount],
     _Revisions.[RevisionCount],
-    _Revisions.[RevisionNo]
+    _Revisions.[RevisionNo],
+    Collaborators.Collaborators
 FROM [dbo].[Items] Items
 OUTER APPLY (
     SELECT (
@@ -698,11 +944,27 @@ OUTER APPLY (
                 Users.[IconUrl]
             FROM [dbo].[Users] Users
             WHERE
-                Users.Id = Items.UserId
+                Users.Id = Items.CreateUserId
         ) [Author]
         FOR XML AUTO
     ) [Author]
 ) [Author]
+OUTER APPLY (
+    SELECT (
+        SELECT * FROM (
+            SELECT
+                Users.[Id],
+                Users.[LogonName],
+                [Name] = Users.UserName,
+                Users.[DisplayName],
+                Users.[IconUrl]
+            FROM [dbo].[Users] Users
+            WHERE
+                Users.Id = Items.LastModifyUserId
+        ) [Editor]
+        FOR XML AUTO
+    ) [Editor]
+) [Editor]
 OUTER APPLY (
     SELECT (
         SELECT * FROM (
@@ -747,6 +1009,27 @@ OUTER APPLY (
     WHERE
         ItemRevisions.ItemId = Items.Id
 ) _Revisions
+OUTER APPLY (
+    SELECT (
+        SELECT * FROM (
+            SELECT
+                Users.[Id],
+                Users.[LogonName],
+                [Name] = Users.UserName,
+                Users.[DisplayName],
+                Users.[IconUrl],
+                [Role] = Collaborators.[RoleType]
+            FROM [dbo].[Collaborators] Collaborators
+            INNER JOIN [dbo].[Users] Users
+            ON  Collaborators.UserId = Users.Id
+            WHERE
+                Collaborators.ItemId = Items.Id
+        ) Collaborator
+        ORDER BY
+            Collaborator.[Name]
+         FOR XML AUTO, ROOT('Collaborators')
+    ) Collaborators
+) [Collaborators]
 ";
         #endregion
     }

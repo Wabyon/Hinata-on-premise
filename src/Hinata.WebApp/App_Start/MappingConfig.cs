@@ -8,6 +8,7 @@
             CreateDraftModelsMap();
             CreateItemModelsMap();
             CreateCommentModelsMap();
+            CreateCollaboratorModelsMap();
         }
     }
 }

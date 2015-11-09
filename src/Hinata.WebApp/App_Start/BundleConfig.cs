@@ -47,6 +47,10 @@ namespace Hinata
                 "~/Scripts/item.item.js"
                 ));
 
+            bundles.Add(new ScriptBundle("~/scripts/view/item/editcollaborators").Include(
+                "~/Scripts/item.editcollaborators.js"
+                ));
+
             var bootstrapStylesBundle = new CustomStyleBundle("~/Content/bootstrap.less") {Orderer = new NullOrderer()};
             bootstrapStylesBundle.Include("~/Content/bootstrap/bootstrap.custom.less");
             bundles.Add(bootstrapStylesBundle);
