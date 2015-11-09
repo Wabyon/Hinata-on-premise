@@ -197,18 +197,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\highlightjs\vs.css" />
     <Content Include="Content\no-image.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="gruntfile.js" />
-    <Content Include="lib\github-markdown-css\github-markdown.css" />
-    <Content Include="lib\highlightjs\default.css" />
-    <Content Include="lib\highlightjs\highlight.pack.js" />
-    <Content Include="lib\marked\marked.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\draft.index.js" />
+    <Content Include="Scripts\highlightjs\highlight.pack.js" />
     <Content Include="Scripts\hinata.js" />
     <Content Include="Scripts\draft.edit.js" />
     <Content Include="package.json" />
@@ -295,6 +292,7 @@
     <Content Include="Content\hinata\item-viewer.less" />
     <Content Include="Content\hinata\item-list.less" />
     <Content Include="Content\bootstrap\list-group.custom.less" />
+    <Content Include="Content\hinata\diff.less" />
     <None Include="Properties\PublishProfiles\dist.pubxml" />
     <Content Include="Scripts\item.editcollaborators.js" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
@@ -307,6 +305,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jsdiff\diff.min.js" />
+    <Content Include="Scripts\marked\marked.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />

@@ -1,6 +1,33 @@
 ﻿/// <reference path="_references.js" />
+
 (function (window) {
-    "use strict";
+    'use strict';
+
+    var escapeHtml = function (str) {
+        var escapeMap = {
+            '"': '&quot;',
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            ' ': '&nbsp;',
+            "'": '&#x27;',
+            '`': '&#x60;'
+        };
+        var escapeReg = '[';
+        var reg;
+        for (var p in escapeMap) {
+            if (escapeMap.hasOwnProperty(p)) {
+                escapeReg += p;
+            }
+        }
+        escapeReg += ']';
+        reg = new RegExp(escapeReg, 'g');
+
+        str = (str === null || str === undefined) ? '' : '' + str;
+        return str.replace(reg, function (match) {
+            return escapeMap[match];
+        });
+    };
 
     var hinata = {}
 
@@ -49,6 +76,38 @@
             }
         }
         return len;
+    }
+
+    hinata.diff = function(oldText, newText) {
+        var diff = JsDiff.diffLines(oldText, newText);
+        var html = '';
+        if (diff.length !== 1) {
+            var oldLineCount = oldText.split('\n').length;
+            var newLineCount = newText.split('\n').length;
+            html = '<div class="diff-block-info">@@ -1,' + oldLineCount + ' +1,' + newLineCount + ' @@</div>';
+        }
+        diff.forEach(function(block) {
+            var symbol;
+            var className;
+            if (block.added) {
+                className = 'added';
+                symbol = '<span class="symbol">+</span>';
+            }
+            else if (block.removed) {
+                className = 'removed';
+                symbol = '<span class="symbol">-</span>';
+            } else {
+                className = 'unchanged';
+                symbol = '<span class="symbol">&nbsp;</span>';
+            }
+
+            var lines = block.value.replace(/\n+$/g,'').split('\n');
+
+            lines.forEach(function (line) {
+                html += '<div class="' + className + '">' + symbol + escapeHtml(line) + '</div>';
+            });
+        });
+        return html;
     }
 
     window.hinata = hinata;
