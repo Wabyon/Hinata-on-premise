@@ -46,6 +46,8 @@ namespace Hinata
             set { _item.Body = value; }
         }
 
+        public string PublishedBody { get; internal set; }
+
         public User Author
         {
             get { return _item.Author; }

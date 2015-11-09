@@ -41,6 +41,8 @@ namespace Hinata.Models
         [Display(Name = "本文")]
         public string Body { get; set; }
 
+        public string PublishedBody { get; set; }
+
         [MaxLength(256)]
         [AllowHtml]
         [PlaceHolder("編集履歴コメント（任意）")]

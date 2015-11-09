@@ -16,7 +16,8 @@
     <link href="http://fonts.googleapis.com/css?family=Questrial" rel="stylesheet" type="text/css"/>
     @Styles.Render("~/Content/bootstrap.less")
     @Styles.Render("~/Content/hinata.less")
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/vs.min.css">
+    @Styles.Render("~/Content/highlightjs.css")
+    @RenderSection("styles", false)
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>

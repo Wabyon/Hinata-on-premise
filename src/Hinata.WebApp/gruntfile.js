@@ -3,8 +3,14 @@
         bower: {
             install: {
                 options: {
-                    targetDir: "lib",
-                    layout: "byComponent",
+                    targetDir: "",
+                    layout : function (type, component) {
+                        if (type === 'css') {
+                            return 'Content/' + component;
+                        } else {
+                            return 'Scripts/' + component;
+                        }
+                    },
                     cleanTargetDir: false
                 }
             }

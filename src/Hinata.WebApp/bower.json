@@ -11,6 +11,18 @@
     "dependencies": {
         "marked": "~0.3.3",
         "highlightjs": "~8.5.0",
-        "github-markdown-css": "~2.0.9"
+        "jsdiff": "~2.2.0"
+    },
+    "exportsOverride": {
+        "marked": {
+            "js": "**/marked.min.js"
+        },
+        "highlightjs": {
+            "js": "**/highlight.pack.js",
+            "css": "**/vs.css"
+        },
+        "jsdiff": { 
+            "js":  "**/diff.min.js"
+        }
     }
 }

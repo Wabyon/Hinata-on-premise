@@ -164,5 +164,13 @@ namespace Hinata.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        [Route("draft/{id}/publishedbody")]
+        public async Task<string> GetPublishedBody(string id)
+        {
+            var item = await _itemDbCommand.FindAsync(id);
+            return item == null ? "" : item.Body;
+        }
     }
 }
