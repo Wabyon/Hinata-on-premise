@@ -57,6 +57,7 @@ namespace Hinata
             {
                 CurrentRevisionNo = RevisionNo,
                 Editor = editor,
+                PublishedBody = Body,
             };
         }
 

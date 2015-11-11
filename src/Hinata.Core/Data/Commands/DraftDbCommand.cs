@@ -230,7 +230,8 @@ SELECT
     [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
     [ItemCreatedDateTime] = Items.CreatedDateTime,
     [ItemRevisionCount] = _Revisions.RevisionCount,
-    Collaborators.Collaborators
+    Collaborators.Collaborators,
+    [PublishedBody] = Items.Body
 FROM [dbo].[Drafts] Drafts
 LEFT OUTER JOIN [dbo].[Items] Items
 ON  Drafts.Id = Items.Id

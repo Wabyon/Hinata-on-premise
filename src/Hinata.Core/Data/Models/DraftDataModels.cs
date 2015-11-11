@@ -51,6 +51,8 @@ namespace Hinata.Data.Models
 
         public string Body { get; set; }
 
+        public string PublishedBody { get; set; }
+
         public DateTime ItemCreatedDateTime { get; set; }
 
         public int ItemRevisionCount { get; set; }
@@ -72,6 +74,7 @@ namespace Hinata.Data.Models
                 Id = Id,
                 Title = Title,
                 Body = Body,
+                PublishedBody = PublishedBody,
                 Type = Type,
                 ItemIsPublic = ItemIsPublic,
                 ItemCreatedDateTime = ItemCreatedDateTime,

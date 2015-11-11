@@ -96,4 +96,9 @@ $(function () {
             });
         }
     }, 20000);
+
+    $('#aDiff').click(function () {
+        var diff = hinata.diff($('#PublishedBody').val(), $('#item-editor').val());
+        $('#diff-view').html(diff);
+    });
 });
