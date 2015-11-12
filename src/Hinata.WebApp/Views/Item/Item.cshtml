@@ -8,6 +8,12 @@
                 <p>この投稿は限定共有に設定されています。 投稿者本人及びURLを知っているユーザーのみアクセスすることができます。</p>
             </div>
         }
+        else if (Model.IsFreeEditable)
+        {
+            <div class="item-private-message">
+                <p>この投稿は登録済ユーザーであれば誰でも編集が可能です。</p>
+            </div>
+        }
         <div class="item-title">
             <h2>@Model.Title</h2>
             <ul class="item-box-tag-list">

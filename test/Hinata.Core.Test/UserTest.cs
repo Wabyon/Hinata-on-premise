@@ -53,5 +53,29 @@ namespace Hinata
             _memberCollaborator.IsEntitledToEditItemCollaborators(item).IsFalse("MEMBERは共同編集者を編集する権限がない");
             _otherUser.IsEntitledToEditItemCollaborators(item).IsFalse("その他のユーザーは共同編集者を編集する権限がない");
         }
+
+        [Test]
+        public void 誰でも編集権限テスト()
+        {
+            var draft = Draft.NewDraft(_author, ItemType.Article);
+            _author.IsEntitledToChangeOpenRange(draft).IsTrue("新しい下書きに対して作者は公開範囲を変更する権限がある");
+
+            var item = draft.ToItem(true, true);
+            item.AddCollaborator(new Collaborator(_ownerCollaborator) { Role = RoleType.Owner });
+            item.AddCollaborator(new Collaborator(_memberCollaborator) { Role = RoleType.Member });
+
+            var editDraftByAuthor = item.ToDraft(_author);
+            _author.IsEntitledToChangeOpenRange(editDraftByAuthor).IsTrue("誰でも編集記事の下書きに対して作者は公開範囲を変更する権限がある");
+
+            var editDraftByOwner = item.ToDraft(_ownerCollaborator);
+            _ownerCollaborator.IsEntitledToChangeOpenRange(editDraftByOwner).IsTrue("誰でも編集記事の下書きに対してOWNERは公開範囲を変更する権限がある");
+
+            var editDraftByMember = item.ToDraft(_memberCollaborator);
+            _memberCollaborator.IsEntitledToChangeOpenRange(editDraftByMember).IsFalse("誰でも編集記事の下書きに対してMEMBERは公開範囲を変更する権限がない");
+
+            var editDraftByOtherUser = item.ToDraft(_otherUser);
+            _otherUser.IsEntitledToChangeOpenRange(editDraftByOtherUser)
+                .IsFalse("誰でも編集記事の下書きに対してその他のユーザーは公開範囲を変更する権限がない");
+        }
     }
 }

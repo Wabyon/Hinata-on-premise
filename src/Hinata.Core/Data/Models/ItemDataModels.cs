@@ -15,6 +15,8 @@ namespace Hinata.Data.Models
 
         public bool IsPublic { get; set; }
 
+        public bool IsFreeEditable { get; set; }
+
         public ItemType Type { get; set; }
 
         public string CreateUserId { get; set; }
@@ -37,6 +39,7 @@ namespace Hinata.Data.Models
             RevisionNo = item.RevisionNo;
             Type = item.Type;
             IsPublic = item.IsPublic;
+            IsFreeEditable = item.IsFreeEditable;
             CreateUserId = item.Author.Id;
             LastModifyUserId = item.Editor.Id;
             Title = item.Title;
@@ -54,6 +57,8 @@ namespace Hinata.Data.Models
         public ItemType Type { get; set; }
 
         public bool IsPublic { get; set; }
+
+        public bool IsFreeEditable { get; set; }
 
         public string Author { get; set; }
 
@@ -86,6 +91,7 @@ namespace Hinata.Data.Models
                 Body = Body,
                 Type = Type,
                 IsPublic = IsPublic,
+                IsFreeEditable = IsFreeEditable,
                 CreatedDateTime = CreatedDateTime,
                 LastModifiedDateTime = LastModifiedDateTime,
                 CommentCount = CommentCount,

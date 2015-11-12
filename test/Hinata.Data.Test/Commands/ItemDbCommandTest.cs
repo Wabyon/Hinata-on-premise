@@ -419,5 +419,21 @@ namespace Hinata.Data.Commands
                 Assert.AreEqual(exception.GetType(), typeof(NotEntitledToEditItemException));
             }
         }
+
+        [Test]
+        public async Task 正常系_誰でも編集可能()
+        {
+            var draft = Draft.NewDraft(_author, ItemType.Article);
+            draft.Title = "正常系_誰でも編集可能";
+            draft.Body = "正常系_誰でも編集可能";
+            var item = draft.ToItem(true, true);
+
+            await ItemDbCommand.SaveAsync(item);
+
+            var savedItem = await ItemDbCommand.FindAsync(item.Id);
+
+            savedItem.IsStructuralEqual(item);
+            savedItem.IsFreeEditable.IsTrue();
+        }
     }
 }

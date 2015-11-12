@@ -58,6 +58,12 @@ namespace Hinata.Models
         [Display(Name = "限定共有")]
         public bool ItemIsPrivate { get; set; }
 
+        [Display(Name = "誰でも編集")]
+        public bool ItemIsFreeEditable { get; set; }
+
+        /// <summary>公開範囲を変更できるかどうか</summary>
+        public bool CanChangeOpenRange { get; set; }
+
         public EntryMode EntryMode { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

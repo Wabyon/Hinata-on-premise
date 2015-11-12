@@ -228,6 +228,7 @@ SELECT
     CurrentRevisionNo = CASE WHEN _Revisions.RevisionNo IS NULL THEN -1 ELSE _Revisions.RevisionNo END,
     Tags.Tags,
     [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
+    [ItemIsFreeEditable] = CONVERT(BIT,ISNULL(Items.IsFreeEditable, 0)),
     [ItemCreatedDateTime] = Items.CreatedDateTime,
     [ItemRevisionCount] = _Revisions.RevisionCount,
     Collaborators.Collaborators,

@@ -14,6 +14,9 @@ namespace Hinata
 
         public bool IsPublic { get; internal set; }
 
+        /// <summary>誰でも編集可能かどうか</summary>
+        public bool IsFreeEditable { get; set; }
+
         public ItemType Type { get; internal set; }
 
         public User Author { get; internal set; }
@@ -27,7 +30,10 @@ namespace Hinata
 
         public int CommentCount { get; internal set; }
 
-        public ItemTagCollection ItemTags { get { return _itemTags; } }
+        public ItemTagCollection ItemTags
+        {
+            get { return _itemTags; }
+        }
 
         public DateTime CreatedDateTime { get; internal set; }
 
@@ -55,9 +61,13 @@ namespace Hinata
 
             return new Draft(this)
             {
+                Title = Title,
+                Body = Body,
+                ItemIsPublic = IsPublic,
+                ItemIsFreeEditable = IsFreeEditable,
                 CurrentRevisionNo = RevisionNo,
                 Editor = editor,
-                PublishedBody = Body,
+                PublishedBody = Body
             };
         }
 

@@ -31,6 +31,7 @@ namespace Hinata.Controllers
         {
             var draft = Draft.NewDraft(LogonUser, itemType);
             var model = Mapper.Map<DraftEditModel>(draft);
+            model.CanChangeOpenRange = true;
 
             ViewBag.Title = "新規作成";
 
@@ -60,6 +61,8 @@ namespace Hinata.Controllers
             }
 
             var model = Mapper.Map<DraftEditModel>(draft);
+            model.CanChangeOpenRange = LogonUser.IsEntitledToChangeOpenRange(draft);
+
             return View(model);
         }
 
@@ -104,9 +107,10 @@ namespace Hinata.Controllers
             }
 
             var draft = await _draftDbCommand.FindAsync(model.Id, LogonUser) ?? Draft.NewDraft(LogonUser, model.ItemType);
+
             Mapper.Map(model, draft);
 
-            var item = draft.ToItem();
+            var item = LogonUser.IsEntitledToChangeOpenRange(draft) ? draft.ToItem(!model.ItemIsPrivate, model.ItemIsFreeEditable) : draft.ToItem();
 
             await _itemDbCommand.SaveAsync(item);
             await _draftDbCommand.DeleteAsync(draft.Id, LogonUser);

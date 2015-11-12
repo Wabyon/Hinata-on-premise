@@ -65,6 +65,8 @@ namespace Hinata.Models
 
         public bool IsPublic { get; set; }
 
+        public bool IsFreeEditable { get; set; }
+
         public ItemTagCollection ItemTags { get; set; }
 
         public DateTime CreatedDateTime { get; set; }
