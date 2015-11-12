@@ -9,7 +9,7 @@ namespace Hinata.Models
     public class UserCreateModel
     {
         [Required]
-        [PlaceHolder("一度設定すると変更できません。メールアドレスのローカル部など、他の人と重複しないようなIDを設定して下さい。例）yamada_t")]
+        [PlaceHolder("メールアドレスのローカル部など、他の人と重複しないようなIDを設定して下さい。例）yamada_t")]
         [Remote("CheckName", "User")]
         [StringLength(20, ErrorMessage = "{0} の長さは {1} までです。")]
         [RegularExpression(@"[0-9a-zA-Z-_]+", ErrorMessage = "半角英数とハイフン、アンダーバーのみ入力できます。")]
@@ -31,6 +31,13 @@ namespace Hinata.Models
     public class UserUpdateModel
     {
         public string Id { get; set; }
+
+        [PlaceHolder("変更するとユーザーページのURLも変わります。ご注意下さい。")]
+        [Remote("CheckName", "User")]
+        [StringLength(20, ErrorMessage = "{0} の長さは {1} までです。")]
+        [RegularExpression(@"[0-9a-zA-Z-_]+", ErrorMessage = "半角英数とハイフン、アンダーバーのみ入力できます。")]
+        [DisplayName("ユーザーID")]
+        public string Name { get; set; }
 
         [Required]
         [PlaceHolder("山田 太郎")]
