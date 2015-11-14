@@ -67,6 +67,8 @@ namespace Hinata.Controllers
         [HttpPost]
         public async Task<ActionResult> Save(DraftEditModel model)
         {
+            ModelState.Clear();
+
             model.EntryMode = EntryMode.SaveDraft;
             TryValidateModel(model);
 
@@ -91,6 +93,8 @@ namespace Hinata.Controllers
         [HttpPost]
         public async Task<ActionResult> Publish(DraftEditModel model)
         {
+            ModelState.Clear();
+
             model.EntryMode = EntryMode.PublishItem;
             TryValidateModel(model);
 
