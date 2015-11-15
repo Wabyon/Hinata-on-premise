@@ -123,7 +123,7 @@ $(function () {
         $firstAnchor = getFirstVisibleMenuAnchor();
         $menu.children('a').each(function (i, e) {
             var $a = $(e);
-            if ($firstAnchor.text() == $a.text()) {
+            if ($firstAnchor && $firstAnchor.text() == $a.text()) {
                 $menu.children('a.active').removeClass('active');
                 $a.addClass('active');
             }
