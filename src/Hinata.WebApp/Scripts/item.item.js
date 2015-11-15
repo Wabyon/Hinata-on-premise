@@ -1,5 +1,8 @@
 ﻿/// <reference path="_references.js" />
-$(function() {
+$(function () {
+    var $menu = $('#menu-list');
+    var $menuOffsetTop = $menu.offset().top;
+
     marked.setOptions({
         gfm: true,
         tables: true,
@@ -20,7 +23,7 @@ $(function() {
 
     $("#comment-editor").tabIndent();
 
-    $("#aPreview").click(function() {
+    $("#aPreview").click(function () {
         var src = $("textarea#comment-editor").val();
         var html = marked(src);
         $("#comment-preview").html(html);
@@ -63,4 +66,74 @@ $(function() {
             }
         }
     });
+
+    createMenu = function () {
+        $('#item-body').children('h1,h2').each(function () {
+            var $header = $(this);
+            var $text = $header.text();
+            $header.addClass('menu-anchor');
+            $header.attr('id', $text);
+
+            var $a = $('<a href="#' + $text + '">' + $text + '</a>');
+            $menu.append($a);
+
+            var $tagName = $header.prop('tagName');
+            if ($tagName === "H1") {
+                $a.addClass('menu-item-h1');
+            }
+            else if ($tagName === "H2") {
+                $a.addClass('menu-item-h2');
+            }
+        });
+    };
+
+    floatMenu = function () {
+        if ($(window).scrollTop() > $menuOffsetTop) {
+            $menu.addClass('fixed-menu');
+        } else {
+            $menu.removeClass('fixed-menu');
+        }
+    };
+
+    isVisibleInViewport = function (e) {
+        var el = $(e);
+        var top = $(window).scrollTop();
+        var bottom = top + $(window).height();
+
+        var eltop = el.offset().top;
+        var elbottom = eltop + el.height();
+
+        return (elbottom <= bottom) && (eltop >= top);
+    };
+
+    getFirstVisibleMenuAnchor = function () {
+        var $firstAnchor;
+        $('.menu-anchor').each(function (i, e) {
+            var $h = $(e);
+            if (isVisibleInViewport($h)) {
+                $firstAnchor = $h;
+                return false;
+            }
+        });
+
+        return $firstAnchor;
+    };
+
+    setActiveMenuItem = function () {
+        $firstAnchor = getFirstVisibleMenuAnchor();
+        $menu.children('a').each(function (i, e) {
+            var $a = $(e);
+            if ($firstAnchor.text() == $a.text()) {
+                $menu.children('a.active').removeClass('active');
+                $a.addClass('active');
+            }
+        });
+    };
+
+    $(window).scroll(function () {
+        floatMenu();
+        setActiveMenuItem();
+    });
+
+    createMenu();
 });
