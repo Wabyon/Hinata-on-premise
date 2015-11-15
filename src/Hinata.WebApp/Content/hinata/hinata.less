@@ -35,7 +35,7 @@
     }
 }
 
-.comment-area {
+#comment-area {
     /*padding-left: 10px;
     padding-right: 10px;*/
 }
@@ -131,4 +131,26 @@ textarea.comment-editor {
     form {
         margin-top: 11px;
     }
+}
+
+.fixed-menu {
+    position: fixed;
+    top: 5px;
+    z-index: 1;
+    background: white;
+}
+.menu-item-h1,
+.menu-item-h2 {
+    display: block;
+    margin-bottom: -1px;
+    border: 1px solid #c8b4b4;
+}
+.menu-item-h1 {
+    padding: 10px 5px;
+}
+.menu-item-h2 {
+    padding: 10px 20px;
+}
+#page-menu a.active{
+    font-weight:bold;
 }
