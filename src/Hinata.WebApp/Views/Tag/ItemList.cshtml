@@ -11,7 +11,7 @@
                 <span class="badge">@item.CommentCount</span>
             </div>
             <div class="icon">
-                <a href="@Url.Action("Index", "User", new {name = @item.AuthorName})"><img src="@Url.Content(item.AuthorIconUrl)" alt="@item.AuthorName" class="icon-image" /></a>
+                <a href="@Url.Action("Index", "User", new {name = @item.AuthorName})"><img src="@Url.ResizedImage(item.AuthorIconUrl, 44)" alt="@item.AuthorName" class="icon-image" /></a>
             </div>
             <div>
                 <p class="list-group-item-text item-meta-info">
