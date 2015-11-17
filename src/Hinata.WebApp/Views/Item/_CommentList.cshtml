@@ -8,7 +8,7 @@
         <div class="comment-content">
             <div class="comment-user">
                 <div>
-                    <a href="@Url.Action("Index", "User", new {name = @comment.CommentUserName})"><img src="@Url.Content(comment.CommentUserIconUrl)" alt="@comment.CommentUserName" class="icon-image"/></a>
+                    <a href="@Url.Action("Index", "User", new {name = @comment.CommentUserName})"><img src="@Url.ResizedImage(comment.CommentUserIconUrl, 26)" alt="@comment.CommentUserName" class="icon-image"/></a>
                     @Html.ActionLink(comment.CommentUserDisplayName, "Index", "User", new { name = @comment.CommentUserName }, null)&nbsp;
                     @comment.CommentLastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
                 </div>

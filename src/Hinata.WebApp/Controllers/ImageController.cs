@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Bloqs.Http.Net;
 using Hinata.Web.Mvc;
+using System.Net.Http;
+using ImageMagick;
 
 namespace Hinata.Controllers
 {
@@ -85,6 +87,34 @@ namespace Hinata.Controllers
             {
                 return HttpNotFound();
             }
+        }
+
+        [HttpGet]
+        [Route("{width}x{height}")]
+        [OutputCache(Duration = 60 * 60 * 24)]
+        public async Task<ActionResult> Resize(string u, int width, int height)
+        {
+            var url = u;
+
+            var client = new HttpClient();
+
+            var proxyRequest = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var proxyResponse = await client.GetAsync(url);
+            var contentType = proxyResponse.Content.Headers.ContentType.MediaType;
+
+            var resized = new MemoryStream();
+
+            using (var original = await proxyResponse.Content.ReadAsStreamAsync())
+            using (var image = new MagickImage(original))
+            {
+                image.Resize(width, height);
+                image.Write(resized);
+            }
+
+            resized.Seek(0, SeekOrigin.Begin);
+
+            return File(resized, contentType);
         }
     }
 }
