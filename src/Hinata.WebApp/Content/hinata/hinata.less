@@ -10,17 +10,60 @@
         width: 22px;
         height: 22px;
     }
+    .global-search {
+        margin-left: 16px;
+    }
 }
 
 .list-group-item {
+
+    position: relative;
+    padding: 10px 0;
+    border-bottom: none;
+    border-top: solid 1px #dddddd;
+
+    &:first-child {
+        border-top: none;
+    }
+
+    .comment-count {
+        position: absolute;
+        top: 10px;
+        right: 0;
+
+        .badge {
+            font-weight: normal;
+            font-family: Consolas Menlo;
+            padding: 1px;
+            display: block;
+            min-width: 20px;
+            height:14px;
+            line-height: 14px;
+            vertical-align: middle;
+        }
+    }
+
     .icon {
         float: left;
-        padding-right: 10px;
+        padding-right: 12px;
     }
 
     img.icon-image {
-        width: 36px;
-        height: 36px;
+        position: relative;
+        top: -1px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .list-group-item-heading {
+        line-height: 22px;
+        vertical-align: bottom;
+        font-size: 18px;
+        font-weight: bold;
+
+        a {
+            color: #BE7979;
+        }
     }
 }
 
@@ -131,4 +174,9 @@ textarea.comment-editor {
     form {
         margin-top: 11px;
     }
+}
+
+.footer {
+    border-top: solid 1px #eeeeee;
+    padding-top: 8px;
 }
