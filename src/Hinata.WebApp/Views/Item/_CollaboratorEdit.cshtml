@@ -1,7 +1,7 @@
 ﻿@model CollaboratorEditModel
 
 <tr data-id="@Model.Id">
-    <td class="col-xs-3 col-sm-3 col-md-3"><img src="@Url.Content(Model.IconUrl)" style="width: 20px; height: 20px" />&nbsp;@Model.DisplayName</td>
+    <td class="col-xs-3 col-sm-3 col-md-3"><img src="@Url.ResizedImage(Model.IconUrl, 20)" style="width: 20px; height: 20px" />&nbsp;@Model.DisplayName</td>
     @if (Model.Id == ViewBag.LogonUser.Id)
     {
         <td class="col-xs-3 col-sm-3 col-md-3">@Model.Role.ToString()</td>
