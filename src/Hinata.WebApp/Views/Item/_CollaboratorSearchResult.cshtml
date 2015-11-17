@@ -4,7 +4,7 @@
     @foreach (var collaborator in Model)
     {
         <button type="button" class="list-group-item" data-id="@collaborator.Id" data-url="@Url.Action("AddCollaborator","Item", new{userId = collaborator.Id})">
-            <img src="@Url.Content(collaborator.IconUrl)" style="width: 30px; height: 30px"/>
+            <img src="@Url.ResizedImage(collaborator.IconUrl, 30)" style="width: 30px; height: 30px"/>
             &nbsp;
             <span>@collaborator.DisplayName</span>
             &nbsp;
