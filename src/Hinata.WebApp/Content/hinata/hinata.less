@@ -155,7 +155,7 @@ textarea.comment-editor {
         background-color: #eee;
         font-weight: @btn-font-weight;
         touch-action: manipulation;
-                border-radius: 3px;
+        border-radius: 3px;
 
         input[type="file"] {
             opacity: 0;
@@ -184,29 +184,24 @@ textarea.comment-editor {
 .fixed-menu {
     position: fixed;
     top: 5px;
+    bottom: 5px;
+    overflow-y: auto;
     z-index: 1;
     background: white;
 }
-.menu-item-h1,
-.menu-item-h2 {
+
+.menu-item {
+    padding: 6px 0px;
+}
+
+#page-menu li {
     display: block;
-    margin-bottom: -1px;
-    border: 1px solid #c8b4b4;
 }
-.menu-item-h1 {
-    padding: 10px 5px;
+
+#page-menu li a {
+    display: block;
 }
-.menu-item-h2 {
-    padding: 10px 20px;
-}
-#page-menu a.active{
-    font-weight:bold;
-}
-#menu-list > a:first-child{
-    border-top-right-radius : 5px;
-    border-top-left-radius : 5px;
-}
-#menu-list > a:last-child{
-    border-bottom-right-radius : 5px;
-    border-bottom-left-radius : 5px;
+
+#page-menu li.active {
+    background-color: #efefef;
 }

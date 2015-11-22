@@ -68,25 +68,31 @@ $(function () {
     });
 
     createMenu = function () {
-        $('#item-body').children('h1,h2').each(function () {
+        var $idCount = {};
+        $('#item-body').children('h1,h2,h3,h4,h5,h6').each(function () {
             var $header = $(this);
             var $text = $header.text();
+            var $aId = '';
             $header.addClass('menu-anchor');
-            $header.attr('id', $text);
+            if ($idCount[$text]) {
+                var currentCount = parseInt($idCount[$text]);
+                $aId = $text + '-' + (++currentCount).toString();
+                $idCount[$text] = currentCount;
+            }
+            else {
+                $aId = $text;
+                $idCount[$text] = 1;
+            }
+            $header.attr('id', $aId);
 
-            var $a = $('<a href="#' + $text + '">' + $text + '</a>');
+            var $a = $('<li><a href="#' + $aId + '" aId="' + $aId + '">' + $text + '</a></li>');
             $menu.append($a);
 
-            var $tagName = $header.prop('tagName');
-            if ($tagName === "H1") {
-                $a.addClass('menu-item-h1');
-            }
-            else if ($tagName === "H2") {
-                $a.addClass('menu-item-h2');
-            }
+            var $nestLevel = parseInt($header.prop('tagName').replace('H', ''));
+            $a.addClass('menu-item');
+            $a.css('padding-left', ($nestLevel * 1).toString() + 'em')
         });
     };
-
     floatMenu = function () {
         if ($(window).scrollTop() > $menuOffsetTop) {
             $menu.addClass('fixed-menu');
@@ -121,11 +127,16 @@ $(function () {
 
     setActiveMenuItem = function () {
         $firstAnchor = getFirstVisibleMenuAnchor();
-        $menu.children('a').each(function (i, e) {
-            var $a = $(e);
-            if ($firstAnchor && $firstAnchor.text() == $a.text()) {
-                $menu.children('a.active').removeClass('active');
-                $a.addClass('active');
+        if (!$firstAnchor || $firstAnchor.length <= 0) return;
+
+        var $menuItems = $menu.find('.menu-item');
+        $menuItems.each(function (i, e) {
+            var $li = $(e);
+            $li.removeClass('active');
+
+            var $a = $li.children('a');
+            if ($firstAnchor[0].id == $a.attr('aId')) {
+                $li.addClass('active');
             }
         });
     };
