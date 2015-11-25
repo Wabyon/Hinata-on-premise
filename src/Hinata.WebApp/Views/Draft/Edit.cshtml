@@ -126,6 +126,48 @@
     @Scripts.Render("~/bundles/markedjs")
     @Scripts.Render("~/bundles/highlightjs")
     @Scripts.Render("~/bundles/jsdiff")
-    @Scripts.Render("~/scripts/view/draft/edit")
+        @Scripts.Render("~/scripts/view/draft/edit")
+        <script>
+        $('#item-editor').on('paste', function (event) {
+            var $self = $(this);
+            if (!event.originalEvent.clipboardData) return;
+            var items = event.originalEvent.clipboardData.items; // ここがミソ
+            for (var i = 0 ; i < items.length ; i++) {
+                var item = items[i];
+                if (item.type.indexOf("image") != -1) {
+                    // 画像のみサーバへ送信する
+                    var data = new FormData();
+                    var file = item.getAsFile();
+                    data.append("file", file);
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Upload", "Image", new { itemid = Model.Id })",
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (result) {
+                            hinata.insertAtCaret("item-editor", "![" + result.OriginalFileName + "](" + result.Url + ")");
+
+                            var src = $("#item-editor").val();
+                            var html = marked(src);
+                            $("#item-view").html(html);
+                            $("pre code").each(function (i, block) {
+                                hljs.highlightBlock(block);
+                            });
+                        },
+                        error: function (xhr, status, p3, p4) {
+                            if (xhr.responseText && xhr.responseText[0] === "{") {
+                                var err = JSON.parse(xhr.responseText).Message;
+                                alert(err);
+                            }
+                        },
+                        complete: function () {
+                            $self.val("");
+                        }
+                    });
+                }
+            }
+        });
+        </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 ﻿<div>
-    <form class="form-inline" role="search" method="GET" action="@Url.Action("Index", "Search")">
+    <form class="form-inline global-search" role="search" method="GET" action="@Url.Action("Index", "Search")">
         @if (ViewBag.Query == null)
         {
             <input name="q" class="form-control input-sm" type="text" placeholder="キーワードを入力"/>
