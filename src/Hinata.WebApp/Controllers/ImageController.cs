@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using Bloqs.Http.Net;
 using Hinata.Web.Mvc;
@@ -94,27 +95,83 @@ namespace Hinata.Controllers
         [OutputCache(Duration = 60 * 60 * 24)]
         public async Task<ActionResult> Resize(string u, int width, int height)
         {
-            var url = u;
-
-            var client = new HttpClient();
-
-            var proxyRequest = new HttpRequestMessage(HttpMethod.Get, url);
-
-            var proxyResponse = await client.GetAsync(url);
-            var contentType = proxyResponse.Content.Headers.ContentType.MediaType;
-
-            var resized = new MemoryStream();
-
-            using (var original = await proxyResponse.Content.ReadAsStreamAsync())
-            using (var image = new MagickImage(original))
+            using (var original = await GetOriginalImage(u))
+            using (var image = new MagickImage(original.Stream))
             {
                 image.Resize(width, height);
+
+                var resized = new MemoryStream();
+
                 image.Write(resized);
+
+                resized.Seek(0, SeekOrigin.Begin);
+
+                return File(resized, original.ContentType);
+            }
+        }
+        private async Task<ImageInfo> GetOriginalImage(string u)
+        {
+            Uri url;
+
+            if (Url.IsLocalUrl(u))
+            {
+                var contentDir = Server.MapPath("~/Content");
+                var path = Server.MapPath(u);
+
+                if (!path.StartsWith(contentDir, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new HttpException(403, "指定されたパスは不正です。");
+                }
+                if (!_permittedExtensions.Contains(Path.GetExtension(path).TrimStart('.')))
+                {
+                    throw new HttpException(403, "指定されたパスは不正です。");
+                }
+
+                return new ImageInfo
+                {
+                    Stream = System.IO.File.OpenRead(path),
+                    ContentType = MimeMapping.GetMimeMapping(path)
+                };
             }
 
-            resized.Seek(0, SeekOrigin.Begin);
+            if (Uri.TryCreate(u, UriKind.Absolute, out url))
+            {
+                var client = new HttpClient();
 
-            return File(resized, contentType);
+                var response = await client.GetAsync(url);
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new HttpException(404, "");
+                }
+
+                var contentType = response.Content.Headers.ContentType.MediaType;
+
+                var stream = await response.Content.ReadAsStreamAsync();
+
+                return new ImageInfo
+                {
+                    Stream = stream,
+                    ContentType = contentType
+                };
+            }
+
+            throw new HttpException(404, "");
+        }
+
+        private struct ImageInfo : IDisposable
+        {
+            public Stream Stream;
+            public string ContentType;
+
+            public void Dispose()
+            {
+                var stream = Stream;
+                if (stream != null)
+                {
+                    stream.Dispose();
+                }
+            }
         }
     }
 }
