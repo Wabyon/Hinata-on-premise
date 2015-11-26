@@ -12,7 +12,7 @@
     }
     .global-search {
         margin-left: 16px;
-    }
+}
 }
 
 .list-group-item {
@@ -78,7 +78,7 @@
     }
 }
 
-.comment-area {
+#comment-area {
     /*padding-left: 10px;
     padding-right: 10px;*/
 }
@@ -155,7 +155,7 @@ textarea.comment-editor {
         background-color: #eee;
         font-weight: @btn-font-weight;
         touch-action: manipulation;
-                border-radius: 3px;
+        border-radius: 3px;
 
         input[type="file"] {
             opacity: 0;
@@ -179,4 +179,29 @@ textarea.comment-editor {
 .footer {
     border-top: solid 1px #eeeeee;
     padding-top: 8px;
+}
+
+.fixed-menu {
+    position: fixed;
+    top: 5px;
+    bottom: 5px;
+    overflow-y: auto;
+    z-index: 1;
+    background: white;
+}
+
+.menu-item {
+    padding: 6px 0px;
+}
+
+#page-menu li {
+    display: block;
+}
+
+#page-menu li a {
+    display: block;
+}
+
+#page-menu li.active {
+    background-color: #efefef;
 }
