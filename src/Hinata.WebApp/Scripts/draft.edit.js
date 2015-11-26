@@ -101,4 +101,16 @@ $(function () {
         var diff = hinata.diff($('#PublishedBody').val(), $('#item-editor').val());
         $('#diff-view').html(diff);
     });
+
+    $('.datetime').datetimepicker({
+        format: 'YYYY/MM/DD HH:mm',
+        useCurrent: false,
+        // Number of minutes the up/down arrow's will move the minutes value in the time picker
+        stepping: 15,
+        // Shows the picker side by side when using the time and date together.
+        sideBySide: true,
+        locale: 'ja',
+        showTodayButton: true,
+        showClear: true
+    });
 });

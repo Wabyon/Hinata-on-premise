@@ -21,11 +21,14 @@ namespace Hinata
             bundles.Add(new ScriptBundle("~/scripts/view/item/index").Include("~/Scripts/item.index.js"));
             bundles.Add(new ScriptBundle("~/scripts/view/item/item").Include("~/Scripts/item.item.js"));
             bundles.Add(new ScriptBundle("~/scripts/view/item/editcollaborators").Include("~/Scripts/item.editcollaborators.js"));
+            bundles.Add(new ScriptBundle("~/bundles/datetimepicker").Include("~/Scripts/moment-with-locales.min.js",
+                                                                             "~/Scripts/bootstrap-datetimepicker.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/highlightjs.css").Include("~/Content/highlightjs/vs.css"));
 
             var bootstrapStylesBundle = new CustomStyleBundle("~/Content/bootstrap.less") {Orderer = new NullOrderer()};
             bootstrapStylesBundle.Include("~/Content/bootstrap/bootstrap.custom.less");
+            bootstrapStylesBundle.Include("~/Content/bootstrap-datetimepicker-build.less");
             bundles.Add(bootstrapStylesBundle);
 
             var hinataStylesBundle = new CustomStyleBundle("~/Content/hinata.less") { Orderer = new NullOrderer() };

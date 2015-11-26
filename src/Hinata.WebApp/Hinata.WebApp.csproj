@@ -202,6 +202,8 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="gruntfile.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\draft.index.js" />
@@ -293,6 +295,8 @@
     <Content Include="Content\hinata\item-list.less" />
     <Content Include="Content\bootstrap\list-group.custom.less" />
     <Content Include="Content\hinata\diff.less" />
+    <Content Include="Content\bootstrap-datetimepicker-build.less" />
+    <Content Include="Content\_bootstrap-datetimepicker.less" />
     <None Include="Properties\PublishProfiles\dist.pubxml" />
     <Content Include="Scripts\item.editcollaborators.js" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
@@ -308,6 +312,10 @@
     <Content Include="Scripts\jsdiff\diff.min.js" />
     <Content Include="Scripts\marked\marked.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
