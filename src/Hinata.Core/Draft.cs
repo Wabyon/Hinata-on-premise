@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Hinata
 {
     public class Draft
     {
         private readonly Item _item;
+        private readonly ItemTagCollection _itemTags = new ItemTagCollection();
 
         public bool IsContributed
         {
@@ -28,23 +30,13 @@ namespace Hinata
             set { _item.Type = value; }
         }
 
-        public bool ItemIsPublic
-        {
-            get { return _item.IsPublic; }
-            set { _item.IsPublic = value; }
-        }
+        public bool ItemIsPublic { get; internal set; }
 
-        public string Title
-        {
-            get { return _item.Title; }
-            set { _item.Title = value; }
-        }
+        public bool ItemIsFreeEditable { get; internal set; }
 
-        public string Body
-        {
-            get { return _item.Body; }
-            set { _item.Body = value; }
-        }
+        public string Title { get; set; }
+
+        public string Body { get; set; }
 
         public string PublishedBody { get; internal set; }
 
@@ -55,11 +47,7 @@ namespace Hinata
         }
 
         /// <summary>編集者</summary>
-        public User Editor
-        {
-            get { return _item.Editor; }
-            set { _item.Editor = value; }
-        }
+        public User Editor { get; set; }
 
         public IReadOnlyCollection<Collaborator> Collaborators
         {
@@ -83,7 +71,7 @@ namespace Hinata
 
         public ItemTagCollection ItemTags
         {
-            get { return _item.ItemTags; }
+            get { return _itemTags; }
         }
 
         internal int ItemRevisionCount
@@ -123,14 +111,27 @@ namespace Hinata
 
         public Item ToItem(bool isPublic)
         {
+            return ToItem(isPublic, _item.IsFreeEditable);
+        }
+
+        public Item ToItem(bool isPublic, bool isFreeEditable)
+        {
             if (!IsContributed)
             {
                 _item.CreatedDateTime = DateTime.Now;
             }
+
+            _item.Title = Title;
+            _item.Body = Body;
+            _item.Editor = Editor;
             _item.IsPublic = isPublic;
+            _item.IsFreeEditable = isFreeEditable;
             _item.LastModifiedDateTime = DateTime.Now;
             _item.Comment = Comment;
             _item.RevisionNo = CurrentRevisionNo + 1;
+
+            _item.ItemTags.Clear();
+            _item.ItemTags.AddRange(_itemTags);
 
             return _item;
         }

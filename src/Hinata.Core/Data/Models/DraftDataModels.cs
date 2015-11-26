@@ -43,6 +43,8 @@ namespace Hinata.Data.Models
 
         public bool ItemIsPublic { get; set; }
 
+        public bool ItemIsFreeEditable { get; set; }
+
         public string Author { get; set; }
 
         public string Editor { get; set; }
@@ -77,6 +79,7 @@ namespace Hinata.Data.Models
                 PublishedBody = PublishedBody,
                 Type = Type,
                 ItemIsPublic = ItemIsPublic,
+                ItemIsFreeEditable = ItemIsFreeEditable,
                 ItemCreatedDateTime = ItemCreatedDateTime,
                 ItemRevisionCount = ItemRevisionCount,
                 LastModifiedDateTime = LastModifiedDateTime,

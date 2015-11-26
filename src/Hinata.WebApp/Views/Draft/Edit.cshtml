@@ -102,11 +102,24 @@
             </div>
             <div class="col-md-3">
                 <div class="pull-right">
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBoxFor(m => m.ItemIsPrivate)&nbsp;@Html.DisplayNameFor(m => m.ItemIsPrivate)
-                        </label>
-                    </div>
+                    @if (Model.CanChangeOpenRange)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBoxFor(m => m.ItemIsPrivate)&nbsp;@Html.DisplayNameFor(m => m.ItemIsPrivate)
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBoxFor(m => m.ItemIsFreeEditable)&nbsp;@Html.DisplayNameFor(m => m.ItemIsFreeEditable)
+                            </label>
+                        </div>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(m => m.ItemIsPrivate)
+                        @Html.HiddenFor(m => m.ItemIsFreeEditable)
+                    }
                     <button name="Draft" type="button" class="btn btn-default" data-action="@Url.Action("Save")">下書き保存</button>
                     <button name="Submit" type="button" class="btn btn-primary" data-action="@Url.Action("Publish")">投稿する</button>
                 </div>

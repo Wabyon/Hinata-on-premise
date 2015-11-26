@@ -105,6 +105,10 @@ namespace Hinata
 
             if (target.Collaborators.Contains(this)) return true;
 
+            if (this == Anonymous || this == Unknown) return false;
+
+            if (target.IsFreeEditable) return true;
+
             return false;
         }
 
@@ -148,6 +152,22 @@ namespace Hinata
             if (this == Unknown) return false;
 
             return true;
+        }
+
+        /// <summary>指定された下書きの公開範囲（限定共有や誰でも編集）を変更する権利を所持しているか判断します。</summary>
+        /// <param name="target">記事</param>
+        /// <returns></returns>
+        public bool IsEntitledToChangeOpenRange(Draft target)
+        {
+            if (target == null) throw new ArgumentNullException("target");
+
+            if (!target.IsContributed) return true;
+
+            if (target.Author == this) return true;
+
+            if (target.Collaborators.Where(x => x.Role == RoleType.Owner).Contains(this)) return true;
+
+            return false;
         }
     }
 }

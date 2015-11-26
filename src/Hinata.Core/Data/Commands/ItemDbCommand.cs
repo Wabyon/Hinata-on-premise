@@ -375,7 +375,8 @@ BEGIN
         [Title] = @Title,
         [Body] = @Body,
         [CreatedDateTime] = @CreatedDateTime,
-        [LastModifiedDateTime] = @LastModifiedDateTime
+        [LastModifiedDateTime] = @LastModifiedDateTime,
+        [IsFreeEditable] = @IsFreeEditable
     WHERE
         [Id] = @Id
 END
@@ -390,7 +391,8 @@ BEGIN
         [Title],
         [Body],
         [CreatedDateTime],
-        [LastModifiedDateTime]
+        [LastModifiedDateTime],
+        [IsFreeEditable]
     ) VALUES (
         @Id,
         @CreateUserId,
@@ -400,7 +402,8 @@ BEGIN
         @Title,
         @Body,
         @CreatedDateTime,
-        @LastModifiedDateTime
+        @LastModifiedDateTime,
+        @IsFreeEditable
     )
 END
 
@@ -415,7 +418,8 @@ INSERT INTO [dbo].[ItemRevisions] (
     [Body],
     [Comment],
     [CreatedDateTime],
-    [ModifiedDateTime]
+    [ModifiedDateTime],
+    [IsFreeEditable]
 ) VALUES (
     @Id,
     @RevisionNo,
@@ -427,7 +431,8 @@ INSERT INTO [dbo].[ItemRevisions] (
     @Body,
     @Comment,
     @CreatedDateTime,
-    @LastModifiedDateTime
+    @LastModifiedDateTime,
+    @IsFreeEditable
 )
 
 ";
@@ -918,6 +923,7 @@ SELECT
     Items.[Id],
     Items.[Type],
     Items.[IsPublic],
+    Items.[IsFreeEditable],
     [Author].Author,
     [Editor].Editor,
     Items.[Title],
