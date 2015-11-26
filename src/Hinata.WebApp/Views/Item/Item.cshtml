@@ -70,17 +70,24 @@
     </div>
 </div>
 <div class="container">
-    <div class="item-viewer">
-        @Html.Raw(Model.HtmlBody)
-    </div>
-    <div class="comment-area">
-        @Html.Partial("_CommentList", Model.Comments)
-        <div class="comment-editor-area">
-            @if (Model.CanWriteComments)
-            {
-                <hr />
-                @Html.Partial("_CommentEdit", Model.NewComment)
-            }
+    <div style="display:table;width:100%;">
+        <div style="display:table-cell;">
+            <div class="item-viewer" id="item-body">
+                @Html.Raw(Model.HtmlBody)
+            </div>
+            <div id="comment-area">
+                @Html.Partial("_CommentList", Model.Comments)
+                <div class="comment-editor-area">
+                    @if (Model.CanWriteComments)
+                    {
+                        <hr />
+                        @Html.Partial("_CommentEdit", Model.NewComment)
+                    }
+                </div>
+            </div>
+        </div>
+        <div id="page-menu" style="width:300px;display:table-cell;">
+            <ul id="menu-list" style="width:300px;" />
         </div>
     </div>
 </div>
