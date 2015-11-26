@@ -1,5 +1,8 @@
 ﻿/// <reference path="_references.js" />
-$(function() {
+$(function () {
+    var $menu = $('#menu-list');
+    var $menuOffsetTop = $menu.offset().top;
+
     marked.setOptions({
         gfm: true,
         tables: true,
@@ -20,7 +23,7 @@ $(function() {
 
     $("#comment-editor").tabIndent();
 
-    $("#aPreview").click(function() {
+    $("#aPreview").click(function () {
         var src = $("textarea#comment-editor").val();
         var html = marked(src);
         $("#comment-preview").html(html);
@@ -63,4 +66,85 @@ $(function() {
             }
         }
     });
+
+    createMenu = function () {
+        var $idCount = {};
+        $('#item-body').children('h1,h2,h3,h4,h5,h6').each(function () {
+            var $header = $(this);
+            var $text = $header.text();
+            var $aId = '';
+            $header.addClass('menu-anchor');
+            if ($idCount[$text]) {
+                var currentCount = parseInt($idCount[$text]);
+                $aId = $text + '-' + (++currentCount).toString();
+                $idCount[$text] = currentCount;
+            }
+            else {
+                $aId = $text;
+                $idCount[$text] = 1;
+            }
+            $header.attr('id', $aId);
+
+            var $a = $('<li><a href="#' + $aId + '" aId="' + $aId + '">' + $text + '</a></li>');
+            $menu.append($a);
+
+            var $nestLevel = parseInt($header.prop('tagName').replace('H', ''));
+            $a.addClass('menu-item');
+            $a.css('padding-left', ($nestLevel * 1).toString() + 'em')
+        });
+    };
+    floatMenu = function () {
+        if ($(window).scrollTop() > $menuOffsetTop) {
+            $menu.addClass('fixed-menu');
+        } else {
+            $menu.removeClass('fixed-menu');
+        }
+    };
+
+    isVisibleInViewport = function (e) {
+        var el = $(e);
+        var top = $(window).scrollTop();
+        var bottom = top + $(window).height();
+
+        var eltop = el.offset().top;
+        var elbottom = eltop + el.height();
+
+        return (elbottom <= bottom) && (eltop >= top);
+    };
+
+    getFirstVisibleMenuAnchor = function () {
+        var $firstAnchor;
+        $('.menu-anchor').each(function (i, e) {
+            var $h = $(e);
+            if (isVisibleInViewport($h)) {
+                $firstAnchor = $h;
+                return false;
+            }
+        });
+
+        return $firstAnchor;
+    };
+
+    setActiveMenuItem = function () {
+        $firstAnchor = getFirstVisibleMenuAnchor();
+        if (!$firstAnchor || $firstAnchor.length <= 0) return;
+
+        var $menuItems = $menu.find('.menu-item');
+        $menuItems.each(function (i, e) {
+            var $li = $(e);
+            $li.removeClass('active');
+
+            var $a = $li.children('a');
+            if ($firstAnchor[0].id == $a.attr('aId')) {
+                $li.addClass('active');
+            }
+        });
+    };
+
+    $(window).scroll(function () {
+        floatMenu();
+        setActiveMenuItem();
+    });
+
+    createMenu();
 });
