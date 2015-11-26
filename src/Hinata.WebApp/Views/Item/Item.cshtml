@@ -47,14 +47,14 @@
             </div>
         }
         <div class="item-author">
-            <a href="@Url.Action("Index", "User", new { name = @Model.AuthorName })"><img src="@Url.Content(Model.AuthorIconUrl)" alt="@Model.AuthorName" class="icon-image" /></a>
+            <a href="@Url.Action("Index", "User", new { name = @Model.AuthorName })"><img src="@Url.ResizedImage(Model.AuthorIconUrl, 26)" alt="@Model.AuthorName" class="icon-image" /></a>
             @Html.ActionLink(Model.AuthorDisplayName, "Index", "User", new { name = @Model.AuthorName }, null)&nbsp;さんが&nbsp;@Model.CreatedDateTime.ToString("yyyy/MM/dd HH:mm:ss")&nbsp;に作成
             @if (Model.HasModified)
             {
                 <span>&nbsp;(</span>
                 if (Model.AuthorName != Model.EditorName)
                 {
-                    <a href="@Url.Action("Index", "User", new { name = @Model.EditorName })"><img src="@Url.Content(Model.EditorIconUrl)" alt="@Model.EditorName" class="icon-image" /></a>
+                    <a href="@Url.Action("Index", "User", new { name = @Model.EditorName })"><img src="@Url.ResizedImage(Model.EditorIconUrl, 26)" alt="@Model.EditorName" class="icon-image" /></a>
                     @Html.ActionLink(@Model.EditorDisplayName, "Index", "User", new { name = @Model.EditorName }, null)<span>&nbsp;さんが</span>
                 }
                 @Model.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
