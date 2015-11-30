@@ -39,6 +39,10 @@ namespace Hinata
 
         internal string Comment { get; set; }
 
+        public DateTime? PublishSince { get; set; }
+
+        public DateTime? PublishUntil { get; set; }
+
         /// <summary>共同編集者</summary>
         public IReadOnlyCollection<Collaborator> Collaborators
         {

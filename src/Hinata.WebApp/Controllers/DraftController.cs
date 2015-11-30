@@ -112,6 +112,9 @@ namespace Hinata.Controllers
 
             var item = draft.ToItem();
 
+            item.PublishSince = model.PublishSince;
+            item.PublishUntil = model.PublishUntil;
+
             await _itemDbCommand.SaveAsync(item);
             await _draftDbCommand.DeleteAsync(draft.Id, LogonUser);
 

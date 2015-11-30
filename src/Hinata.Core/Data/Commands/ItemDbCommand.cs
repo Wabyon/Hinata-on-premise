@@ -117,7 +117,7 @@ FETCH NEXT @Take ROWS ONLY
             var sql = string.Format(@"
 {0}
 WHERE
-    Items.[IsPublic] = 1
+    PublicType.[PublicType] = 1
 ORDER BY
     _LastModifiedDateTime.[LastModifiedDateTime] DESC
 OFFSET @Skip ROWS
@@ -143,7 +143,7 @@ FETCH NEXT @Take ROWS ONLY
             var sql = string.Format(@"
 {0}
 WHERE
-    Items.[IsPublic] = 1
+    PublicType.[PublicType] = 1
 AND Items.[Type] = @ItemType
 ORDER BY
     _LastModifiedDateTime.[LastModifiedDateTime] DESC
@@ -172,7 +172,7 @@ FETCH NEXT @Take ROWS ONLY
             var sql = string.Format(@"
 {0}
 WHERE
-    Items.[IsPublic] = 1
+    PublicType.[PublicType] = 1
 AND EXISTS (
     SELECT *
     FROM [dbo].[ItemTags] _Tags
@@ -205,7 +205,7 @@ FETCH NEXT @Take ROWS ONLY
             var sql = string.Format(@"
 {0}
 WHERE
-    Items.[IsPublic] = 1
+    PublicType.[PublicType] = 1
 ORDER BY
     Items.[CreatedDateTime] DESC
 OFFSET @Skip ROWS
@@ -231,7 +231,7 @@ FETCH NEXT @Take ROWS ONLY
             var sql = string.Format(@"
 {0}
 WHERE
-    Items.[IsPublic] = 1
+    PublicType.[PublicType] = 1
 AND Items.[Type] = @ItemType
 ORDER BY
     Items.[CreatedDateTime] DESC
@@ -285,8 +285,12 @@ ORDER BY
 SELECT
     Count = Count(*)
 FROM [dbo].[Items]
+INNER JOIN
+    [dbo].[fnItemPublicType]() AS [PublicType]
+ON
+    PublicType.ItemId = Items.Id
 WHERE
-    [IsPublic] = 1
+    PublicType.PublicType = 1
 ";
 
             using (var cn = CreateConnection())
@@ -307,8 +311,12 @@ WHERE
 SELECT
     Count = Count(*)
 FROM [dbo].[Items]
+INNER JOIN
+    [dbo].[fnPublicType]() AS [PublicType]
+ON
+    PublicType.ItemId = Items.Id
 WHERE
-    [IsPublic] = 1
+    PublicType.PublicType = 1
 AND [Type] = @ItemType
 ";
 
@@ -332,8 +340,12 @@ AND [Type] = @ItemType
 SELECT
     Count = Count(*)
 FROM [dbo].[Items]
+INNER JOIN
+    [dbo].[fnItemPublicType]() AS [PublicType]
+ON
+    PublicType.ItemId = Items.Id
 WHERE
-    [IsPublic] = 1
+    PublicType.PublicType = 1
 AND EXISTS (
     SELECT *
     FROM [dbo].[ItemTags] _Tags
@@ -375,7 +387,9 @@ BEGIN
         [Title] = @Title,
         [Body] = @Body,
         [CreatedDateTime] = @CreatedDateTime,
-        [LastModifiedDateTime] = @LastModifiedDateTime
+        [LastModifiedDateTime] = @LastModifiedDateTime,
+        [PublishSince] = @PublishSince,
+        [PublishUntil] = @PublishUntil
     WHERE
         [Id] = @Id
 END
@@ -390,7 +404,9 @@ BEGIN
         [Title],
         [Body],
         [CreatedDateTime],
-        [LastModifiedDateTime]
+        [LastModifiedDateTime],
+        [PublishSince],
+        [PublishUntil]
     ) VALUES (
         @Id,
         @CreateUserId,
@@ -400,7 +416,9 @@ BEGIN
         @Title,
         @Body,
         @CreatedDateTime,
-        @LastModifiedDateTime
+        @LastModifiedDateTime,
+        @PublishSince,
+        @PublishUntil
     )
 END
 
@@ -924,6 +942,8 @@ SELECT
     Items.[Body],
     Items.[CreatedDateTime],
     Items.[LastModifiedDateTime],
+    Items.[PublishSince],
+    Items.[PublishUntil],
     Tags.Tags,
     [ItemType] = ISNULL(Items.Type, 0),
     [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
@@ -1030,6 +1050,10 @@ OUTER APPLY (
          FOR XML AUTO, ROOT('Collaborators')
     ) Collaborators
 ) [Collaborators]
+INNER JOIN
+    [dbo].[fnItemPublicType]() AS [PublicType]
+ON
+    PublicType.ItemId = Items.Id
 ";
         #endregion
     }

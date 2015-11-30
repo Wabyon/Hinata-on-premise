@@ -31,6 +31,10 @@ namespace Hinata.Data.Models
 
         public DateTime LastModifiedDateTime { get; set; }
 
+        public DateTime? PublishSince { get; set; }
+
+        public DateTime? PublishUntil { get; set; }
+
         public ItemRegisterDataModel(Item item)
         {
             Id = item.Id;
@@ -44,6 +48,8 @@ namespace Hinata.Data.Models
             Comment = item.Comment;
             CreatedDateTime = item.CreatedDateTime;
             LastModifiedDateTime = item.LastModifiedDateTime;
+            PublishSince = item.PublishSince;
+            PublishUntil = item.PublishUntil;
         }
     }
 

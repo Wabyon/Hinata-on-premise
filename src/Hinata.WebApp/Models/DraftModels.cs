@@ -43,6 +43,12 @@ namespace Hinata.Models
 
         public string PublishedBody { get; set; }
 
+        [PlaceHolder("いつ")]
+        public DateTime? PublishSince { get; set; }
+
+        [PlaceHolder("いつ")]
+        public DateTime? PublishUntil { get; set; }
+
         [MaxLength(256)]
         [AllowHtml]
         [PlaceHolder("編集履歴コメント（任意）")]
@@ -102,6 +108,18 @@ namespace Hinata.Models
                 if (tags.Where(x => x.Version != null).Any(x => x.Version.Length > 16))
                 {
                     validationResults.Add(new ValidationResult("一つのタグ・バージョンの長さはは最大16文字までです。", new[] { "TagInlineString" }));
+                }
+            }
+
+            if (PublishSince.HasValue && PublishUntil.HasValue)
+            {
+                if (PublishUntil < PublishSince)
+                {
+                    validationResults.Add(new ValidationResult("公開期間の開始と終了が逆転しています。", new[] { "PublishUntil" }));
+                }
+                else if (PublishUntil == PublishSince)
+                {
+                    validationResults.Add(new ValidationResult("公開期間の開始と終了が同じ時刻です。", new[] { "PublishUntil" }));
                 }
             }
 
