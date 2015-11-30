@@ -312,7 +312,7 @@ SELECT
     Count = Count(*)
 FROM [dbo].[Items]
 INNER JOIN
-    [dbo].[fnPublicType]() AS [PublicType]
+    [dbo].[fnItemPublicType]() AS [PublicType]
 ON
     PublicType.ItemId = Items.Id
 WHERE
