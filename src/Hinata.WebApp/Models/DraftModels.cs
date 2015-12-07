@@ -41,6 +41,7 @@ namespace Hinata.Models
         [Display(Name = "本文")]
         public string Body { get; set; }
 
+        [AllowHtml]
         public string PublishedBody { get; set; }
 
         [PlaceHolder("いつ")]
