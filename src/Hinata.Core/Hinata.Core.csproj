@@ -83,7 +83,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collaborator.cs" />
+    <Compile Include="Collections\LikeCollection.cs" />
     <Compile Include="Collections\CollaboratorCollection.cs" />
+    <Compile Include="Data\Commands\LikeDbCommand.cs" />
     <Compile Include="Data\Commands\CommentDbCommand.cs" />
     <Compile Include="Data\Commands\TagDbCommand.cs" />
     <Compile Include="Data\Commands\UserDbCommand.cs" />
@@ -93,11 +95,14 @@
     <Compile Include="Data\Migrations\0000000001_CreateLogTables.cs" />
     <Compile Include="Data\Migrations\2015102401_AddCollaborators.cs" />
     <Compile Include="Data\Migrations\2015110401_DraftsPrimaryKeyAddUserId.cs" />
+    <Compile Include="Data\Migrations\2015121101_LikesCreate.cs" />
     <Compile Include="Data\Migrations\2015112601_PublicationScheduling.cs" />
     <Compile Include="Data\Models\CommentDataModels.cs" />
     <Compile Include="Data\Models\DraftDataModels.cs" />
+    <Compile Include="Data\Models\LikeDataModels.cs" />
     <Compile Include="Data\Models\ItemDataModels.cs" />
     <Compile Include="Exceptions\NotEntitledToEditException.cs" />
+    <Compile Include="Like.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="Data\Commands\ItemDbCommand.cs" />
@@ -152,7 +157,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties package_1json__JSONSchema="http://json.schemastore.org/package" bower_1json__JSONSchema="http://json.schemastore.org/bower" />
+      <UserProperties bower_1json__JSONSchema="http://json.schemastore.org/bower" package_1json__JSONSchema="http://json.schemastore.org/package" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

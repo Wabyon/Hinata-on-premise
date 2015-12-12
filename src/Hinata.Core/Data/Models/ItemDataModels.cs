@@ -77,6 +77,8 @@ namespace Hinata.Data.Models
 
         public string Collaborators { get; set; }
 
+        public int LikeCount { get; set; }
+
         public int CommentCount { get; set; }
 
         public int RevisionCount { get; set; }
@@ -94,10 +96,12 @@ namespace Hinata.Data.Models
                 IsPublic = IsPublic,
                 CreatedDateTime = CreatedDateTime,
                 LastModifiedDateTime = LastModifiedDateTime,
+                LikeCount = LikeCount,
                 CommentCount = CommentCount,
                 RevisionCount = RevisionCount,
                 RevisionNo = RevisionNo,
             };
+
 
             if (!string.IsNullOrWhiteSpace(Author))
             {

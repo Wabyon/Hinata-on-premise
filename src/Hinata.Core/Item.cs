@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Hinata.Collections;
 using Hinata.Exceptions;
 
@@ -8,7 +9,7 @@ namespace Hinata
     public class Item
     {
         private readonly ItemTagCollection _itemTags = new ItemTagCollection();
-        private readonly CollaboratorCollection _collaborators = new CollaboratorCollection(); 
+        private readonly CollaboratorCollection _collaborators = new CollaboratorCollection();
 
         public string Id { get; internal set; }
 
@@ -24,6 +25,8 @@ namespace Hinata
         public string Title { get; internal set; }
 
         public string Body { get; internal set; }
+
+        public int LikeCount { get; internal set; }
 
         public int CommentCount { get; internal set; }
 
@@ -62,6 +65,18 @@ namespace Hinata
                 CurrentRevisionNo = RevisionNo,
                 Editor = editor,
                 PublishedBody = Body,
+            };
+        }
+
+        public Like NewLike(User user)
+        {
+            if (user == null) throw new ArgumentNullException("user");
+
+            LikeCount++;
+
+            return new Like(this)
+            {
+                UserId = user.Id,
             };
         }
 

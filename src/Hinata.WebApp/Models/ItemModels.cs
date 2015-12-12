@@ -43,6 +43,8 @@ namespace Hinata.Models
 
     public class ItemViewModel
     {
+        private readonly List<LikeViewModel> _likes = new List<LikeViewModel>();
+
         private readonly List<CommentViewModel> _comments = new List<CommentViewModel>();
 
         public string Id { get; set; }
@@ -78,6 +80,13 @@ namespace Hinata.Models
         public bool CanEditCollarborators { get; set; }
 
         public bool CanWriteComments { get; set; }
+
+        public bool IsLiked { get; set; }
+
+        public List<LikeViewModel> Likes
+        {
+            get { return _likes; }
+        }
 
         public bool HasModified
         {
@@ -149,6 +158,6 @@ namespace Hinata.Models
 
         public string AuthorIconUrl { get; set; }
 
-        public IEnumerable<CollaboratorEditModel> Collaborators { get; set; } 
+        public IEnumerable<CollaboratorEditModel> Collaborators { get; set; }
     }
 }

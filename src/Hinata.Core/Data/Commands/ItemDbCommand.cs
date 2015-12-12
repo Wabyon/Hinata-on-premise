@@ -948,6 +948,7 @@ SELECT
     [ItemType] = ISNULL(Items.Type, 0),
     [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
     [ItemCreatedDateTime] = Items.CreatedDateTime,
+    _LikeAttributes.[LikeCount],
     _CommentAttributes.[CommentCount],
     _Revisions.[RevisionCount],
     _Revisions.[RevisionNo],
@@ -1001,6 +1002,13 @@ OUTER APPLY (
          FOR XML AUTO, ROOT('Tags')
     ) Tags
 ) Tags
+OUTER APPLY (
+    SELECT
+        LikeCount = COUNT(*)
+    FROM [dbo].[Likes] Likes
+    WHERE
+        Items.Id = Likes.ItemId
+) _LikeAttributes
 OUTER APPLY (
     SELECT
         CommentCount = COUNT(*),
