@@ -489,7 +489,7 @@ INSERT INTO [dbo].[ItemTagRevisions] (
                         var orderNo = 1;
                         foreach (var tag in item.ItemTags)
                         {
-                            await cn.ExecuteAsync(sqlTags, new { ItemId = item.Id, item.RevisionNo ,tag.Name, tag.Version, OrderNo = orderNo }, tr).ConfigureAwait(false);
+                            await cn.ExecuteAsync(sqlTags, new { ItemId = item.Id, item.RevisionNo, tag.Name, tag.Version, OrderNo = orderNo }, tr).ConfigureAwait(false);
                             orderNo++;
                         }
 
@@ -729,7 +729,7 @@ ORDER BY
             {
                 await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
 
-                var results = await cn.QueryAsync<ItemRevisionSelectDataModel>(sql, new {ItemId = itemId}).ConfigureAwait(false);
+                var results = await cn.QueryAsync<ItemRevisionSelectDataModel>(sql, new { ItemId = itemId }).ConfigureAwait(false);
 
                 return results.Select(x => x.ToEntity()).ToArray();
             }
@@ -823,7 +823,7 @@ INSERT INTO [dbo].[Collaborators] (
                 {
                     try
                     {
-                        await cn.ExecuteAsync(delete, new {ItemId = item.Id}, tr).ConfigureAwait(false);
+                        await cn.ExecuteAsync(delete, new { ItemId = item.Id }, tr).ConfigureAwait(false);
 
                         foreach (var collaborator in collaborators)
                         {
