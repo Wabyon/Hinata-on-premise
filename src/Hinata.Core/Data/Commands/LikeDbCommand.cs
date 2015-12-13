@@ -51,6 +51,7 @@ WHERE
             const string sql = @"
 SELECT
     [Likes].[Id],
+    [Likes].[ItemId],
     [Likes].[UserId]
 FROM [dbo].[Likes] 
 WHERE
@@ -78,7 +79,9 @@ WHERE
 
             const string sql = @"
 SELECT
-    [Likes].[Id]
+    [Likes].[Id],
+    [Likes].[ItemId],
+    [Likes].[UserId]
 FROM [dbo].[Likes] 
 WHERE
     [Likes].[ItemId] = @ItemId
