@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using AutoMapper;
 
 namespace Hinata.Data.Models
 {
@@ -15,12 +16,7 @@ namespace Hinata.Data.Models
 
         public Like ToEntity()
         {
-            var like = new Like
-            {
-                Id = Id,
-                ItemId = ItemId,
-                UserId = UserId,
-            };
+            var like = Mapper.DynamicMap<Like>(this);
 
             return like;
         }
