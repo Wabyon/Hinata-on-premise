@@ -46,7 +46,7 @@ namespace Hinata.Controllers
                     Name = user.Name,
                     DisplayName = user.DisplayName
                 };
-                model.Items.AddRange(itemModels.Where(x => x.IsPublic));
+                model.Items.AddRange(itemModels.Where(x => x.IsPublic && x.PublicType == 1));
                 return View("Index", model);
             }
         }

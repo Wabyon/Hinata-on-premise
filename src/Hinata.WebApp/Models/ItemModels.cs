@@ -35,6 +35,8 @@ namespace Hinata.Models
 
         public bool HasModified { get { return LastModifiedDateTime > CreatedDateTime; } }
 
+        public int PublicType { get; set; }
+
         public ItemIndexModel()
         {
             ItemTags = new ItemTagCollection();

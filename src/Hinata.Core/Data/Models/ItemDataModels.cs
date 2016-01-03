@@ -83,6 +83,8 @@ namespace Hinata.Data.Models
 
         public int RevisionNo { get; set; }
 
+        public int PublicType { get; set; }
+
         public Item ToEntity()
         {
             var item = new Item
@@ -97,6 +99,7 @@ namespace Hinata.Data.Models
                 CommentCount = CommentCount,
                 RevisionCount = RevisionCount,
                 RevisionNo = RevisionNo,
+                PublicType = PublicType,
             };
 
             if (!string.IsNullOrWhiteSpace(Author))
