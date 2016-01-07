@@ -135,9 +135,8 @@ namespace Hinata.Search
             using (var content = new StringContent(indexModel.ToJson()))
             using (var client = new HttpClient { BaseAddress = node })
             using (var response = await
-                    client.PutAsync(
-                        string.Format("/{0}/{1}/{2}", _config.ElasticsearchIndex, item.Type.ToString().ToLower(),
-                            item.Id), content, cancellationToken).ConfigureAwait(false))
+                client.PutAsync(
+                    string.Format("/{0}/{1}/{2}", _config.ElasticsearchIndex, "article", item.Id), content, cancellationToken).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
             }
@@ -187,7 +186,7 @@ INSERT INTO [dbo].[ItemIndexCreatedLogs] (
                             new
                             {
                                 _index = _config.ElasticsearchIndex,
-                                _type = index.Type,
+                                _type = "article",
                                 _id = index.Id
                             }
                     }, Formatting.None));

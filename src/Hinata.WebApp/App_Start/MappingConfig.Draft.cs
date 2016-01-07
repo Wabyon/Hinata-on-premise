@@ -45,7 +45,6 @@ namespace Hinata
                     }
                 });
             Mapper.CreateMap<Draft, DraftEditModel>()
-                .ForMember(d => d.ItemType, o => o.MapFrom(s => s.Type))
                 .AfterMap((s, d) =>
                 {
                     if (s.IsContributed)
@@ -73,7 +72,6 @@ namespace Hinata
                     }
                 });
             Mapper.CreateMap<DraftEditModel, Draft>()
-                .ForMember(d => d.Type, o => o.MapFrom(s => s.ItemType))
                 .ForMember(d => d.ItemIsPublic, o => o.MapFrom(s => !s.ItemIsPrivate))
                 .ForMember(d => d.CurrentRevisionNo, o => o.Ignore())
                 .AfterMap((s, d) =>

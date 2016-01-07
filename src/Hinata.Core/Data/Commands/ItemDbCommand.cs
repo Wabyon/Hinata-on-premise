@@ -133,33 +133,6 @@ FETCH NEXT @Take ROWS ONLY
             }
         }
 
-        public Task<Item[]> GetPublicAsync(ItemType itemType, int skip, int take)
-        {
-            return GetPublicAsync(itemType, skip, take, CancellationToken.None);
-        }
-
-        public async Task<Item[]> GetPublicAsync(ItemType itemType, int skip, int take, CancellationToken cancellationToken)
-        {
-            var sql = string.Format(@"
-{0}
-WHERE
-    PublicType.[PublicType] = 1
-AND Items.[Type] = @ItemType
-ORDER BY
-    _LastModifiedDateTime.[LastModifiedDateTime] DESC
-OFFSET @Skip ROWS
-FETCH NEXT @Take ROWS ONLY
-", SqlSelectStatement);
-
-            using (var cn = CreateConnection())
-            {
-                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
-                return (await cn.QueryAsync<ItemSelectDataModel>(sql, new { ItemType = itemType, Skip = skip, Take = take }).ConfigureAwait(false))
-                    .Select(x => x.ToEntity())
-                    .ToArray();
-            }
-        }
-
         public Task<Item[]> GetPublicByTagAsync(Tag tag, int skip, int take)
         {
             return GetPublicByTagAsync(tag, skip, take, CancellationToken.None);
@@ -221,33 +194,6 @@ FETCH NEXT @Take ROWS ONLY
             }
         }
 
-        public Task<Item[]> GetPublicNewerAsync(ItemType itemType, int skip, int take)
-        {
-            return GetPublicNewerAsync(itemType, skip, take, CancellationToken.None);
-        }
-
-        public async Task<Item[]> GetPublicNewerAsync(ItemType itemType, int skip, int take, CancellationToken cancellationToken)
-        {
-            var sql = string.Format(@"
-{0}
-WHERE
-    PublicType.[PublicType] = 1
-AND Items.[Type] = @ItemType
-ORDER BY
-    Items.[CreatedDateTime] DESC
-OFFSET @Skip ROWS
-FETCH NEXT @Take ROWS ONLY
-", SqlSelectStatement);
-
-            using (var cn = CreateConnection())
-            {
-                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
-                return (await cn.QueryAsync<ItemSelectDataModel>(sql, new { ItemType = itemType, Skip = skip, Take = take }).ConfigureAwait(false))
-                    .Select(x => x.ToEntity())
-                    .ToArray();
-            }
-        }
-
         public Task<Item[]> GetByAuthorAsync(User author)
         {
             return GetByAuthorAsync(author, CancellationToken.None);
@@ -297,33 +243,6 @@ WHERE
             {
                 await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
                 return (await cn.QueryAsync<int>(sql).ConfigureAwait(false)).ToArray().FirstOrDefault();
-            }
-        }
-
-        public Task<int> CountPublicAsync(ItemType itemType)
-        {
-            return CountPublicAsync(itemType, CancellationToken.None);
-        }
-
-        public async Task<int> CountPublicAsync(ItemType itemType, CancellationToken cancellationToken)
-        {
-            const string sql = @"
-SELECT
-    Count = Count(*)
-FROM [dbo].[Items]
-INNER JOIN
-    [dbo].[fnItemPublicType]() AS [PublicType]
-ON
-    PublicType.ItemId = Items.Id
-WHERE
-    PublicType.PublicType = 1
-AND [Type] = @ItemType
-";
-
-            using (var cn = CreateConnection())
-            {
-                await cn.OpenAsync(cancellationToken).ConfigureAwait(false);
-                return (await cn.QueryAsync<int>(sql, new { ItemType = itemType }).ConfigureAwait(false)).ToArray().FirstOrDefault();
             }
         }
 
@@ -382,7 +301,6 @@ BEGIN
     UPDATE [dbo].[Items]
     SET [CreateUserId] = @CreateUserId,
         [LastModifyUserId] = @LastModifyUserId,
-        [Type] = @Type,
         [IsPublic] = @IsPublic,
         [Title] = @Title,
         [Body] = @Body,
@@ -399,7 +317,6 @@ BEGIN
         [Id],
         [CreateUserId],
         [LastModifyUserId],
-        [Type],
         [IsPublic],
         [Title],
         [Body],
@@ -411,7 +328,6 @@ BEGIN
         @Id,
         @CreateUserId,
         @LastModifyUserId,
-        @Type,
         @IsPublic,
         @Title,
         @Body,
@@ -427,7 +343,6 @@ INSERT INTO [dbo].[ItemRevisions] (
     [RevisionNo],
     [CreateUserId],
     [ModifyUserId],
-    [Type],
     [IsPublic],
     [Title],
     [Body],
@@ -439,7 +354,6 @@ INSERT INTO [dbo].[ItemRevisions] (
     @RevisionNo,
     @CreateUserId,
     @LastModifyUserId,
-    @Type,
     @IsPublic,
     @Title,
     @Body,
@@ -934,7 +848,6 @@ AND [UserId] = @UserId
         private const string SqlSelectStatement = @"
 SELECT
     Items.[Id],
-    Items.[Type],
     Items.[IsPublic],
     [Author].Author,
     [Editor].Editor,
@@ -945,7 +858,6 @@ SELECT
     Items.[PublishSince],
     Items.[PublishUntil],
     Tags.Tags,
-    [ItemType] = ISNULL(Items.Type, 0),
     [ItemIsPublic] = CONVERT(BIT,ISNULL(Items.IsPublic, 0)),
     [ItemCreatedDateTime] = Items.CreatedDateTime,
     _CommentAttributes.[CommentCount],

@@ -14,8 +14,6 @@ namespace Hinata
 
         public bool IsPublic { get; internal set; }
 
-        public ItemType Type { get; internal set; }
-
         public User Author { get; internal set; }
 
         /// <summary>編集者</summary>

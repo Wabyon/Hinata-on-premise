@@ -22,12 +22,6 @@ namespace Hinata
 
         public string Comment { get; set; }
 
-        public ItemType Type
-        {
-            get { return _item.Type; }
-            set { _item.Type = value; }
-        }
-
         public bool ItemIsPublic
         {
             get { return _item.IsPublic; }
@@ -102,14 +96,13 @@ namespace Hinata
             CurrentRevisionNo = -1;
         }
 
-        public static Draft NewDraft(User author, ItemType type)
+        public static Draft NewDraft(User author)
         {
             var draft = new Draft
             {
                 Id = CreateNewId(),
                 Author = author,
                 Editor = author,
-                Type = type,
                 LastModifiedDateTime = DateTime.Now,
             };
 

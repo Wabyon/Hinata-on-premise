@@ -12,8 +12,6 @@ namespace Hinata.Search.Models
 
         public bool IsPublic { get; set; }
 
-        public string Type { get; set; }
-
         public string Author { get; set; }
 
         public string Title { get; set; }
@@ -39,7 +37,6 @@ namespace Hinata.Search.Models
 
             Id = item.Id;
             IsPublic = item.IsPublic;
-            Type = item.Type.ToString().ToLower();
             Author = item.Author.Name;
             Title = item.Title;
             Tags = item.ItemTags.Select(x => x.Name).ToArray();

@@ -93,6 +93,7 @@
     <Compile Include="Data\Migrations\0000000001_CreateLogTables.cs" />
     <Compile Include="Data\Migrations\2015102401_AddCollaborators.cs" />
     <Compile Include="Data\Migrations\2015110401_DraftsPrimaryKeyAddUserId.cs" />
+    <Compile Include="Data\Migrations\2016010701_DeleteColumnItemType.cs" />
     <Compile Include="Data\Migrations\2015112601_PublicationScheduling.cs" />
     <Compile Include="Data\Models\CommentDataModels.cs" />
     <Compile Include="Data\Models\DraftDataModels.cs" />
@@ -108,7 +109,6 @@
     <Compile Include="Data\Database.cs" />
     <Compile Include="Draft.cs" />
     <Compile Include="ItemRevision.cs" />
-    <Compile Include="ItemType.cs" />
     <Compile Include="Logging\Data\TraceDbProfiler.cs" />
     <Compile Include="Logging\Data\AccessLoggerBase.cs" />
     <Compile Include="Logging\DefaultTraceLogInitializer.cs" />
@@ -152,7 +152,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties package_1json__JSONSchema="http://json.schemastore.org/package" bower_1json__JSONSchema="http://json.schemastore.org/bower" />
+      <UserProperties bower_1json__JSONSchema="http://json.schemastore.org/bower" package_1json__JSONSchema="http://json.schemastore.org/package" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

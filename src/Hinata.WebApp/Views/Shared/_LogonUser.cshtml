@@ -25,10 +25,7 @@ else
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">新規作成 <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li>
-                    @Html.ActionLink("記事を投稿する", "New", "Draft", new { itemType = ItemType.Article }, null)
-                </li>
-                <li>
-                    @Html.ActionLink("質問を投稿する", "New", "Draft", new { itemType = ItemType.Ask }, null)
+                    @Html.ActionLink("記事を投稿する", "New", "Draft")
                 </li>
                 <li class="divider"></li>
                 <li>

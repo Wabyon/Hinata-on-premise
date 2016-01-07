@@ -30,8 +30,6 @@ namespace Hinata.Models
 
         public bool IsNewDraft { get { return (CurrentRevisionNo < 0); } }
 
-        public ItemType ItemType { get; set; }
-
         [AllowHtml]
         [PlaceHolder("タイトル")]
         public string Title { get; set; }

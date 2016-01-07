@@ -52,40 +52,6 @@ namespace Hinata.Controllers
             return View("Index", Mapper.Map<IEnumerable<ItemIndexModel>>(items));
         }
 
-        [Route("article")]
-        [HttpGet]
-        public async Task<ActionResult> Articles(int p = 1)
-        {
-            var skip = MaxItemsOnPage * (p - 1);
-            var count = await _itemDbCommand.CountPublicAsync(ItemType.Article);
-            var items = await _itemDbCommand.GetPublicAsync(ItemType.Article, skip, MaxItemsOnPage);
-
-            ViewBag.CurrentPage = p;
-            ViewBag.HasPreviousPage = (p > 1);
-            ViewBag.HasNextPage = (count > MaxItemsOnPage * p);
-
-            ViewBag.Title = "記事";
-
-            return View("Index",Mapper.Map<IEnumerable<ItemIndexModel>>(items));
-        }
-
-        [Route("ask")]
-        [HttpGet]
-        public async Task<ActionResult> Asks(int p = 1)
-        {
-            var skip = MaxItemsOnPage * (p - 1);
-            var count = await _itemDbCommand.CountPublicAsync(ItemType.Ask);
-            var items = await _itemDbCommand.GetPublicAsync(ItemType.Ask, skip, MaxItemsOnPage);
-
-            ViewBag.CurrentPage = p;
-            ViewBag.HasPreviousPage = (p > 1);
-            ViewBag.HasNextPage = (count > MaxItemsOnPage * p);
-
-            ViewBag.Title = "質問";
-
-            return View("Index", Mapper.Map<IEnumerable<ItemIndexModel>>(items));
-        }
-
         [Route("item/{id}")]
         [HttpGet]
         public async Task<ActionResult> Item(string id)
