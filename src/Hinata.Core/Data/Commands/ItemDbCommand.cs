@@ -951,7 +951,8 @@ SELECT
     _CommentAttributes.[CommentCount],
     _Revisions.[RevisionCount],
     _Revisions.[RevisionNo],
-    Collaborators.Collaborators
+    Collaborators.Collaborators,
+    [PublicType].[PublicType]
 FROM [dbo].[Items] Items
 OUTER APPLY (
     SELECT (
