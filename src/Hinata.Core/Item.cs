@@ -5,7 +5,7 @@ using Hinata.Exceptions;
 
 namespace Hinata
 {
-    public class Item
+    public class Item : IScheduledItem
     {
         private readonly ItemTagCollection _itemTags = new ItemTagCollection();
         private readonly CollaboratorCollection _collaborators = new CollaboratorCollection(); 
@@ -101,6 +101,29 @@ namespace Hinata
         internal void ClearAllCollaborators()
         {
             _collaborators.Clear();
+        }
+    }
+
+    public interface IScheduledItem
+    {
+        DateTime? PublishSince { get; }
+        DateTime? PublishUntil { get; }
+    }
+
+    public static class ItemExtensions
+    {
+        public static bool WithinThePublicationPeriod(this IScheduledItem item)
+        {
+            var now = DateTime.Now;
+            if (item.PublishSince.HasValue && now < item.PublishSince.Value)
+            {
+                return false;
+            }
+            if (item.PublishUntil.HasValue && item.PublishUntil.Value < now)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

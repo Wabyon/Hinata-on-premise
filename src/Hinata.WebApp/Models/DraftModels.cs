@@ -22,7 +22,7 @@ namespace Hinata.Models
         public DateTime LastModifiedDateTime { get; set; }
     }
 
-    public class DraftEditModel : IValidatableObject
+    public class DraftEditModel : IValidatableObject, IScheduledItem
     {
         public string Id { get; set; }
 

@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Hinata.Data.Models
 {
-    internal class ItemRegisterDataModel
+    internal class ItemRegisterDataModel : IScheduledItem
     {
         public string Id { get; set; }
 
@@ -53,7 +53,7 @@ namespace Hinata.Data.Models
         }
     }
 
-    internal class ItemSelectDataModel
+    internal class ItemSelectDataModel : IScheduledItem
     {
         public string Id { get; set; }
 
@@ -83,6 +83,10 @@ namespace Hinata.Data.Models
 
         public int RevisionNo { get; set; }
 
+        public DateTime? PublishSince { get; set; }
+
+        public DateTime? PublishUntil { get; set; }
+
         public Item ToEntity()
         {
             var item = new Item
@@ -97,6 +101,8 @@ namespace Hinata.Data.Models
                 CommentCount = CommentCount,
                 RevisionCount = RevisionCount,
                 RevisionNo = RevisionNo,
+                PublishSince = PublishSince,
+                PublishUntil = PublishUntil,
             };
 
             if (!string.IsNullOrWhiteSpace(Author))

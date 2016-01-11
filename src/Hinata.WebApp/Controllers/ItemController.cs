@@ -93,6 +93,11 @@ namespace Hinata.Controllers
             var item = await _itemDbCommand.FindAsync(id);
             if (item == null) return HttpNotFound();
 
+            if (item.Author != LogonUser && !item.WithinThePublicationPeriod())
+            {
+                return HttpNotFound();
+            }
+
             var model = Mapper.Map<ItemViewModel>(item);
             model.CanEdit = LogonUser.IsEntitledToEditItem(item);
             model.CanDelete = LogonUser.IsEntitledToDeleteItem(item);
