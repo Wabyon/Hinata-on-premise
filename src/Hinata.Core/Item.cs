@@ -43,6 +43,8 @@ namespace Hinata
 
         public DateTime? PublishUntil { get; set; }
 
+        public int PublicType { get; set; }
+
         /// <summary>共同編集者</summary>
         public IReadOnlyCollection<Collaborator> Collaborators
         {
