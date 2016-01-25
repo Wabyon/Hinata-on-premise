@@ -42,30 +42,58 @@ $(function () {
                     data.append("file" + x, files[x]);
                 }
 
-                $.ajax({
-                    type: "POST",
-                    url: $self.data("url"),
-                    contentType: false,
-                    processData: false,
-                    data: data,
-                    success: function (result) {
-                        hinata.insertAtCaret("comment-editor", "![" + result.OriginalFileName + "](" + result.Url + ")");
-                    },
-                    error: function (xhr, status, p3, p4) {
-                        if (xhr.responseText && xhr.responseText[0] === "{") {
-                            var err = JSON.parse(xhr.responseText).Message;
-                            alert(err);
-                        }
-                    },
-                    complete: function () {
-                        $self.val("");
-                    }
-                });
+                uploadImage($self.data("url"), data, uploadImageSuccessCallback, uploadImageErrorCallback, function () { $self.val(""); });
             } else {
                 alert("This browser doesn't support HTML5 file uploads!");
             }
         }
     });
+
+    $("#comment-editor").bind("paste", function (e) {
+        var $self = $(this);
+        if (!e.originalEvent.clipboardData) return;
+
+        var $items = e.originalEvent.clipboardData.items;
+        var $hasImage = false;
+        var $data = new FormData();
+        for (var i = 0 ; i < $items.length ; i++) {
+            var item = $items[i];
+            if (item.type.indexOf("image") == -1) continue;
+
+            var file = item.getAsFile();
+            var fileName = hinata.getGuid() + file.type.replace('image/', '.');
+            $data.append("file", file, fileName);
+            $hasImage = true;
+        }
+
+        if ($hasImage === true) {
+            uploadImage($self.data("upload-url"), $data, uploadImageSuccessCallback, uploadImageErrorCallback);
+        }
+    });
+
+    uploadImage = function (url, data, successCallback, errorCallback, completeCallback) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: successCallback,
+            error: errorCallback,
+            complete: completeCallback,
+        });
+    };
+
+    uploadImageSuccessCallback = function (result) {
+        hinata.insertAtCaret("comment-editor", "![" + result.OriginalFileName + "](" + result.Url + ")");
+    };
+
+    uploadImageErrorCallback = function (xhr, status, p3, p4) {
+        if (xhr.responseText && xhr.responseText[0] === "{") {
+            var err = JSON.parse(xhr.responseText).Message;
+            alert(err);
+        }
+    }
 
     createMenu = function () {
         var $idCount = {};
