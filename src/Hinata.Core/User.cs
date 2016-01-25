@@ -69,7 +69,7 @@ namespace Hinata
             return !Equals(left, right);
         }
 
-        private static readonly string[] ReservedNames = {"admin", "admins", "administrator", "administrators", "hinata", "unknown"};
+        private static readonly string[] ReservedNames = { "admin", "admins", "administrator", "administrators", "hinata", "unknown" };
 
         public static bool IsReservedName(string name)
         {

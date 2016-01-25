@@ -15,6 +15,7 @@ namespace Hinata.Controllers
     public class ItemController : WindowsAuthenticationContoller
     {
         private readonly ItemDbCommand _itemDbCommand = new ItemDbCommand(GlobalSettings.DefaultConnectionString);
+        private readonly LikeDbCommand _likeDbCommand = new LikeDbCommand(GlobalSettings.DefaultConnectionString);
         private readonly CommentDbCommand _commentDbCommand = new CommentDbCommand(GlobalSettings.DefaultConnectionString);
         private readonly UserDbCommand _userDbCommand = new UserDbCommand(GlobalSettings.DefaultConnectionString);
         private const int MaxItemsOnPage = 15;
@@ -24,13 +25,13 @@ namespace Hinata.Controllers
         [HttpGet]
         public async Task<ActionResult> Index(int p = 1)
         {
-            var skip = MaxItemsOnPage*(p - 1);
+            var skip = MaxItemsOnPage * (p - 1);
             var count = await _itemDbCommand.CountPublicAsync();
             var items = await _itemDbCommand.GetPublicAsync(skip, MaxItemsOnPage);
 
             ViewBag.CurrentPage = p;
             ViewBag.HasPreviousPage = (p > 1);
-            ViewBag.HasNextPage = (count > MaxItemsOnPage*p);
+            ViewBag.HasNextPage = (count > MaxItemsOnPage * p);
 
             return View(Mapper.Map<IEnumerable<ItemIndexModel>>(items));
         }
@@ -66,7 +67,7 @@ namespace Hinata.Controllers
 
             ViewBag.Title = "記事";
 
-            return View("Index",Mapper.Map<IEnumerable<ItemIndexModel>>(items));
+            return View("Index", Mapper.Map<IEnumerable<ItemIndexModel>>(items));
         }
 
         [Route("ask")]
@@ -98,6 +99,14 @@ namespace Hinata.Controllers
             model.CanDelete = LogonUser.IsEntitledToDeleteItem(item);
             model.CanEditCollarborators = LogonUser.IsEntitledToEditItemCollaborators(item);
             model.CanWriteComments = LogonUser.IsEntitledToWriteComments(item);
+
+            var likes = await _likeDbCommand.GetByItemAsync(item);
+            foreach (var like in likes)
+            {
+                var likeModel = Mapper.Map<LikeViewModel>(like);
+                model.Likes.Add(likeModel);
+            }
+            model.IsLiked = model.Likes.Any(r => r.UserId == LogonUser.Id);
 
             ViewBag.Title = model.DisplayTitle;
 
@@ -149,6 +158,27 @@ namespace Hinata.Controllers
             return RedirectToAction("Index", "Item");
         }
 
+        [Route("item/{id}/switchlike")]
+        [HttpGet]
+        public async Task<ActionResult> SwitchLike(string id)
+        {
+            var item = await _itemDbCommand.FindAsync(id);
+            if (item == null) return HttpNotFound();
+
+            var like = await _likeDbCommand.GetByItemAndUserAsync(item, LogonUser);
+            if (like == null)
+            {
+                like = item.NewLike(LogonUser);
+                await _likeDbCommand.AddLikeAsync(like);
+            }
+            else
+            {
+                await _likeDbCommand.RemoveLikeAsync(like.Id);
+            }
+
+            return RedirectToAction("Item", new { id = id });
+        }
+
         [ValidateAntiForgeryToken]
         [Route("item/{id}/savecomment")]
         [HttpPost]
@@ -172,7 +202,7 @@ namespace Hinata.Controllers
 
             await _commentDbCommand.SaveAsync(comment);
 
-            return RedirectToAction("Item", new {id = model.ItemId});
+            return RedirectToAction("Item", new { id = model.ItemId });
         }
 
         [Route("item/{id}/revisions")]

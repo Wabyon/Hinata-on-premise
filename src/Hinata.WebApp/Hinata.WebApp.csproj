@@ -156,6 +156,7 @@
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\MappingConfig.Like.cs" />
     <Compile Include="App_Start\MappingConfig.cs" />
     <Compile Include="App_Start\MappingConfig.Comment.cs" />
     <Compile Include="App_Start\MappingConfig.Item.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="Logging\AccessLogger.cs" />
     <Compile Include="Models\CollaboratorModels.cs" />
+    <Compile Include="Models\LikeModels.cs" />
     <Compile Include="Models\CommentModels.cs" />
     <Compile Include="Models\DraftModels.cs" />
     <Compile Include="Models\ItemModels.cs" />

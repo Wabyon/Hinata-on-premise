@@ -7,6 +7,7 @@
             CreateUserModelsMap();
             CreateDraftModelsMap();
             CreateItemModelsMap();
+            CreateLikeModelsMap();
             CreateCommentModelsMap();
             CreateCollaboratorModelsMap();
         }
