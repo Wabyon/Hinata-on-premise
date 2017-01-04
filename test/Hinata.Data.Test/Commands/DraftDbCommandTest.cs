@@ -10,7 +10,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_記事_作成とIDでの取得_複数タグ()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = @"正常系_記事_作成とIDでの取得_複数タグ";
             draft.Body = "body";
 
@@ -29,7 +29,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_記事_作成とIDでの取得_タグ一つ()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = @"正常系_記事_作成とIDでの取得_タグ一つ";
             draft.Body = "body";
 
@@ -45,7 +45,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_記事_作成とIDでの取得_タグなし()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = @"正常系_記事_作成とIDでの取得_タグなし";
             draft.Body = "body";
 
@@ -64,19 +64,19 @@ namespace Hinata.Data.Commands
 
             await DraftDbCommand.DeleteByUserAsync(author);
 
-            var draft1 = Draft.NewDraft(author, ItemType.Article);
+            var draft1 = Draft.NewDraft(author);
             draft1.Title = "title1";
             draft1.LastModifiedDateTime = new DateTime(2015, 1, 1);
 
-            var draft2 = Draft.NewDraft(author, ItemType.Article);
+            var draft2 = Draft.NewDraft(author);
             draft2.Title = "title2";
             draft2.LastModifiedDateTime = new DateTime(2015, 2, 1);
 
-            var draft3 = Draft.NewDraft(author, ItemType.Article);
+            var draft3 = Draft.NewDraft(author);
             draft3.Title = "title3";
             draft3.LastModifiedDateTime = new DateTime(2015, 3, 1);
 
-            var draft4 = Draft.NewDraft(author, ItemType.Article);
+            var draft4 = Draft.NewDraft(author);
             draft4.Title = "title4";
             draft4.LastModifiedDateTime = new DateTime(2015, 4, 1);
 
@@ -93,7 +93,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_記事_作成と更新()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = "title 正常系_記事_作成と更新";
             draft.Body = "body 正常系_記事_作成と更新";
             draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
@@ -121,13 +121,13 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_記事_作成と削除()
         {
-            var draft1 = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft1 = Draft.NewDraft(LogonUser);
             draft1.Title = "title 正常系_記事_作成と削除 削除対象";
             draft1.Body = "body 正常系_記事_作成と削除 削除対象";
             draft1.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
             draft1.ItemTags.Add(new ItemTag("tag2", null));
 
-            var draft2 = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft2 = Draft.NewDraft(LogonUser);
             draft2.Title = "title 正常系_記事_作成と削除 削除しない";
             draft2.Body = "title 正常系_記事_作成と削除 削除しない";
             draft2.ItemTags.Add(new ItemTag("tag3", "1.0.0"));

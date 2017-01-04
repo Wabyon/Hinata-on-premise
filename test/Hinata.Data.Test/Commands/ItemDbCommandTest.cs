@@ -27,7 +27,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_作成とIDでの抽出_公開記事()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = "title 正常系_作成とIDでの抽出_公開記事";
             draft.Body = "body 正常系_作成とIDでの抽出_公開記事";
             draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
@@ -49,7 +49,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_作成とIDでの抽出_非公開記事()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = "title 正常系_作成とIDでの抽出_非公開記事";
             draft.Body = "body 正常系_作成とIDでの抽出_非公開記事";
             draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
@@ -73,7 +73,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_作成とIDでの抽出_公開質問()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Ask);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = "title 正常系_作成とIDでの抽出_公開質問";
             draft.Body = "body 正常系_作成とIDでの抽出_公開質問";
             draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
@@ -97,7 +97,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_作成とIDでの抽出_非公開質問()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Ask);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = "title 正常系_作成とIDでの抽出_非公開質問";
             draft.Body = "body 正常系_作成とIDでの抽出_非公開質問";
             draft.ItemTags.Add(new ItemTag("tag1", "1.0.0"));
@@ -121,7 +121,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_公開記事_作成と修正()
         {
-            var draft = Draft.NewDraft(LogonUser, ItemType.Article);
+            var draft = Draft.NewDraft(LogonUser);
             draft.Title = "title 正常系_作成と修正";
             draft.Body = "body 正常系_作成と修正";
             draft.ItemTags.Add(new ItemTag("tag1","1.0.0"));
@@ -185,7 +185,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_共同編集者の追加()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             draft.Title = "共同編集テスト";
             draft.Body = "共同編集テスト";
 
@@ -209,7 +209,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_共同編集者の変更()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             draft.Title = "共同編集テスト_共同編集者の変更";
             draft.Body = "共同編集テスト_共同編集者の変更";
 
@@ -237,7 +237,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_共同編集者を一人だけ追加()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             draft.Title = "共同編集テスト_共同編集者を一人だけ追加";
             draft.Body = "共同編集テスト_共同編集者を一人だけ追加";
 
@@ -263,7 +263,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_共同編集者を一人だけ除外()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             draft.Title = "共同編集テスト_共同編集者を一人だけ除外";
             draft.Body = "共同編集テスト_共同編集者を一人だけ除外";
 
@@ -288,7 +288,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_共同編集者のロールを変更()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             draft.Title = "共同編集テスト_共同編集者のロールを変更";
             draft.Body = "共同編集テスト_共同編集者のロールを変更";
 
@@ -314,7 +314,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_共同編集者が記事を更新()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             draft.Title = "共同編集テスト_共同編集者が記事を更新";
             draft.Body = "共同編集テスト_共同編集者が記事を更新";
 
@@ -345,7 +345,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 正常系_他の人が編集中の下書きを別の人が呼び出して記事を更新()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             draft.Title = "共同編集テスト_他の人が編集中の下書きを別の人が呼び出して記事を更新";
             draft.Body = "共同編集テスト_他の人が編集中の下書きを別の人が呼び出して記事を更新";
 
@@ -398,7 +398,7 @@ namespace Hinata.Data.Commands
         [Test]
         public async Task 異常系_共同編集者以外が記事を更新()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             draft.Title = "共同編集テスト_共同編集者以外が記事を更新";
             draft.Body = "共同編集テスト_共同編集者以外が記事を更新";
 

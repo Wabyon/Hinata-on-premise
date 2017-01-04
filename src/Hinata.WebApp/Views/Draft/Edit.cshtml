@@ -37,7 +37,6 @@
         @Html.AntiForgeryToken()
         @Html.ValidationSummary("", new { @class = "text-danger" })
         @Html.HiddenFor(m => m.Id)
-        @Html.HiddenFor(m => m.ItemType)
         <div class="form-group row">
             <div class="col-md-12">
                 @Html.TextBoxFor(m => m.Title, new { @class = "form-control input-lg", @placeholder = @Html.PlacceHolderFor(m => m.Title) })
@@ -103,30 +102,26 @@
                 </div>
             </div>
         </div>
-        @* 質問を期間指定する要件は無い想定 *@
-        @if (Model.ItemType == ItemType.Article)
-        {
-            <div class="form-group row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            公開期間（任意）:
-                        </div>
-                        @Html.TextBoxFor(m => m.PublishSince, new { @class = "form-control datetime", @placeholder = @Html.PlacceHolderFor(m => m.PublishSince) })
-                        <div class="input-group-addon">
-                            から
-                        </div>
-                        @Html.TextBoxFor(m => m.PublishUntil, new { @class = "form-control datetime", @placeholder = @Html.PlacceHolderFor(m => m.PublishUntil) })
-                        <div class="input-group-addon">
-                            まで公開
-                        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        公開期間（任意）:
                     </div>
-                    <div>
-                        @Html.ValidationMessageFor(m => m.PublishUntil, "", new { @class = "text-danger" })
+                    @Html.TextBoxFor(m => m.PublishSince, new { @class = "form-control datetime", @placeholder = @Html.PlacceHolderFor(m => m.PublishSince) })
+                    <div class="input-group-addon">
+                        から
+                    </div>
+                    @Html.TextBoxFor(m => m.PublishUntil, new { @class = "form-control datetime", @placeholder = @Html.PlacceHolderFor(m => m.PublishUntil) })
+                    <div class="input-group-addon">
+                        まで公開
                     </div>
                 </div>
+                <div>
+                    @Html.ValidationMessageFor(m => m.PublishUntil, "", new { @class = "text-danger" })
+                </div>
             </div>
-        }
+        </div>
         <div class="form-group row">
             <div class="col-md-9">
                 @if (!@Model.IsNewDraft)

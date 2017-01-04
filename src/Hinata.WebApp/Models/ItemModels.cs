@@ -23,8 +23,6 @@ namespace Hinata.Models
 
         public bool IsPublic { get; set; }
 
-        public ItemType Type { get; set; }
-
         public DateTime CreatedDateTime { get; set; }
 
         public DateTime LastModifiedDateTime { get; set; }

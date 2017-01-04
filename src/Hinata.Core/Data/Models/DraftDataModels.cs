@@ -13,8 +13,6 @@ namespace Hinata.Data.Models
 
         public string UserId { get; set; }
 
-        public ItemType Type { get; set; }
-
         public string Title { get; set; }
 
         public string Body { get; set; }
@@ -27,7 +25,6 @@ namespace Hinata.Data.Models
         {
             Id = draft.Id;
             UserId = draft.Editor.Id;
-            Type = draft.Type;
             Title = draft.Title;
             Body = draft.Body;
             LastModifiedDateTime = draft.LastModifiedDateTime;
@@ -38,8 +35,6 @@ namespace Hinata.Data.Models
     internal class DraftSelectDataModel
     {
         public string Id { get; set; }
-
-        public ItemType Type { get; set; }
 
         public bool ItemIsPublic { get; set; }
 
@@ -75,7 +70,6 @@ namespace Hinata.Data.Models
                 Title = Title,
                 Body = Body,
                 PublishedBody = PublishedBody,
-                Type = Type,
                 ItemIsPublic = ItemIsPublic,
                 ItemCreatedDateTime = ItemCreatedDateTime,
                 ItemRevisionCount = ItemRevisionCount,

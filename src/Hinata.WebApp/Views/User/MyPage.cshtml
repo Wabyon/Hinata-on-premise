@@ -4,15 +4,11 @@
 <div class="container">
     <ul class="nav nav-tabs" rore="tablist">
         <li role="presentation" class="active"><a href="#article" aria-controls="article" role="tab" data-toggle="tab">記事</a></li>
-        <li role="presentation"><a href="#ask" aria-controls="ask" role="tab" data-toggle="tab">質問</a></li>
         <li role="presentation"><a href="#private" aria-controls="private" role="tab" data-toggle="tab">限定共有</a></li>
     </ul>
     <div class="tab-content">
         <div role="tabpanel" class="list-group tab-pane active" id="article">
-            @Html.Partial("_ItemList", Model.PublicItems.Where(x => x.Type == ItemType.Article))
-        </div>
-        <div role="tabpanel" class="list-group tab-pane" id="ask">
-            @Html.Partial("_ItemList", Model.PublicItems.Where(x => x.Type == ItemType.Ask))
+            @Html.Partial("_ItemList", Model.PublicItems)
         </div>
         <div role="tabpanel" class="list-group tab-pane" id="private">
             @Html.Partial("_ItemList", Model.PrivateItems)

@@ -86,8 +86,7 @@ AND [UserId] = @UserId
 IF EXISTS (SELECT * FROM [dbo].[Drafts] WHERE [Id] = @Id AND [UserId] = @UserId)
 BEGIN
     UPDATE [dbo].[Drafts]
-    SET [Type] = @Type,
-        [Title] = @Title,
+    SET [Title] = @Title,
         [Body] = @Body,
         [Comment] = @Comment,
         [LastModifiedDateTime] = @LastModifiedDateTime
@@ -100,7 +99,6 @@ BEGIN
     INSERT INTO [dbo].[Drafts] (
         [Id],
         [UserId],
-        [Type],
         [Title],
         [Body],
         [Comment],
@@ -108,7 +106,6 @@ BEGIN
     ) VALUES (
         @Id,
         @UserId,
-        @Type,
         @Title,
         @Body,
         @Comment,
@@ -220,7 +217,6 @@ SELECT
     Drafts.[Id],
     Author = ISNULL([Author].Author, [NewAuthor].Author),
     [Editor].Editor,
-    Drafts.[Type],
     Drafts.[Title],
     Drafts.[Body],
     Drafts.[Comment],

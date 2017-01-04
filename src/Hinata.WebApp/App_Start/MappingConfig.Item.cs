@@ -9,20 +9,13 @@ namespace Hinata
     {
         private static void CreateItemModelsMap()
         {
-            const string askTitlePrefix = @"質問: ";
-
             Mapper.CreateMap<Item, ItemIndexModel>()
                 .ForMember(d => d.AuthorName, o => o.MapFrom(s => s.Author.Name))
                 .ForMember(d => d.AuthorDisplayName, o => o.MapFrom(s => s.Author.DisplayName))
                 .ForMember(d => d.AuthorIconUrl, o => o.MapFrom(s => s.Author.IconUrl ?? GlobalSettings.NoImageUserIconUrl))
                 .ForMember(d => d.EditorName, o => o.MapFrom(s => s.Editor.Name))
                 .ForMember(d => d.EditorDisplayName, o => o.MapFrom(s => s.Editor.DisplayName))
-                .ForMember(d => d.EditorIconUrl, o => o.MapFrom(s => s.Editor.IconUrl ?? GlobalSettings.NoImageUserIconUrl))
-                .ForMember(d => d.Title, o => o.Ignore())
-                .AfterMap((s, d) =>
-                {
-                    d.Title = ((s.Type == ItemType.Ask) ? askTitlePrefix : "") + s.Title;
-                });
+                .ForMember(d => d.EditorIconUrl, o => o.MapFrom(s => s.Editor.IconUrl ?? GlobalSettings.NoImageUserIconUrl));
 
             Mapper.CreateMap<Item, ItemViewModel>()
                 .ForMember(d => d.AuthorName, o => o.MapFrom(s => s.Author.Name))
@@ -33,7 +26,6 @@ namespace Hinata
                 .ForMember(d => d.EditorIconUrl, o => o.MapFrom(s => s.Editor.IconUrl ?? GlobalSettings.NoImageUserIconUrl))
                 .AfterMap((s, d) =>
                 {
-                    d.DisplayTitle = ((s.Type == ItemType.Ask) ? askTitlePrefix : "") + s.Title;
                     using (var parser = new MarkdownParser())
                     {
                         d.HtmlBody = parser.Transform(s.Body);

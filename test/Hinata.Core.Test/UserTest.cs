@@ -13,7 +13,7 @@ namespace Hinata
         [Test]
         public void 通常記事の権限テスト()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             var item = draft.ToItem(true);
 
             _author.IsEntitledToEditItem(item).IsTrue("作者は編集権限がある");
@@ -32,7 +32,7 @@ namespace Hinata
         [Test]
         public void 共同編集権限テスト()
         {
-            var draft = Draft.NewDraft(_author, ItemType.Article);
+            var draft = Draft.NewDraft(_author);
             var item = draft.ToItem(true);
 
             item.AddCollaborator(new Collaborator(_ownerCollaborator) {Role = RoleType.Owner});

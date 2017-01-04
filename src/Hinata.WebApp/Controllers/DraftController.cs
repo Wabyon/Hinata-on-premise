@@ -27,9 +27,9 @@ namespace Hinata.Controllers
 
         [Route("draft/new")]
         [HttpGet]
-        public ActionResult New(ItemType itemType = ItemType.Article)
+        public ActionResult New()
         {
-            var draft = Draft.NewDraft(LogonUser, itemType);
+            var draft = Draft.NewDraft(LogonUser);
             var model = Mapper.Map<DraftEditModel>(draft);
 
             ViewBag.Title = "新規作成";
@@ -81,7 +81,7 @@ namespace Hinata.Controllers
                 }
             }
 
-            var draft = await _draftDbCommand.FindAsync(model.Id, LogonUser) ?? Draft.NewDraft(LogonUser, model.ItemType);
+            var draft = await _draftDbCommand.FindAsync(model.Id, LogonUser) ?? Draft.NewDraft(LogonUser);
             Mapper.Map(model, draft);
 
             draft.LastModifiedDateTime = DateTime.Now;
@@ -107,7 +107,7 @@ namespace Hinata.Controllers
                 }
             }
 
-            var draft = await _draftDbCommand.FindAsync(model.Id, LogonUser) ?? Draft.NewDraft(LogonUser, model.ItemType);
+            var draft = await _draftDbCommand.FindAsync(model.Id, LogonUser) ?? Draft.NewDraft(LogonUser);
             Mapper.Map(model, draft);
 
             var item = draft.ToItem();

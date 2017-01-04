@@ -31,7 +31,7 @@ namespace Hinata.Search.Test
         {
             var service =  new SearchService(_connectionString);
 
-            var draft = Draft.NewDraft(new User("TEST"), ItemType.Article);
+            var draft = Draft.NewDraft(new User("TEST"));
             draft.Title = "Title";
             draft.Body = "Body";
             draft.ItemTags.Add(new ItemTag("Tag1", "version"));
@@ -47,7 +47,7 @@ namespace Hinata.Search.Test
         {
             var service = new SearchService(_connectionString);
 
-            var draft1 = Draft.NewDraft(new User("TEST1"), ItemType.Article);
+            var draft1 = Draft.NewDraft(new User("TEST1"));
             draft1.Title = "雪村あおい（ゆきむら あおい）";
             draft1.Body = @"本作の主人公。2月19日生まれ。高校1年生。15歳。血液型はB型。身長152cm、体重43kgでカップサイズはAカップ。
 亜麻色の、襟足ほどに切りそろえた髪型で、普段は左こめかみ付近に黒い髪飾りを着けている。
@@ -59,7 +59,7 @@ namespace Hinata.Search.Test
 
             var item1 = draft1.ToItem(true);
 
-            var draft2 = Draft.NewDraft(new User("TEST2"), ItemType.Article);
+            var draft2 = Draft.NewDraft(new User("TEST2"));
             draft2.Title = "倉上ひなた（くらうえ ひなた）";
             draft2.Body = @"あおいと同学年の幼馴染。11月11日生まれ。15歳。血液型はA型。身長155cm、体重47kgでカップサイズはBカップ（4巻時点）→Cカップ（6巻）。
 短めの黒髪を両側頭部でまとめた、いわゆるツインテールの髪型が特徴。
@@ -70,7 +70,7 @@ namespace Hinata.Search.Test
 
             var item2 = draft2.ToItem(true);
 
-            var draft3 = Draft.NewDraft(new User("TEST3"), ItemType.Article);
+            var draft3 = Draft.NewDraft(new User("TEST3"));
             draft3.Title = "斉藤楓（さいとう かえで）";
             draft3.Body = @"1月16日生まれ。16歳。血液型はAB型。あおい・ひなたと同じ学校の先輩で山友達。身長164cm、体重50kgでブラのサイズはG70だが、下着店の店員が脇の肉を寄せたところ1カップ増えた。
 登山用品店でシュラフ選びで迷っていたところあおいと出会う。あおいにとってひなた以外での最初の友達で、あおいの良き相談相手でもある。腰丈のロングストレートの黒髪で眼鏡をかけていて、あおいによると「背が高くスタイルも良い、かっこいい」。山登りが趣味で、一人で縦走登山[注 4]をするなどしている。ただし料理は苦手。登山費用や備品費用はアルバイト代などでやり繰りしている。
@@ -82,7 +82,7 @@ namespace Hinata.Search.Test
 
             var item3 = draft3.ToItem(true);
 
-            var draft4 = Draft.NewDraft(new User("TEST4"), ItemType.Article);
+            var draft4 = Draft.NewDraft(new User("TEST4"));
             draft4.Title = "青羽ここな（あおば ここな）";
             draft4.Body = @"中学2年生（13歳）の少女。8月11日生まれ。13歳。血液型はO型。身長144cm、体重38kgでカップサイズは「まだほんのり」。あおいたちの山友達。
 高尾山でモモンガを探していたところ下山途中のあおい達と出会う。両親は共働きのため、家事全般が得意。ウェーブのかかった長い茶色の髪で、前髪の一部を三つ編み状に結っている。あおいによる第一印象は、森ガール。モモンガに限らずかわいいもの、特に動物全般が好き。なかでも馬には目がなく、実際の馬以外にも夢馬くん（飯能市のゆるキャラ）やぐんまちゃんといった馬をモチーフとしたゆるキャラも大好き。
@@ -99,7 +99,7 @@ namespace Hinata.Search.Test
         public async Task SearchItemIdAsyncTest()
         {
             var service = new SearchService(_connectionString);
-            var draft1 = Draft.NewDraft(new User("TEST1"), ItemType.Article);
+            var draft1 = Draft.NewDraft(new User("TEST1"));
             draft1.Title = "雪村あおい（ゆきむら あおい）";
             draft1.Body = @"本作の主人公。2月19日生まれ。高校1年生。15歳。血液型はB型。身長152cm、体重43kgでカップサイズはAカップ。
 亜麻色の、襟足ほどに切りそろえた髪型で、普段は左こめかみ付近に黒い髪飾りを着けている。
@@ -111,7 +111,7 @@ namespace Hinata.Search.Test
 
             var item1 = draft1.ToItem(true);
 
-            var draft2 = Draft.NewDraft(new User("TEST2"), ItemType.Article);
+            var draft2 = Draft.NewDraft(new User("TEST2"));
             draft2.Title = "倉上ひなた（くらうえ ひなた）";
             draft2.Body = @"あおいと同学年の幼馴染。11月11日生まれ。15歳。血液型はA型。身長155cm、体重47kgでカップサイズはBカップ（4巻時点）→Cカップ（6巻）。
 短めの黒髪を両側頭部でまとめた、いわゆるツインテールの髪型が特徴。
@@ -122,7 +122,7 @@ namespace Hinata.Search.Test
 
             var item2 = draft2.ToItem(true);
 
-            var draft3 = Draft.NewDraft(new User("TEST3"), ItemType.Article);
+            var draft3 = Draft.NewDraft(new User("TEST3"));
             draft3.Title = "斉藤楓（さいとう かえで）";
             draft3.Body = @"1月16日生まれ。16歳。血液型はAB型。あおい・ひなたと同じ学校の先輩で山友達。身長164cm、体重50kgでブラのサイズはG70だが、下着店の店員が脇の肉を寄せたところ1カップ増えた。
 登山用品店でシュラフ選びで迷っていたところあおいと出会う。あおいにとってひなた以外での最初の友達で、あおいの良き相談相手でもある。腰丈のロングストレートの黒髪で眼鏡をかけていて、あおいによると「背が高くスタイルも良い、かっこいい」。山登りが趣味で、一人で縦走登山[注 4]をするなどしている。ただし料理は苦手。登山費用や備品費用はアルバイト代などでやり繰りしている。
@@ -134,7 +134,7 @@ namespace Hinata.Search.Test
 
             var item3 = draft3.ToItem(true);
 
-            var draft4 = Draft.NewDraft(new User("TEST4"), ItemType.Article);
+            var draft4 = Draft.NewDraft(new User("TEST4"));
             draft4.Title = "青羽ここな（あおば ここな）";
             draft4.Body = @"中学2年生（13歳）の少女。8月11日生まれ。13歳。血液型はO型。身長144cm、体重38kgでカップサイズは「まだほんのり」。あおいたちの山友達。
 高尾山でモモンガを探していたところ下山途中のあおい達と出会う。両親は共働きのため、家事全般が得意。ウェーブのかかった長い茶色の髪で、前髪の一部を三つ編み状に結っている。あおいによる第一印象は、森ガール。モモンガに限らずかわいいもの、特に動物全般が好き。なかでも馬には目がなく、実際の馬以外にも夢馬くん（飯能市のゆるキャラ）やぐんまちゃんといった馬をモチーフとしたゆるキャラも大好き。
